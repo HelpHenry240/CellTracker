@@ -1,0 +1,16 @@
+experiment_id: E0.2
+phase: P0
+date: 2026-09-15
+purpose: CTC 3D 数据下载校验与结构统计（含细胞数/体积/位移分布图）
+dataset: Fluo-N3DH-CHO
+sequences: ["01", "02"]
+seed: 20260915
+params:
+  label_dtype: uint16
+  h5_compression: gzip-4
+  displacement_pairs: "GT 标签即轨迹 id，直接在相邻帧配对同一 label"
+expected_outputs:
+  - data/interim/Fluo-N3DH-CHO_{01,02}.h5
+  - stats_CHO_{01,02}.json
+  - figures/object_count_over_time, figures/distributions
+status: done

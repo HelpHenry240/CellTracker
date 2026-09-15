@@ -39,4 +39,5 @@ dist/
 
 # --- 本地 scratch ---
 scratch/
+.cache/
 *.tmp

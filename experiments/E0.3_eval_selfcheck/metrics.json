@@ -1,0 +1,22 @@
+{
+  "self_check": true,
+  "expected_from_official_docs": {
+    "SEG_seq01": 0.232874,
+    "SEG_seq02": 0.443686,
+    "TRA_seq03": 0.622980,
+    "DET_seq03": 0.688000
+  },
+  "local_seg_implementation": {
+    "SEG_seq01": 0.232874,
+    "SEG_seq02": 0.443686,
+    "agreement": "exact (1e-6)"
+  },
+  "official_binaries_on_cloud": {
+    "SEG_seq01": 0.232874,
+    "SEG_seq02": 0.443686,
+    "DET_seq03": 0.688,
+    "TRA_seq03": 0.62298,
+    "agreement": "exact (all four values)"
+  },
+  "conclusion": "评测管线可信：本地 SEG 与官方一致；云端官方二进制可运行，用于权威 DET/SEG/TRA"
+}

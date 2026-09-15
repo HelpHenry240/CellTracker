@@ -1,0 +1,13 @@
+experiment_id: E0.3
+phase: P0
+date: 2026-09-15
+purpose: 评测管线自检——官方二进制可用性 + 本地 SEG 实现一致性
+dataset: testing_dataset (CTC 官方自带)
+seed: 20260915
+params:
+  local_seg_rule: "GT 目标需被结果目标覆盖 >50%，J = |R∩S|/|R∪S|，未匹配记 0"
+  cloud_tools: /root/EvaluationSoftware/Linux/{SEGMeasure,DETMeasure,TRAMeasure}
+expected_outputs:
+  - 官方二进制在云端可运行且复现文档基准值
+  - 本地 SEG 实现与官方逐位一致
+status: done
