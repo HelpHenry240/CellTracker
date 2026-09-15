@@ -11,3 +11,5 @@
 | E1.1 | 2026-09-15 | P1 | 匈牙利基线（GT 检测上界，CHO/01） | 见目录 | **DET 1.000000 / TRA 0.998555**（FN=FP=0） | `diagnostics`, `tracks_gt`, `tracks_pred` | 链路打通；损失全部来自未识别分裂边 | `experiments/E1.1_baseline_hungarian/` |
 | E1.2 | 2026-09-15 | P1 | 贪心最近邻（CHO/01） | 见目录 | DET 1.000000 / TRA 0.998555 | `diagnostics` | 与匈牙利同分 → CHO 无区分度 | `experiments/E1.2_baseline_greedy/` |
 | E1.2b | 2026-09-15 | P1 | 匈牙利+匀速先验（CHO/01） | 见目录 | DET 1.000000 / TRA 0.998555 | `diagnostics` | 同上；运动先验收益待 CE 验证 | `experiments/E1.2_baseline_hungarian_vel/` |
+| E2.1 | 2026-09-15 | P2 | 纯 OT（η=0，平衡 Sinkhorn） | 见目录 | DET 1.000000 / TRA 0.998555 | `diagnostics` | OT 求解器+轨迹重建正确；CHO 无区分度 | `experiments/E2.1_ot_pure/` |
+| E2.3a | 2026-09-15 | P2 | FGW 结构项 η=0.3（运行验证） | 见目录 | DET 1.000000 / TRA 0.998555 | `diagnostics` | FGW 实现正确（梯度经有限差分校验），η 效果待 CE | `experiments/E2.3a_fgw_eta0.3/` |

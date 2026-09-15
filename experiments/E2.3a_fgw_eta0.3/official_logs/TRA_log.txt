@@ -1,0 +1,18 @@
+----------Splitting Operations (Penalty=5)----------
+----------False Negative Vertices (Penalty=10)----------
+----------False Positive Vertices (Penalty=1)----------
+----------Redundant Edges To Be Deleted (Penalty=1)----------
+----------Edges To Be Added (Penalty=1.5)----------
+[T=34 GT_label=1] -> [T=38 GT_label=2]
+[T=34 GT_label=1] -> [T=39 GT_label=3]
+[T=29 GT_label=4] -> [T=33 GT_label=5]
+[T=30 GT_label=7] -> [T=34 GT_label=8]
+[T=30 GT_label=7] -> [T=43 GT_label=9]
+[T=58 GT_label=12] -> [T=62 GT_label=13]
+[T=51 GT_label=17] -> [T=56 GT_label=18]
+[T=51 GT_label=17] -> [T=56 GT_label=19]
+[T=74 GT_label=20] -> [T=86 GT_label=23]
+[T=74 GT_label=20] -> [T=86 GT_label=24]
+----------Edges with Wrong Semantics (Penalty=1)----------
+=================================================================================
+TRA measure: 0.998555
