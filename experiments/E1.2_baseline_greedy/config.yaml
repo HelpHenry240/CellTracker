@@ -1,0 +1,34 @@
+experiment_id: E1.2_baseline_greedy
+date: '2026-09-15'
+purpose: 经典基线 greedy
+params:
+  dataset: Fluo-N3DH-CHO
+  seq: '01'
+  method: greedy
+  max_dist: 30.0
+  use_velocity: false
+  velocity_weight: 1.0
+  size_weight: 0.0
+  size_sigma: 1.0
+  detect_division: true
+  division_max_dist: 45.0
+  official_eval: true
+  limit_frames: null
+argv:
+- scripts/run_baseline.py
+- --h5
+- data/interim/Fluo-N3DH-CHO_01.h5
+- --dataset
+- Fluo-N3DH-CHO
+- --seq
+- '01'
+- --exp-id
+- E1.2_baseline_greedy
+- --method
+- greedy
+- --max-dist
+- '30'
+- --official
+seed: 20260915
+status: done
+summary: FN=0 FP=0 IDsw=0 frag=0

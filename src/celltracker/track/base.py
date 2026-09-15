@@ -1,0 +1,227 @@
+"""追踪基础数据结构与经典连接器（基线）。"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+import numpy as np
+
+from ..data.ctc import Track
+
+
+@dataclass
+class Detections:
+    """逐帧检测集合。
+
+    `frames[t]` 是字典，至少包含 `centroid (n,d)` 与 `label (n,)`（检测来源的标签，
+    用于回填结果掩码）；可选 `volume`、`intensity_mean`。
+    """
+
+    frames: dict[int, dict[str, np.ndarray]] = field(default_factory=dict)
+
+    @property
+    def t_range(self) -> list[int]:
+        return sorted(self.frames)
+
+    def n(self, t: int) -> int:
+        return int(self.frames[t]["centroid"].shape[0])
+
+    def centroid(self, t: int) -> np.ndarray:
+        return np.asarray(self.frames[t]["centroid"], dtype=float)
+
+    def label(self, t: int) -> np.ndarray:
+        return np.asarray(self.frames[t]["label"], dtype=np.int64)
+
+    def volume(self, t: int) -> np.ndarray:
+        v = self.frames[t].get("volume")
+        return np.asarray(v, dtype=float) if v is not None else np.ones(self.n(t))
+
+    @classmethod
+    def from_h5(cls, h5_path, frames: list[int] | None = None) -> "Detections":
+        """从内部 HDF5 读取检测（TRA 金标准即"完美分割"上界设定）。"""
+        import h5py
+
+        out: dict[int, dict[str, np.ndarray]] = {}
+        with h5py.File(h5_path, "r") as f:
+            keys = sorted(f["frames"].keys())
+            for key in keys:
+                t = int(key)
+                if frames is not None and t not in frames:
+                    continue
+                g = f["frames"][key]
+                out[t] = {
+                    "label": np.asarray(g["label"], dtype=np.int64),
+                    "centroid": np.asarray(g["centroid"], dtype=float),
+                    "volume": np.asarray(g["volume"], dtype=float),
+                    "intensity_mean": np.asarray(g["intensity_mean"], dtype=float),
+                }
+        return cls(out)
+
+
+@dataclass
+class LinkerConfig:
+    """连接器超参。"""
+
+    method: str = "hungarian"          # "greedy" 或 "hungarian"
+    max_dist: float = 30.0             # 候选门限 R_max（体素）
+    use_velocity: bool = False         # 是否用匀速运动先验预测位置
+    velocity_weight: float = 1.0       # 预测项权重 α'
+    size_weight: float = 0.0           # 尺寸代价权重 β（0 表示关闭）
+    size_sigma: float = 1.0            # 尺寸归一化 σ_s
+    detect_division: bool = True       # 是否识别二分裂
+    division_max_dist: float = 45.0    # 分裂时子细胞离父细胞的允许距离
+
+
+@dataclass
+class TrackResult:
+    """追踪结果：逐帧的"检测 → 输出轨迹 id"赋值 + 轨迹表。"""
+
+    assignment: dict[int, np.ndarray] = field(default_factory=dict)  # t -> out id (n,)
+    tracks: dict[int, Track] = field(default_factory=dict)
+    meta: dict = field(default_factory=dict)
+
+    def n_tracks(self) -> int:
+        return len(self.tracks)
+
+
+def _pair_cost(cfg: LinkerConfig, c_src: np.ndarray, c_dst: np.ndarray,
+               v_src: np.ndarray | None, s_src: np.ndarray, s_dst: np.ndarray
+               ) -> np.ndarray:
+    """代价矩阵：位移(+运动先验) + 尺寸差；门限外用 inf 屏蔽。"""
+    d_cur = np.linalg.norm(c_src[:, None, :] - c_dst[None, :, :], axis=-1)
+    cost = d_cur
+    if cfg.use_velocity and v_src is not None:
+        pred = c_src + v_src
+        d_pred = np.linalg.norm(pred[:, None, :] - c_dst[None, :, :], axis=-1)
+        cost = cost + cfg.velocity_weight * d_pred
+    if cfg.size_weight > 0:
+        ds = (s_src[:, None] - s_dst[None, :]) / (cfg.size_sigma * max(float(s_dst.mean()), 1e-6))
+        cost = cost + cfg.size_weight * ds ** 2
+    return np.where(d_cur <= cfg.max_dist, cost, np.inf)
+
+
+def _match_greedy(cost: np.ndarray) -> list[tuple[int, int]]:
+    pairs: list[tuple[int, int]] = []
+    used_r, used_c = set(), set()
+    order = np.argsort(cost, axis=None)
+    n_cols = cost.shape[1]
+    for flat in order:
+        i, j = divmod(int(flat), n_cols)
+        if not np.isfinite(cost[i, j]):
+            break
+        if i in used_r or j in used_c:
+            continue
+        used_r.add(i)
+        used_c.add(j)
+        pairs.append((i, j))
+    return pairs
+
+
+def _match_hungarian(cost: np.ndarray) -> list[tuple[int, int]]:
+    from scipy.optimize import linear_sum_assignment
+
+    big = 1e9
+    finite = np.where(np.isfinite(cost), cost, big)
+    r, c = linear_sum_assignment(finite)
+    return [(int(i), int(j)) for i, j in zip(r, c) if np.isfinite(cost[i, j])]
+
+
+def run_tracking(dets: Detections, cfg: LinkerConfig | None = None) -> TrackResult:
+    """经典连接器：贪心最近邻 / 匈牙利 + 可选匀速先验 + 二分裂判定。"""
+    cfg = cfg or LinkerConfig()
+    ts = dets.t_range
+    res = TrackResult(meta={"config": cfg.__dict__})
+    if not ts:
+        return res
+
+    # 每条轨迹的最近状态：位置、速度、最近一帧
+    last_c: dict[int, np.ndarray] = {}
+    velocity: dict[int, np.ndarray] = {}
+    prev_c: dict[int, np.ndarray] = {}
+    next_id = 1
+    assignment: dict[int, np.ndarray] = {}
+
+    # 第一帧：全部新建
+    first = ts[0]
+    ids = np.arange(next_id, next_id + dets.n(first))
+    next_id += dets.n(first)
+    assignment[first] = ids
+    c0 = dets.centroid(first)
+    for k, tid in enumerate(ids):
+        last_c[int(tid)] = c0[k]
+    active = set(int(x) for x in ids)
+
+    for t_prev, t in zip(ts[:-1], ts[1:]):
+        src_ids = assignment[t_prev]
+        c_src, c_dst = dets.centroid(t_prev), dets.centroid(t)
+        s_src, s_dst = dets.volume(t_prev), dets.volume(t)
+        v_src = np.array([velocity.get(int(i), np.zeros_like(c_dst[0])) for i in src_ids])
+        cost = _pair_cost(cfg, c_src, c_dst, v_src if cfg.use_velocity else None,
+                          s_src, s_dst)
+        pairs = _match_greedy(cost) if cfg.method == "greedy" else _match_hungarian(cost)
+
+        out_ids = np.zeros(dets.n(t), dtype=np.int64)
+        matched_src, matched_dst = set(), set()
+        for i, j in pairs:
+            tid = int(src_ids[i])
+            out_ids[j] = tid
+            matched_src.add(i)
+            matched_dst.add(j)
+            new_c = c_dst[j]
+            if tid in last_c:
+                velocity[tid] = new_c - last_c[tid]
+            last_c[tid] = new_c
+
+        # 未匹配的源检测：轨迹终止（可能因分裂而终结）
+        unmatched_src = [i for i in range(dets.n(t_prev)) if i not in matched_src]
+        unmatched_dst = [j for j in range(dets.n(t)) if j not in matched_dst]
+
+        # 分裂：一个消失的父 + 两个邻近的新生
+        if cfg.detect_division and unmatched_src and len(unmatched_dst) >= 2:
+            for i in unmatched_src:
+                parent = int(src_ids[i])
+                p = c_src[i]
+                d = np.linalg.norm(c_dst[unmatched_dst] - p[None, :], axis=1)
+                near = [unmatched_dst[k] for k in np.argsort(d) if d[k] <= cfg.division_max_dist]
+                if len(near) >= 2:
+                    j1, j2 = near[0], near[1]
+                    for j in (j1, j2):
+                        out_ids[j] = next_id + 1 if j == j2 else next_id
+                        last_c[next_id] = c_dst[j]
+                        velocity[next_id] = c_dst[j] - p
+                        res.tracks[next_id] = Track(next_id, t, t, parent)
+                        next_id += 1
+                    unmatched_dst = [j for j in unmatched_dst if j not in (j1, j2)]
+
+        # 其余未匹配目标：新建轨迹（出生）
+        for j in unmatched_dst:
+            out_ids[j] = next_id
+            last_c[next_id] = c_dst[j]
+            res.tracks[next_id] = Track(next_id, t, t, 0)
+            next_id += 1
+
+        assignment[t] = out_ids
+
+    # 汇总 track 的起止帧；闭合仍在活跃的轨迹
+    for t in ts:
+        for tid in np.unique(assignment[t]):
+            tid = int(tid)
+            tr = res.tracks.get(tid)
+            if tr is None:
+                res.tracks[tid] = Track(tid, t, t, 0)
+            else:
+                res.tracks[tid] = Track(tid, min(tr.begin, t), max(tr.end, t), tr.parent)
+    res.assignment = assignment
+    return res
+
+
+def paint_result(labels_volume: np.ndarray, det_labels: np.ndarray,
+                 out_ids: np.ndarray) -> np.ndarray:
+    """把"检测标签 → 输出轨迹 id"的赋值画回体数据。"""
+    if det_labels.size == 0:
+        return np.zeros_like(labels_volume)
+    max_label = int(max(det_labels.max(), int(labels_volume.max())))
+    lut = np.zeros(max_label + 1, dtype=np.int64)
+    lut[det_labels.astype(np.int64)] = out_ids.astype(np.int64)
+    vol = np.asarray(labels_volume, dtype=np.int64)
+    return lut[vol]

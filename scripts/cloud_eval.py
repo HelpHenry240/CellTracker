@@ -74,9 +74,19 @@ def ssh(argv: list[str], password: str, timeout: int = 1800,
 
 
 def scp(local: str, remote: str, password: str, timeout: int = 3600) -> tuple[int, str]:
+    """上传：本地 -> 云端。"""
     host, port, user, _ = parse_cred()
     cmd = ["scp", "-r", "-P", port, "-o", "StrictHostKeyChecking=accept-new",
            str(local), f"{user}@{host}:{remote}"]
+    return pexpect_cmd(cmd, password, timeout)
+
+
+def scp_download(remote: str, local: str, password: str, timeout: int = 300) -> tuple[int, str]:
+    """下载：云端 -> 本地。"""
+    host, port, user, _ = parse_cred()
+    Path(local).parent.mkdir(parents=True, exist_ok=True)
+    cmd = ["scp", "-P", port, "-o", "StrictHostKeyChecking=accept-new",
+           f"{user}@{host}:{remote}", str(local)]
     return pexpect_cmd(cmd, password, timeout)
 
 
@@ -163,8 +173,8 @@ ls {remote_dataset}/{args.seq}_RES/*.txt 2>/dev/null || true
     log_dir = out_path.parent / "official_logs"
     log_dir.mkdir(parents=True, exist_ok=True)
     for name in ("SEG_log.txt", "DET_log.txt", "TRA_log.txt"):
-        rc_dl, _ = scp(f"{remote_dataset}/{args.seq}_RES/{name}",
-                       str(log_dir / f"{name}"), password, timeout=300)
+        rc_dl, _ = scp_download(f"{remote_dataset}/{args.seq}_RES/{name}",
+                                str(log_dir / f"{name}"), password)
         if rc_dl == 0:
             print(f"      日志 -> {log_dir / name}")
 
