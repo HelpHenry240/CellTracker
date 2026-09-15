@@ -1,0 +1,47 @@
+{
+  "rows": [
+    {
+      "eta": "0",
+      "eps": "1",
+      "pred_tracks": 27,
+      "FN": 0,
+      "FP": 0,
+      "id_switches": 0,
+      "fragmentation": 0,
+      "det_recall": 1.0
+    },
+    {
+      "eta": "0",
+      "eps": "5",
+      "pred_tracks": 27,
+      "FN": 0,
+      "FP": 0,
+      "id_switches": 0,
+      "fragmentation": 0,
+      "det_recall": 1.0
+    },
+    {
+      "eta": "0.3",
+      "eps": "1",
+      "pred_tracks": 27,
+      "FN": 0,
+      "FP": 0,
+      "id_switches": 0,
+      "fragmentation": 0,
+      "det_recall": 1.0
+    },
+    {
+      "eta": "0.3",
+      "eps": "5",
+      "pred_tracks": 27,
+      "FN": 0,
+      "FP": 0,
+      "id_switches": 0,
+      "fragmentation": 0,
+      "det_recall": 1.0
+    }
+  ],
+  "x": "eta",
+  "y": "eps",
+  "official": false
+}
