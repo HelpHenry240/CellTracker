@@ -1,0 +1,13 @@
+# E0.1 仓库初始化与实验管理脚手架
+experiment_id: E0.1
+phase: P0
+date: 2026-09-15
+purpose: 建立可复现、可留痕的工程骨架
+dataset: null          # 尚未引入数据
+seed: 20260915
+params: {}
+expected_outputs:
+  - 目录骨架
+  - .gitignore / README / requirements / environment.yml
+  - experiments/INDEX.md
+status: done

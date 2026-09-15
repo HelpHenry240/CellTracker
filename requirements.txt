@@ -1,0 +1,19 @@
+# 核心
+numpy>=1.26
+scipy>=1.11
+pandas>=2.1
+h5py>=3.10
+tifffile>=2024.1
+scikit-image>=0.22
+pyyaml>=6.0
+tqdm>=4.66
+matplotlib>=3.8
+
+# 最优传输：POT 作为参考实现与 LP 校验（自研求解器见 src/celltracker/ot）
+POT>=0.9.1
+
+# 数值与验证
+pytest>=8.0
+
+# 深度学习（本地仅 CPU 用于小规模调试；训练在云 GPU）
+torch>=2.2
