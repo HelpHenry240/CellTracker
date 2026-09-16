@@ -19,7 +19,7 @@ from ..cost.features import CostConfig, build_cost, gaussian_knn_graph, masses
 from ..data.ctc import Track
 from ..ot.fgw import fused_gw
 from ..ot.sinkhorn import sinkhorn_log
-from .base import Detections, TrackResult
+from .base import Detections, TrackResult, finalize_tracks
 
 __all__ = ["OTTrackConfig", "run_tracking_ot"]
 
@@ -160,13 +160,8 @@ def run_tracking_ot(dets: Detections, cfg: OTTrackConfig | None = None) -> Track
 
         assignment[t] = out_ids
 
-    for t in ts:
-        for tid in np.unique(assignment[t]):
-            tid = int(tid)
-            tr = res.tracks.get(tid)
-            if tr is None:
-                res.tracks[tid] = Track(tid, t, t, 0)
-            else:
-                res.tracks[tid] = Track(tid, min(tr.begin, t), max(tr.end, t), tr.parent)
+    assignment, tracks, info = finalize_tracks(assignment, res.tracks)
     res.assignment = assignment
+    res.tracks = tracks
+    res.meta.update(info)
     return res

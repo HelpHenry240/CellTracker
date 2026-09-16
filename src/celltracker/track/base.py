@@ -203,16 +203,10 @@ def run_tracking(dets: Detections, cfg: LinkerConfig | None = None) -> TrackResu
 
         assignment[t] = out_ids
 
-    # 汇总 track 的起止帧；闭合仍在活跃的轨迹
-    for t in ts:
-        for tid in np.unique(assignment[t]):
-            tid = int(tid)
-            tr = res.tracks.get(tid)
-            if tr is None:
-                res.tracks[tid] = Track(tid, t, t, 0)
-            else:
-                res.tracks[tid] = Track(tid, min(tr.begin, t), max(tr.end, t), tr.parent)
+    assignment, tracks, info = finalize_tracks(assignment, res.tracks)
     res.assignment = assignment
+    res.tracks = tracks
+    res.meta.update(info)
     return res
 
 
@@ -229,3 +223,81 @@ def paint_result(labels_volume: np.ndarray, det_labels: np.ndarray,
     lut[det_labels.astype(np.int64)] = out_ids.astype(np.int64)
     vol = np.asarray(labels_volume)
     return lut[vol].astype(dtype, copy=False)
+
+
+def finalize_tracks(assignment: dict[int, np.ndarray],
+                    tracks: dict[int, Track],
+                    ) -> tuple[dict[int, np.ndarray], dict[int, Track], dict]:
+    """把重建结果规范化为合法 CTC 提交（关键防御，官方评测要求）。
+
+    规则：
+      1. **丢弃幽灵轨迹**：出现在 `tracks` 但从未在任何帧被赋值的 id
+         （官方 TRAMeasure 会直接报 "track not consistent with the image data"）；
+      2. **起止帧以实际赋值为准**：`begin/end` 由该 id 真实出现的帧决定；
+      3. **打断不连续**：若某 id 的出现帧不连续（中间缺帧），拆成多条连续轨迹，
+         后段使用新的 id（保留跨度信息，避免整条被判非法）。
+    """
+    frames_of: dict[int, list[int]] = {}
+    for t in sorted(assignment):
+        for tid in np.unique(assignment[t]):
+            frames_of.setdefault(int(tid), []).append(t)
+
+    new_assignment = {t: arr.copy() for t, arr in assignment.items()}
+    new_tracks: dict[int, Track] = {}
+    next_id = max([*tracks.keys(), *frames_of.keys(), 0]) + 1
+    dropped = split = 0
+
+    for tid, tr in tracks.items():
+        if tid not in frames_of:
+            dropped += 1
+            continue
+        fr = sorted(frames_of[tid])
+        segments: list[list[int]] = [[fr[0]]]
+        for f in fr[1:]:
+            if f == segments[-1][-1] + 1:
+                segments[-1].append(f)
+            else:
+                segments.append([f])
+        if len(segments) > 1:
+            split += len(segments) - 1
+        for k, seg in enumerate(segments):
+            use_id = tid if k == 0 else next_id
+            if k > 0:
+                next_id += 1
+                for t in seg:
+                    arr = new_assignment[t]
+                    arr[arr == tid] = use_id
+            new_tracks[use_id] = Track(use_id, seg[0], seg[-1],
+                                       tr.parent if k == 0 else 0)
+
+    # 只在赋值里出现、却不在 tracks 里的 id（例如新出现的轨迹）
+    for tid, fr in frames_of.items():
+        if tid in new_tracks:
+            continue
+        fr = sorted(fr)
+        new_tracks[tid] = Track(tid, fr[0], fr[-1], 0)
+
+    # ---- 规范化父子关系（官方 TRAMeasure 硬性要求）----
+    #  (a) 子轨迹起点必须等于父轨迹终点 + 1（分裂必须紧邻）
+    #  (b) 一个父轨迹最多 2 个子节点
+    by_parent: dict[int, list[int]] = {}
+    for tid, tr in new_tracks.items():
+        if tr.parent:
+            by_parent.setdefault(tr.parent, []).append(tid)
+    fixed_parent = dropped_parent = 0
+    for parent, kids in by_parent.items():
+        ptr = new_tracks.get(parent)
+        kids_sorted = sorted(kids, key=lambda c: (new_tracks[c].begin, c))
+        keep = set(kids_sorted[:2])
+        if len(kids_sorted) > 2:
+            dropped_parent += len(kids_sorted) - 2
+        for c in kids_sorted:
+            ctr = new_tracks[c]
+            ok = (ptr is not None and c in keep and ctr.begin == ptr.end + 1)
+            if not ok:
+                new_tracks[c] = Track(c, ctr.begin, ctr.end, 0)
+                fixed_parent += 1
+
+    info = {"ghost_dropped": dropped, "segments_split": split,
+            "parent_fixed": fixed_parent, "extra_children_removed": dropped_parent}
+    return new_assignment, new_tracks, info

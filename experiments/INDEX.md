@@ -18,3 +18,5 @@
 | E2.5 | 2026-09-16 | P2 | CE θ_Γ×div_ratio 扫描 | 见目录 | 本地指标（TRA 由 E2.5c 裁决） | — | θ_Γ 几乎无影响；div_ratio 是主杠杆 | `experiments/E2.5_CE01_theta_div_sweep/` |
 | E2.5b/c | 2026-09-16 | P2 | CE 分裂判据精调（div_sum_min, ε） | 见目录 | DET 1.000000 / TRA 0.994617 | `CE01_comparison` | 碎片↔IDsw 权衡，超参收益有限 | `experiments/E2.5c_CE01_ot_eps0.3/` |
 | E2.6 | 2026-09-16 | P2/P3 | **分裂事件 P/R 诊断**（定位 ED 多余边来源） | 见目录 | 匈牙利 P=1.000/R=0.112；OT P=0.446/R=0.475 | — | 手工判据精确率封顶 0.48 → 必须学习（P4） | `experiments/E2.6_CE01_division_diag/` |
+| E4.1 | 2026-09-16 | P4 | 动态图 GNN 边分类训练（3 分类） | 见目录 | move F1 **0.9931** / division F1 **0.6215** | `training_history` | 图模型可学到"何时该分" | `experiments/E4.1_gnn_ce01/` |
+| E4.2d | 2026-09-16 | P4 | **GNN 追踪官方评测（首次超过基线）** | 见目录 | **DET 1.000000 / TRA 0.996089**（IDsw 111，div P/R 0.854/0.802） | `training_history`, `diagnostics` | AOGM 1070.5 vs 基线 1206（-11%），ED -79%、EC -74%，**验证 §2.0.1** | `experiments/E4.2d_gnn_ce01_official/` |

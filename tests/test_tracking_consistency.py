@@ -89,6 +89,85 @@ def test_no_duplicate_ids_across_frames_within_track():
         assert fr == set(range(min(fr), max(fr) + 1)), f"id {tid} 出现帧不连续: {fr}"
 
 
+def test_finalize_tracks_drops_ghost_and_splits_gap():
+    """结果校验器：幽灵轨迹必须被丢弃，出现帧不连续的 id 必须被拆开。"""
+    from celltracker.data.ctc import Track
+    from celltracker.track.base import finalize_tracks
+
+    assignment = {
+        0: np.array([1, 2]),
+        1: np.array([1, 2]),
+        2: np.array([1, 3]),   # id=2 在帧 2 消失
+        3: np.array([2, 3]),   # id=2 又出现 -> 不连续，必须拆
+    }
+    tracks = {1: Track(1, 0, 3, 0), 2: Track(2, 0, 3, 0),
+              99: Track(99, 1, 1, 0)}   # 99 是幽灵轨迹
+    new_asg, new_tracks, info = finalize_tracks(assignment, tracks)
+
+    assert 99 not in new_tracks
+    assert info["ghost_dropped"] == 1
+    assert info["segments_split"] == 1
+
+    present: dict[int, set[int]] = {}
+    for t, arr in new_asg.items():
+        for tid in np.unique(arr):
+            present.setdefault(int(tid), set()).add(t)
+    for tid, tr in new_tracks.items():
+        missing = [t for t in range(tr.begin, tr.end + 1) if t not in present.get(tid, set())]
+        assert not missing, f"轨迹 {tid} 在 {missing} 缺失"
+
+
+def test_finalize_tracks_normalizes_parent_links():
+    """父子关系规范化：子起点必须=父终点+1，父最多 2 个子。"""
+    from celltracker.data.ctc import Track
+    from celltracker.track.base import finalize_tracks
+
+    assignment = {
+        0: np.array([1, 2]),
+        1: np.array([1, 2]),
+        2: np.array([1, 2]),      # 父 1 到帧 2 结束
+        3: np.array([2, 2]),      # 帧 3 没有任何"子"（制造时间空洞）
+        4: np.array([3, 4]),      # 两个"子"却声明 parent=1（起点 4 ≠ 父终点+1 = 3）
+        5: np.array([3, 4]),
+    }
+    tracks = {1: Track(1, 0, 2, 0), 2: Track(2, 0, 5, 0),
+              3: Track(3, 4, 5, 1), 4: Track(4, 4, 5, 1)}
+    _, new_tracks, info = finalize_tracks(assignment, tracks)
+    assert info["parent_fixed"] >= 1
+    for tid, tr in new_tracks.items():
+        if tr.parent:
+            p = new_tracks[tr.parent]
+            assert tr.begin == p.end + 1, f"子 {tid} 起点 {tr.begin} ≠ 父 {tr.parent} 终点+1 {p.end}"
+
+
+def test_submission_is_ctc_valid():
+    """端到端：追踪结果必须通过 CTC 提交的全部格式约束。"""
+    import numpy as np
+
+    from celltracker.data.ctc import Track
+    from celltracker.track.base import finalize_tracks
+
+    rng = np.random.default_rng(0)
+    assignment = {t: rng.integers(1, 5, size=3) for t in range(6)}
+    tracks = {i: Track(i, 0, 5, 0) for i in range(1, 5)}
+    asg, trs, info = finalize_tracks(assignment, tracks)
+
+    present: dict[int, set[int]] = {}
+    for t, arr in asg.items():
+        for tid in np.unique(arr):
+            present.setdefault(int(tid), set()).add(t)
+    kids: dict[int, list[int]] = {}
+    for tid, tr in trs.items():
+        for t in range(tr.begin, tr.end + 1):
+            assert t in present.get(tid, set()), f"轨迹 {tid} 在帧 {t} 缺失"
+        if tr.parent:
+            kids.setdefault(tr.parent, []).append(tid)
+    for parent, ks in kids.items():
+        assert len(ks) <= 2, f"父 {parent} 有 {len(ks)} 个子"
+        for c in ks:
+            assert trs[c].begin == trs[parent].end + 1
+
+
 def test_division_pr_metric_selfcheck():
     """分裂 P/R 诊断的正确性：完美预测应为 (1,1)，漏判/误判应被正确计数。"""
     import numpy as np
