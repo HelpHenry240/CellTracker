@@ -34,8 +34,9 @@ fi
 
 if [[ "$STAGE" == "all" || "$STAGE" == "preprocess" ]]; then
   if [[ ! -d "$nnUNet_preprocessed/$DS_NAME" ]]; then
-    echo "plan & preprocess ..."
-    "$VENV/bin/nnUNetv2_plan_and_preprocess" -d "$DATASET" --verify_dataset_integrity
+    echo "plan & preprocess (仅 3d_fullres) ..."
+    "$VENV/bin/nnUNetv2_plan_and_preprocess" -d "$DATASET" -c 3d_fullres \
+        -np "${NP:-24}" --verify_dataset_integrity
   fi
 fi
 

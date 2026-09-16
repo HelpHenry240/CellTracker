@@ -1,0 +1,24 @@
+experiment_id: E5.1
+phase: P5
+date: 2026-09-16
+purpose: nnU-Net 3D 分割前端训练（CTC Fluo-N3DH-CE）
+dataset: Fluo-N3DH-CE
+trainer: nnUNetTrainer (默认 1000 epochs, 5-fold, fold 0)
+config: 3d_fullres
+seed: 20260916
+params:
+  patch_size: [16, 256, 384]
+  batch_size: 2
+  spacing_xyz_um: [1.0, 0.09, 0.09]     # nnU-Net 保留原始各向异性间距
+  normalization: ZScoreNormalization
+  cases: 385                              # seq01 195 帧 + seq02 190 帧
+  split: "308 train / 77 val (5-fold, fold 0)"
+  labels: "银标准 _ST/SEG 二值化（细胞=1）"
+  epochs_planned: 1000
+  epoch_time_s: 26.7
+cloud:
+  host: connect.westc.seetacloud.com:10505
+  gpu: RTX 4090 24GB
+  log: /root/autodl-tmp/nnunet/train.log
+  results: /root/autodl-tmp/nnunet/nnUNet_results/Dataset501_CellTrackerCE/nnUNetTrainer__nnUNetPlans__3d_fullres/fold_0
+status: running
