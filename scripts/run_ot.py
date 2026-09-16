@@ -24,6 +24,7 @@ from celltracker.eval.local_metrics import seg_measure  # noqa: E402
 from celltracker.experiment import Experiment  # noqa: E402
 from celltracker.track import Detections, paint_result  # noqa: E402
 from celltracker.track.ot_tracker import OTTrackConfig, run_tracking_ot  # noqa: E402
+from celltracker.track.tracklets import TrackletMergeConfig, merge_tracklets  # noqa: E402
 
 import h5py  # noqa: E402
 import numpy as np  # noqa: E402
@@ -50,6 +51,10 @@ def main() -> None:
     ap.add_argument("--mass-mode", default="uniform", choices=["uniform", "volume"])
     ap.add_argument("--limit-frames", type=int, default=None)
     ap.add_argument("--official", action="store_true")
+    ap.add_argument("--merge-tracklets", action="store_true",
+                    help="启用二层 tracklet 合并（P3.4）")
+    ap.add_argument("--merge-max-gap", type=int, default=3)
+    ap.add_argument("--merge-rmax", type=float, default=30.0)
     ap.add_argument("--cloud-gt-root", default=None)
     args = ap.parse_args()
 
@@ -78,6 +83,12 @@ def main() -> None:
 
     result = run_tracking_ot(dets, cfg)
     exp.log(f"predicted tracks={result.n_tracks()}")
+    if args.merge_tracklets:
+        result = merge_tracklets(dets, result,
+                                 TrackletMergeConfig(max_gap=args.merge_max_gap,
+                                                     r_max=args.merge_rmax))
+        exp.log(f"二层合并后 tracks={result.n_tracks()} "
+                f"(merged_pairs={result.meta.get('merged_pairs')})")
 
     res_dir = exp.artifact_dir("submission") / f"{args.seq}_RES"
     mip_frame = ts[len(ts) // 2]
