@@ -20,3 +20,5 @@
 | E2.6 | 2026-09-16 | P2/P3 | **分裂事件 P/R 诊断**（定位 ED 多余边来源） | 见目录 | 匈牙利 P=1.000/R=0.112；OT P=0.446/R=0.475 | — | 手工判据精确率封顶 0.48 → 必须学习（P4） | `experiments/E2.6_CE01_division_diag/` |
 | E4.1 | 2026-09-16 | P4 | 动态图 GNN 边分类训练（3 分类） | 见目录 | move F1 **0.9931** / division F1 **0.6215** | `training_history` | 图模型可学到"何时该分" | `experiments/E4.1_gnn_ce01/` |
 | E4.2d | 2026-09-16 | P4 | **GNN 追踪官方评测（首次超过基线）** | 见目录 | **DET 1.000000 / TRA 0.996089**（IDsw 111，div P/R 0.854/0.802） | `training_history`, `diagnostics` | AOGM 1070.5 vs 基线 1206（-11%），ED -79%、EC -74%，**验证 §2.0.1** | `experiments/E4.2d_gnn_ce01_official/` |
+| E4.3 | 2026-09-16 | P4 | GNN 决策阈值扫描（tau_move×tau_div） | 见目录 | tm0.5/td0.5 最优 TRA 0.996089 | — | 提高分裂阈值反而伤 TRA：瓶颈是召回不是精确率；本地指标与 TRA 不单调 | `experiments/E4.3_gnn_threshold_sweep/` |
+| E4.4 | 2026-09-16 | P4 | 多步时间上下文消融（window=1） | 见目录 | TRA 0.996023（略低于 0.996089） | — | **负结果**：原始帧级上下文无收益，多步应落在 tracklet 层 | `experiments/E4.4b_gnn_ctx1_official/` |

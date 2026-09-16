@@ -33,6 +33,7 @@ class GraphConfig:
     r_max: float = 30.0            # 候选位移门限（体素）
     knn: int = 4                   # 帧内 kNN 度数
     use_ot: bool = True            # 是否用 OT 计划作为边特征
+    window: int = 0                # 时间上下文窗口：额外纳入前后各 window 帧
     eps: float = 1.0
     eta: float = 0.0               # >0 时用 FGW（结构项进入 OT 特征）
     beta: float = 0.0
@@ -92,10 +93,22 @@ def build_pair_graph(dets: Detections, t: int, t_next: int,
                      gt_parent: dict[int, int] | None = None,
                      shape: np.ndarray | None = None,
                      t_total: int | None = None) -> dict:
-    """构造单对相邻帧的图（含 3 分类边标签）。"""
+    """构造单对相邻帧的图（含 3 分类边标签）。
+
+    `cfg.window > 0` 时额外纳入前后各 window 帧作为**上下文**（其跨帧边不参与
+    损失，只提供多步时间信息）——这正是 ideas.pdf §2.0.1 强调的"多步时间上下文"。
+    """
     cfg = cfg or GraphConfig()
+    all_ts = dets.t_range
+    pos = all_ts.index(t)
     shape = np.asarray(shape if shape is not None else np.ones(3) * 1000.0, dtype=float)
     t_total = int(t_total or (t_next + 1))
+
+    # 参与构图的时间帧（按时间排序）：[t-k ... t, t+1, ... t+1+k]
+    win = max(cfg.window, 0)
+    lo = max(0, pos - win)
+    hi = min(len(all_ts) - 1, pos + 1 + win)
+    win_frames = all_ts[lo: hi + 1]
 
     src_xy, dst_xy = dets.centroid(t), dets.centroid(t_next)
     src_vol, dst_vol = dets.volume(t), dets.volume(t_next)
@@ -145,29 +158,80 @@ def build_pair_graph(dets: Detections, t: int, t_next: int,
             elif gt_parent.get(gl_d, 0) == gl_s:
                 labels[k] = LABEL_DIV
 
-    # ---- 节点与帧内边 ----
-    node_feat = np.concatenate([
-        _node_features(src_xy, src_vol, imean_s, istd_s, t, shape, t_total),
-        _node_features(dst_xy, dst_vol, imean_d, istd_d, t_next, shape, t_total),
-    ], axis=0)
-    node_frame = np.concatenate([np.full(n_src, t), np.full(n_dst, t_next)])
-    node_det = np.concatenate([np.arange(n_src), np.arange(n_dst)])
-
+    # ---- 节点（时间窗内全部帧）与帧内边 ----
+    node_feats, node_frames, node_dets = [], [], []
     intra_src, intra_dst = [], []
-    for offset, xy in ((0, src_xy), (n_src, dst_xy)):
+    offset_of_frame: dict[int, int] = {}
+    offset = 0
+    for f in win_frames:
+        xy = dets.centroid(f)
+        vol = dets.volume(f)
+        nf = _node_features(xy, vol, dets.frames[f].get("intensity_mean"),
+                            dets.frames[f].get("intensity_std"), f, shape, t_total)
+        node_feats.append(nf)
+        node_frames.append(np.full(xy.shape[0], f))
+        node_dets.append(np.arange(xy.shape[0]))
+        offset_of_frame[f] = offset
         D, _ = gaussian_knn_graph(xy, k=min(cfg.knn, max(xy.shape[0] - 1, 1)))
         si, di = np.where(D > 0)
         intra_src.append(si + offset)
         intra_dst.append(di + offset)
+        offset += xy.shape[0]
+    node_feat = np.concatenate(node_feats, axis=0)
+    node_frame = np.concatenate(node_frames)
+    node_det = np.concatenate(node_dets)
     intra = np.stack([np.concatenate(intra_src), np.concatenate(intra_dst)], axis=1) \
         if intra_src and intra_src[0].size else np.zeros((0, 2), dtype=np.int64)
+
+    # ---- 上下文帧之间的跨帧边（不参与损失，只提供多步信息）----
+    ctx_edges: list[np.ndarray] = []
+    ctx_feats: list[np.ndarray] = []
+    for f, f_next in zip(win_frames[:-1], win_frames[1:]):
+        if (f, f_next) == (t, t_next):
+            continue
+        xy_a, xy_b = dets.centroid(f), dets.centroid(f_next)
+        if xy_a.shape[0] == 0 or xy_b.shape[0] == 0:
+            continue
+        Cc, _ = build_cost(xy_a, xy_b, None, None, None, cost_cfg)
+        ia, ib = np.where(np.isfinite(Cc))
+        if ia.size == 0:
+            continue
+        pc = np.stack([ia, ib], axis=1)
+        ef = _edge_feature_matrix(xy_a, xy_b, pc, dets.volume(f), dets.volume(f_next),
+                                  Cc, None, None)
+        ctx_edges.append(pc + np.array([offset_of_frame[f], offset_of_frame[f_next]]))
+        ctx_feats.append(ef)
+
+    # 目标边（当前对）在统一节点索引下的编号
+    target_edges = pairs + np.array([offset_of_frame[t], offset_of_frame[t_next]])
+    edge_index = np.concatenate([intra, *ctx_edges, target_edges], axis=0)
+    cand_feat_p = np.concatenate(
+        [edge_feat, np.zeros((edge_feat.shape[0], 1), dtype=np.float32)], axis=1)
+    intra_feat = np.zeros((intra.shape[0], cand_feat_p.shape[1]), dtype=np.float32)
+    if ctx_feats:
+        # 上下文边：末位标志 = 2（区分帧内 1 / 目标 0）
+        ctx_feat_m = np.concatenate(
+            [np.concatenate(ctx_feats, axis=0),
+             np.full((sum(f.shape[0] for f in ctx_feats), 1), 2.0, dtype=np.float32)],
+            axis=1)
+    else:
+        ctx_feat_m = np.zeros((0, cand_feat_p.shape[1]), dtype=np.float32)
+    if intra.shape[0]:
+        intra_feat[:, -1] = 1.0
+    edge_feat_all = np.concatenate([intra_feat, ctx_feat_m, cand_feat_p], axis=0)
+    is_target = np.concatenate([
+        np.zeros(intra.shape[0] + ctx_feat_m.shape[0], dtype=bool),
+        np.ones(cand_feat_p.shape[0], dtype=bool)])
 
     return {
         "node_feat": node_feat,
         "node_frame": node_frame.astype(np.int64),
         "node_det": node_det.astype(np.int64),
-        "cand_edges": pairs.astype(np.int64),        # (E,2) 指向节点下标（目标 +n_src）
-        "cand_feat": edge_feat,
+        "edge_index": edge_index.T.astype(np.int64),   # (2, E)
+        "edge_feat": edge_feat_all.astype(np.float32),
+        "is_target": is_target,
+        "cand_edges": pairs.astype(np.int64),          # (E_t, 2) 目标对内的局部下标
+        "cand_feat": cand_feat_p,
         "cand_label": labels,
         "intra_edges": intra.astype(np.int64),
         "t": np.int64(t),
