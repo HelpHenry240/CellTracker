@@ -1,0 +1,52 @@
+experiment_id: E2.6c_CE01_divstrict0.4_1.0
+date: '2026-09-16'
+purpose: OT 追踪 eps=1.0 eta=0.0 tau=None
+params:
+  dataset: Fluo-N3DH-CE
+  seq: '01'
+  eta: 0.0
+  eps: 1.0
+  tau_a: null
+  tau_b: null
+  knn_k: 6
+  theta_gamma: 0.05
+  theta_c: null
+  n_outer: 40
+  use_velocity: false
+  velocity_weight: 1.0
+  div_ratio: 0.4
+  div_max_targets: 2
+  div_sum_min: 1.0
+  mass_mode: uniform
+  cost:
+    alpha: 1.0
+    alpha_pred: 0.0
+    beta: 0.0
+    sigma_s: 1.0
+    r_max: 30.0
+    mass_mode: uniform
+argv:
+- scripts/run_ot.py
+- --h5
+- data/interim/Fluo-N3DH-CE_01.h5
+- --dataset
+- Fluo-N3DH-CE
+- --seq
+- '01'
+- --exp-id
+- E2.6c_CE01_divstrict0.4_1.0
+- --eps
+- '1.0'
+- --eta
+- '0.0'
+- --r-max
+- '30'
+- --theta-gamma
+- '0.05'
+- --div-ratio
+- '0.4'
+- --div-sum-min
+- '1.0'
+seed: 20260915
+status: done
+summary: FN=0 FP=0 IDsw=437

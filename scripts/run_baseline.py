@@ -37,7 +37,9 @@ def paint_and_write_stream(h5_path: Path, frames: list[int], dets: Detections,
                            write_masks: bool = True):
     """流式：逐帧画结果掩码 → 写盘 → 累积诊断；返回 (诊断, MIP 背景图)。"""
     writer = ResultWriter(res_dir) if write_masks else None
-    diag = StreamingDiagnostics()
+    with h5py.File(h5_path, "r") as f:
+        gt_tracks = np.asarray(f["tracks"]) if "tracks" in f else None
+    diag = StreamingDiagnostics(gt_tracks=gt_tracks)
     mip = None
     with h5py.File(h5_path, "r") as f:
         for t in frames:
@@ -51,7 +53,9 @@ def paint_and_write_stream(h5_path: Path, frames: list[int], dets: Detections,
             del gt, res
     if writer is not None:
         writer.close(tracks)
-    return diag.result(), mip
+    stats = diag.result()
+    stats.update(diag.division_pr(tracks))
+    return stats, mip
 
 
 def main() -> None:

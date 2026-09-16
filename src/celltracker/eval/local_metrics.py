@@ -201,11 +201,13 @@ def tracking_diagnostics(gt_frames: dict[int, np.ndarray], res_frames: dict[int,
 class StreamingDiagnostics:
     """逐帧累积诊断量（3D 数据必须用流式，否则内存爆炸）。"""
 
-    def __init__(self) -> None:
+    def __init__(self, gt_tracks: np.ndarray | None = None) -> None:
         self.n_fn = self.n_fp = self.n_matched = 0
         self.gt_total = self.res_total = 0
         self.res_to_gt: dict[int, list[tuple[int, int]]] = {}
         self.n_frames = 0
+        self.mapping: dict[int, dict[int, int]] = {}   # t -> {gt_label: pred_track}
+        self.gt_tracks = gt_tracks
 
     def add_frame(self, t: int, gt: np.ndarray, res: np.ndarray) -> None:
         mapping = match_gt_res(gt, res)
@@ -218,7 +220,65 @@ class StreamingDiagnostics:
         self.n_fp += len(res_area) - len(set(mapping.values()))
         for gl, rl in mapping.items():
             self.res_to_gt.setdefault(rl, []).append((t, gl))
+        self.mapping[t] = dict(mapping)
         self.n_frames += 1
+
+    # ---------- 分裂事件 P/R ----------
+
+    def _gt_divisions(self) -> dict[tuple[int, int], set[int]]:
+        """{(父标签, 事件帧): {子标签, ...}}，事件帧 = 子轨迹起始帧。"""
+        if self.gt_tracks is None or len(self.gt_tracks) == 0:
+            return {}
+        out: dict[tuple[int, int], set[int]] = {}
+        for lab, begin, _end, parent in zip(self.gt_tracks["label"], self.gt_tracks["begin"],
+                                            self.gt_tracks["end"], self.gt_tracks["parent"]):
+            if parent:
+                out.setdefault((int(parent), int(begin)), set()).add(int(lab))
+        return out
+
+    def division_pr(self, pred_tracks: dict[int, "object"] | None = None) -> dict[str, float]:
+        """分裂事件的召回率/精确率（与 GT 血缘逐事件比对）。"""
+        if self.gt_tracks is None or pred_tracks is None:
+            return {}
+
+        gt_div = self._gt_divisions()
+        pred_div: dict[tuple[int, int], set[int]] = {}
+        for tid, tr in pred_tracks.items():
+            if getattr(tr, "parent", 0):
+                pred_div.setdefault((int(tr.parent), int(tr.begin)), set()).add(int(tid))
+
+        # GT 分裂是否被"检出"：父在 t-1 的预测轨迹 与 两个子在 t 的预测轨迹 互不相同
+        tp_recall = 0
+        for (gp, gb), gchildren in gt_div.items():
+            prev = self.mapping.get(gb - 1, {}).get(gp)
+            kids = {self.mapping.get(gb, {}).get(c) for c in gchildren}
+            kids.discard(None)
+            if prev is not None and len(kids) >= 2 and prev not in kids:
+                tp_recall += 1
+
+        # 预测分裂是否正确：其父/子在 GT 归属上确实构成一次分裂
+        tp_prec = 0
+        for (pp, pb), pchildren in pred_div.items():
+            # 预测的父轨迹在 t-1 覆盖了哪个 GT 标签
+            g_parent = None
+            for gl, rl in self.mapping.get(pb - 1, {}).items():
+                if rl == pp:
+                    g_parent = gl
+                    break
+            ok = False
+            if g_parent is not None:
+                g_kids = gt_div.get((g_parent, pb))
+                if g_kids and g_kids.issubset(set(self.mapping.get(pb, {}).keys())):
+                    ok = True
+            if ok:
+                tp_prec += 1
+
+        return {
+            "division_gt": len(gt_div),
+            "division_pred": len(pred_div),
+            "division_recall": tp_recall / len(gt_div) if gt_div else float("nan"),
+            "division_precision": tp_prec / len(pred_div) if pred_div else float("nan"),
+        }
 
     def result(self) -> dict[str, float]:
         id_switches = 0

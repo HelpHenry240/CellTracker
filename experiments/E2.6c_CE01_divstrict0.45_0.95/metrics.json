@@ -1,0 +1,26 @@
+{
+  "gt_objects": 23802,
+  "res_objects": 23802,
+  "matched": 23802,
+  "fn": 0,
+  "fp": 0,
+  "detection_recall": 1.0,
+  "detection_precision": 1.0,
+  "id_switches": 462,
+  "fragmentation": 238,
+  "gt_tracks": {
+    "n_tracks": 720,
+    "n_divisions": 716
+  },
+  "frames_evaluated": 195,
+  "division_gt": 358,
+  "division_pred": 126,
+  "division_recall": 0.30446927374301674,
+  "division_precision": 0.47619047619047616,
+  "experiment": "E2.6c_CE01_divstrict0.45_0.95",
+  "dataset": "Fluo-N3DH-CE",
+  "seq": "01",
+  "n_frames": 195,
+  "n_tracks_pred": 503,
+  "local_SEG": 0.0
+}
