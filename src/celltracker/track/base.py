@@ -186,10 +186,11 @@ def run_tracking(dets: Detections, cfg: LinkerConfig | None = None) -> TrackResu
                 if len(near) >= 2:
                     j1, j2 = near[0], near[1]
                     for j in (j1, j2):
-                        out_ids[j] = next_id + 1 if j == j2 else next_id
-                        last_c[next_id] = c_dst[j]
-                        velocity[next_id] = c_dst[j] - p
-                        res.tracks[next_id] = Track(next_id, t, t, parent)
+                        child = next_id
+                        out_ids[j] = child
+                        last_c[child] = c_dst[j]
+                        velocity[child] = c_dst[j] - p
+                        res.tracks[child] = Track(child, t, t, parent)
                         next_id += 1
                     unmatched_dst = [j for j in unmatched_dst if j not in (j1, j2)]
 
@@ -216,12 +217,15 @@ def run_tracking(dets: Detections, cfg: LinkerConfig | None = None) -> TrackResu
 
 
 def paint_result(labels_volume: np.ndarray, det_labels: np.ndarray,
-                 out_ids: np.ndarray) -> np.ndarray:
-    """把"检测标签 → 输出轨迹 id"的赋值画回体数据。"""
+                 out_ids: np.ndarray, dtype=np.uint16) -> np.ndarray:
+    """把"检测标签 → 输出轨迹 id"的赋值画回体数据。
+
+    输出默认用 uint16，避免 3D 大体积下 int64 造成的数十倍内存开销。
+    """
     if det_labels.size == 0:
-        return np.zeros_like(labels_volume)
+        return np.zeros(labels_volume.shape, dtype=dtype)
     max_label = int(max(det_labels.max(), int(labels_volume.max())))
     lut = np.zeros(max_label + 1, dtype=np.int64)
     lut[det_labels.astype(np.int64)] = out_ids.astype(np.int64)
-    vol = np.asarray(labels_volume, dtype=np.int64)
-    return lut[vol]
+    vol = np.asarray(labels_volume)
+    return lut[vol].astype(dtype, copy=False)

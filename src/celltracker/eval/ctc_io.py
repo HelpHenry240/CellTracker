@@ -41,6 +41,31 @@ def write_result(
     return out_dir
 
 
+class ResultWriter:
+    """流式写出结果：逐帧写 mask，最后写 res_track.txt（避免把整卷读进内存）。"""
+
+    def __init__(self, out_dir: str | Path, num_digits: int = 3):
+        self.out_dir = Path(out_dir)
+        self.out_dir.mkdir(parents=True, exist_ok=True)
+        self.num_digits = num_digits
+        self.frames_written = 0
+
+    def add(self, t: int, labels: np.ndarray) -> Path:
+        lab = np.asarray(labels)
+        dtype = np.uint16 if int(lab.max(initial=0)) < 65535 else np.uint32
+        path = self.out_dir / f"mask{t:0{self.num_digits}d}.tif"
+        tifffile.imwrite(path, lab.astype(dtype, copy=False))
+        self.frames_written += 1
+        return path
+
+    def close(self, tracks: dict[int, Track]) -> Path:
+        with (self.out_dir / "res_track.txt").open("w") as fh:
+            for label in sorted(tracks):
+                tr = tracks[label]
+                fh.write(f"{tr.label} {tr.begin} {tr.end} {tr.parent}\n")
+        return self.out_dir
+
+
 def read_result(res_dir: str | Path, num_digits: int = 3, frames: list[int] | None = None
                 ) -> tuple[dict[int, np.ndarray], dict[int, Track]]:
     """读取 CTC 结果目录。"""

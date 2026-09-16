@@ -1,0 +1,22 @@
+{
+  "gt_objects": 23802,
+  "res_objects": 23802,
+  "matched": 23802,
+  "fn": 0,
+  "fp": 0,
+  "detection_recall": 1.0,
+  "detection_precision": 1.0,
+  "id_switches": 367,
+  "fragmentation": 335,
+  "gt_tracks": {
+    "n_tracks": 720,
+    "n_divisions": 716
+  },
+  "frames_evaluated": 195,
+  "experiment": "E2.5b_CE01_div0.3_sum0.6_eps1.0",
+  "dataset": "Fluo-N3DH-CE",
+  "seq": "01",
+  "n_frames": 195,
+  "n_tracks_pred": 693,
+  "local_SEG": 0.0
+}

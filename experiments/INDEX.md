@@ -13,3 +13,7 @@
 | E1.2b | 2026-09-15 | P1 | 匈牙利+匀速先验（CHO/01） | 见目录 | DET 1.000000 / TRA 0.998555 | `diagnostics` | 同上；运动先验收益待 CE 验证 | `experiments/E1.2_baseline_hungarian_vel/` |
 | E2.1 | 2026-09-15 | P2 | 纯 OT（η=0，平衡 Sinkhorn） | 见目录 | DET 1.000000 / TRA 0.998555 | `diagnostics` | OT 求解器+轨迹重建正确；CHO 无区分度 | `experiments/E2.1_ot_pure/` |
 | E2.3a | 2026-09-15 | P2 | FGW 结构项 η=0.3（运行验证） | 见目录 | DET 1.000000 / TRA 0.998555 | `diagnostics` | FGW 实现正确（梯度经有限差分校验），η 效果待 CE | `experiments/E2.3a_fgw_eta0.3/` |
+| E1.3 | 2026-09-15 | P1 | **CE seq01 匈牙利基线**（分割无关上界） | 见目录 | **DET 1.000000 / TRA 0.995594** | `CE01_comparison` | CE 上的 reference 数字；修掉幽灵轨迹 bug | `experiments/E1.3_CE01_hungarian/` |
+| E2.1 | 2026-09-15 | P2 | CE seq01 纯 OT | 见目录 | DET 1.000000 / TRA 0.994361 | 同上 | IDsw 更少但碎片化 3.5×，净负 | `experiments/E2.1_CE01_ot_pure/` |
+| E2.5 | 2026-09-16 | P2 | CE θ_Γ×div_ratio 扫描 | 见目录 | 本地指标（TRA 由 E2.5c 裁决） | — | θ_Γ 几乎无影响；div_ratio 是主杠杆 | `experiments/E2.5_CE01_theta_div_sweep/` |
+| E2.5b/c | 2026-09-16 | P2 | CE 分裂判据精调（div_sum_min, ε） | 见目录 | DET 1.000000 / TRA 0.994617 | `CE01_comparison` | 碎片↔IDsw 权衡，超参收益有限 | `experiments/E2.5c_CE01_ot_eps0.3/` |

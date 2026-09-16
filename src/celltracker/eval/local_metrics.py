@@ -14,10 +14,12 @@ import tifffile
 
 def _frame_jaccard_pairs(gt: np.ndarray, res: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """返回 (gt_label, res_label, overlap) 三元组（仅非零重叠）。"""
-    gt = gt.astype(np.int64, copy=False).ravel()
-    res = res.astype(np.int64, copy=False).ravel()
+    # 先做布尔裁剪再转 int64：避免在 3D 大体积上做整卷 int64 拷贝
+    gt = np.asarray(gt)
+    res = np.asarray(res)
     keep = (gt > 0) & (res > 0)
-    gt, res = gt[keep], res[keep]
+    gt = gt[keep].astype(np.int64, copy=False)
+    res = res[keep].astype(np.int64, copy=False)
     if gt.size == 0:
         empty = np.zeros(0, dtype=np.int64)
         return empty, empty, empty
@@ -194,3 +196,54 @@ def tracking_diagnostics(gt_frames: dict[int, np.ndarray], res_frames: dict[int,
         "gt_tracks": gt_track_seconds,
         "frames_evaluated": len(frames),
     }
+
+
+class StreamingDiagnostics:
+    """逐帧累积诊断量（3D 数据必须用流式，否则内存爆炸）。"""
+
+    def __init__(self) -> None:
+        self.n_fn = self.n_fp = self.n_matched = 0
+        self.gt_total = self.res_total = 0
+        self.res_to_gt: dict[int, list[tuple[int, int]]] = {}
+        self.n_frames = 0
+
+    def add_frame(self, t: int, gt: np.ndarray, res: np.ndarray) -> None:
+        mapping = match_gt_res(gt, res)
+        gt_area = _label_area(gt)
+        res_area = _label_area(res)
+        self.gt_total += len(gt_area)
+        self.res_total += len(res_area)
+        self.n_matched += len(mapping)
+        self.n_fn += len(gt_area) - len(mapping)
+        self.n_fp += len(res_area) - len(set(mapping.values()))
+        for gl, rl in mapping.items():
+            self.res_to_gt.setdefault(rl, []).append((t, gl))
+        self.n_frames += 1
+
+    def result(self) -> dict[str, float]:
+        id_switches = 0
+        for seq in self.res_to_gt.values():
+            seq.sort()
+            prev = None
+            for _, gl in seq:
+                if prev is not None and gl != prev:
+                    id_switches += 1
+                prev = gl
+        gt_to_res: dict[int, set[int]] = {}
+        for rl, seq in self.res_to_gt.items():
+            for _, gl in seq:
+                gt_to_res.setdefault(gl, set()).add(rl)
+        fragmentation = int(sum(max(0, len(v) - 1) for v in gt_to_res.values()))
+        return {
+            "gt_objects": self.gt_total,
+            "res_objects": self.res_total,
+            "matched": self.n_matched,
+            "fn": self.n_fn,
+            "fp": self.n_fp,
+            "detection_recall": self.n_matched / self.gt_total if self.gt_total else float("nan"),
+            "detection_precision": self.n_matched / self.res_total if self.res_total else float("nan"),
+            "id_switches": id_switches,
+            "fragmentation": fragmentation,
+            "gt_tracks": len(gt_to_res),
+            "frames_evaluated": self.n_frames,
+        }

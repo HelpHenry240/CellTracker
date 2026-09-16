@@ -10,6 +10,7 @@
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
 
 import numpy as np
@@ -38,6 +39,7 @@ class OTTrackConfig:
     velocity_weight: float = 1.0
     div_ratio: float = 0.25          # 分裂判定：一行中显著目标的最小质量占比
     div_max_targets: int = 2         # 二分裂
+    div_sum_min: float = 0.6         # 两个子目标质量之和的下限（抑制误分裂）
     mass_mode: str = "uniform"       # "uniform" | "volume"
 
 
@@ -47,6 +49,13 @@ def _row_normalize(P: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 
 
 def run_tracking_ot(dets: Detections, cfg: OTTrackConfig | None = None) -> TrackResult:
+    debug = bool(os.environ.get("OT_TRACK_DEBUG"))
+
+    def _put(arr: np.ndarray, j: int, val: int, tag: str) -> None:
+        if debug and arr[j] != 0 and arr[j] != val:
+            print(f"  [dbg] overwrite out_ids[{j}]: {arr[j]} -> {val} ({tag})")
+        arr[j] = val
+
     cfg = cfg or OTTrackConfig()
     ts = dets.t_range
     res = TrackResult(meta={"config": {**cfg.__dict__, "cost": cfg.cost.__dict__}})
@@ -110,9 +119,13 @@ def run_tracking_ot(dets: Detections, cfg: OTTrackConfig | None = None) -> Track
             cols = [int(j) for j in cols if j not in used_dst][: cfg.div_max_targets]
             if len(cols) < 2:
                 continue
+            # 质量守恒式检查（ideas.pdf §1.6）：两个子目标应共同承担父细胞的绝大部分质量。
+            # 注意：CTC 的 GT 标记是等体积小块，故不能用"体积守恒"，须用行内质量分配。
+            if float(Rn[i, cols].sum()) < cfg.div_sum_min:
+                continue
             parent_tid = int(src_ids[i])
             for k, j in enumerate(cols):
-                out_ids[j] = next_id + k
+                _put(out_ids, j, next_id + k, f"div src={i}")
                 last_c[next_id + k] = dst_xy[j]
                 velocity[next_id + k] = dst_xy[j] - src_xy[i]
                 res.tracks[next_id + k] = Track(next_id + k, t, t, parent_tid)
@@ -129,7 +142,7 @@ def run_tracking_ot(dets: Detections, cfg: OTTrackConfig | None = None) -> Track
             if Rn[i, j] < cfg.theta_gamma or info["d_cur"][i, j] > theta_c:
                 continue
             tid = int(src_ids[i])
-            out_ids[j] = tid
+            _put(out_ids, j, tid, f"match src={i}")
             used_dst.add(j)
             c_new = dst_xy[j]
             if tid in last_c:
@@ -140,7 +153,7 @@ def run_tracking_ot(dets: Detections, cfg: OTTrackConfig | None = None) -> Track
         for j in range(n_dst):
             if j in used_dst:
                 continue
-            out_ids[j] = next_id
+            _put(out_ids, j, next_id, "birth")
             last_c[next_id] = dst_xy[j]
             res.tracks[next_id] = Track(next_id, t, t, 0)
             next_id += 1

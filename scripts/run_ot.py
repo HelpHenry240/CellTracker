@@ -17,11 +17,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from run_baseline import _plot_diagnostics, _plot_tracks, load_gt_labels  # noqa: E402
+from run_baseline import _plot_diagnostics, _plot_tracks, paint_and_write_stream  # noqa: E402
 
 from celltracker.cost.features import CostConfig  # noqa: E402
-from celltracker.eval.ctc_io import write_result  # noqa: E402
-from celltracker.eval.local_metrics import seg_measure, tracking_diagnostics  # noqa: E402
+from celltracker.eval.local_metrics import seg_measure  # noqa: E402
 from celltracker.experiment import Experiment  # noqa: E402
 from celltracker.track import Detections, paint_result  # noqa: E402
 from celltracker.track.ot_tracker import OTTrackConfig, run_tracking_ot  # noqa: E402
@@ -45,6 +44,7 @@ def main() -> None:
     ap.add_argument("--knn", type=int, default=6)
     ap.add_argument("--theta-gamma", type=float, default=0.2)
     ap.add_argument("--div-ratio", type=float, default=0.25)
+    ap.add_argument("--div-sum-min", type=float, default=0.6)
     ap.add_argument("--velocity", action="store_true")
     ap.add_argument("--velocity-weight", type=float, default=1.0)
     ap.add_argument("--mass-mode", default="uniform", choices=["uniform", "volume"])
@@ -58,6 +58,7 @@ def main() -> None:
                         mass_mode=args.mass_mode),
         eta=args.eta, eps=args.eps, tau_a=args.tau, tau_b=args.tau,
         knn_k=args.knn, theta_gamma=args.theta_gamma, div_ratio=args.div_ratio,
+        div_sum_min=args.div_sum_min,
         use_velocity=args.velocity, velocity_weight=args.velocity_weight,
         mass_mode=args.mass_mode,
     )
@@ -78,15 +79,14 @@ def main() -> None:
     result = run_tracking_ot(dets, cfg)
     exp.log(f"predicted tracks={result.n_tracks()}")
 
-    gt_labels = load_gt_labels(Path(args.h5), ts)
-    res_labels = {t: paint_result(gt_labels[t], dets.label(t), result.assignment[t])
-                  for t in ts}
     res_dir = exp.artifact_dir("submission") / f"{args.seq}_RES"
-    write_result(res_labels, result.tracks, res_dir)
+    mip_frame = ts[len(ts) // 2]
+    diag, mip = paint_and_write_stream(Path(args.h5), ts, dets, result.assignment,
+                                       res_dir, result.tracks, want_mip_frame=mip_frame)
+    exp.log(f"提交目录 -> {res_dir}（{len(ts)} 帧）")
 
     gt_seg_dir = Path("data/raw") / args.dataset / f"{args.seq}_GT" / "SEG"
     sego = seg_measure(gt_seg_dir, res_dir) if gt_seg_dir.is_dir() else float("nan")
-    diag = tracking_diagnostics(gt_labels, res_labels)
     with h5py.File(args.h5, "r") as f:
         gt_tracks = np.asarray(f["tracks"]) if "tracks" in f else np.zeros(0, dtype=[("parent", "i4")])
     metrics = {
@@ -102,8 +102,8 @@ def main() -> None:
             f"IDsw={diag['id_switches']} frag={diag['fragmentation']} "
             f"detR={diag['detection_recall']:.3f} pred_tracks={result.n_tracks()}")
 
-    _plot_diagnostics(exp, res_labels, result, diag, args.dataset, args.seq)
-    _plot_tracks(exp, gt_labels, res_labels, args.dataset, args.seq)
+    _plot_diagnostics(exp, result, diag, args.dataset, args.seq)
+    _plot_tracks(exp, dets, result.assignment, args.dataset, args.seq, mip=mip)
 
     if args.official:
         import subprocess

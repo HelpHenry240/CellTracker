@@ -23,11 +23,10 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from run_baseline import load_gt_labels  # noqa: E402
+from run_baseline import iter_gt_labels, paint_and_write_stream  # noqa: E402
 
 from celltracker.cost.features import CostConfig  # noqa: E402
-from celltracker.eval.ctc_io import write_result  # noqa: E402
-from celltracker.eval.local_metrics import tracking_diagnostics  # noqa: E402
+from celltracker.eval.local_metrics import StreamingDiagnostics  # noqa: E402
 from celltracker.experiment import Experiment  # noqa: E402
 from celltracker.track import Detections, paint_result  # noqa: E402
 from celltracker.track.ot_tracker import OTTrackConfig, run_tracking_ot  # noqa: E402
@@ -71,8 +70,6 @@ def main() -> None:
     if args.limit_frames:
         ts = ts[: args.limit_frames]
     dets = Detections({t: dets_all.frames[t] for t in ts})
-    gt_labels = load_gt_labels(Path(args.h5), ts)
-
     rows = []
     values: dict[tuple, float] = {}
     for xv, yv in itertools.product(x_vals, y_vals):
@@ -91,9 +88,10 @@ def main() -> None:
             div_ratio=float(grid.get("div_ratio", 0.25)),
         )
         result = run_tracking_ot(dets, cfg)
-        res_labels = {t: paint_result(gt_labels[t], dets.label(t), result.assignment[t])
-                      for t in ts}
-        diag = tracking_diagnostics(gt_labels, res_labels)
+        res_dir = exp.artifact_dir(f"sub_{x_name}{xv}_{y_name}{yv}") / f"{args.seq}_RES"
+        diag, _ = paint_and_write_stream(Path(args.h5), ts, dets, result.assignment,
+                                         res_dir, result.tracks,
+                                         write_masks=args.official)
         row = {x_name: xv, y_name: yv, **fixed,
                "pred_tracks": result.n_tracks(), "FN": diag["fn"], "FP": diag["fp"],
                "id_switches": diag["id_switches"], "fragmentation": diag["fragmentation"],
@@ -101,8 +99,6 @@ def main() -> None:
 
         if args.official:
             import subprocess
-            res_dir = exp.artifact_dir(f"sub_{x_name}{xv}_{y_name}{yv}") / f"{args.seq}_RES"
-            write_result(res_labels, result.tracks, res_dir)
             cmd = [sys.executable, str(ROOT / "scripts" / "cloud_eval.py"),
                    "--res-dir", str(res_dir), "--dataset", args.dataset,
                    "--seq", args.seq,

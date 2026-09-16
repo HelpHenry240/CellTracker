@@ -17,19 +17,41 @@ import numpy as np
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
-from celltracker.eval.ctc_io import write_result  # noqa: E402
-from celltracker.eval.local_metrics import seg_measure, tracking_diagnostics  # noqa: E402
+from celltracker.eval.ctc_io import ResultWriter  # noqa: E402
+from celltracker.eval.local_metrics import StreamingDiagnostics, seg_measure  # noqa: E402
 from celltracker.experiment import Experiment  # noqa: E402
 from celltracker.track import Detections, LinkerConfig, paint_result, run_tracking  # noqa: E402
 from celltracker.viz import PALETTE, savefig  # noqa: E402
 
 
-def load_gt_labels(h5_path: Path, frames: list[int]) -> dict[int, np.ndarray]:
-    out = {}
+def iter_gt_labels(h5_path: Path, frames: list[int]):
+    """逐帧产出 (t, labels)，避免一次性把全部 3D 标注读入内存。"""
     with h5py.File(h5_path, "r") as f:
         for t in frames:
-            out[t] = np.asarray(f[f"frames/{t:04d}/labels"])
-    return out
+            yield t, np.asarray(f[f"frames/{t:04d}/labels"])
+
+
+def paint_and_write_stream(h5_path: Path, frames: list[int], dets: Detections,
+                           assignment: dict[int, np.ndarray], res_dir: Path,
+                           tracks, want_mip_frame: int | None = None,
+                           write_masks: bool = True):
+    """流式：逐帧画结果掩码 → 写盘 → 累积诊断；返回 (诊断, MIP 背景图)。"""
+    writer = ResultWriter(res_dir) if write_masks else None
+    diag = StreamingDiagnostics()
+    mip = None
+    with h5py.File(h5_path, "r") as f:
+        for t in frames:
+            gt = np.asarray(f[f"frames/{t:04d}/labels"])
+            res = paint_result(gt, dets.label(t), assignment[t])
+            if writer is not None:
+                writer.add(t, res)
+            diag.add_frame(t, gt, res)
+            if want_mip_frame is not None and t == want_mip_frame:
+                mip = np.asarray(f[f"frames/{t:04d}/labels"]).max(axis=0).copy()
+            del gt, res
+    if writer is not None:
+        writer.close(tracks)
+    return diag.result(), mip
 
 
 def main() -> None:
@@ -69,15 +91,14 @@ def main() -> None:
     result = run_tracking(dets, cfg)
     exp.log(f"predicted tracks={result.n_tracks()}")
 
-    gt_labels = load_gt_labels(Path(args.h5), ts)
-    res_labels = {t: paint_result(gt_labels[t], dets.label(t), result.assignment[t])
-                  for t in ts}
     res_dir = exp.artifact_dir("submission") / f"{args.seq}_RES"
-    write_result(res_labels, result.tracks, res_dir)
+    mip_frame = ts[len(ts) // 2]
+    diag, mip = paint_and_write_stream(Path(args.h5), ts, dets, result.assignment,
+                                       res_dir, result.tracks, want_mip_frame=mip_frame)
+    exp.log(f"提交目录 -> {res_dir}（{len(ts)} 帧，MIP 参考帧 {mip_frame}）")
 
     gt_seg_dir = ROOT / "data" / "raw" / args.dataset / f"{args.seq}_GT" / "SEG"
     sego = seg_measure(gt_seg_dir, res_dir) if gt_seg_dir.is_dir() else float("nan")
-    diag = tracking_diagnostics(gt_labels, res_labels)
 
     with h5py.File(args.h5, "r") as f:
         gt_tracks = np.asarray(f["tracks"]) if "tracks" in f else np.zeros(0, dtype=[("parent", "i4")])
@@ -95,8 +116,8 @@ def main() -> None:
             f"IDsw={diag['id_switches']} frag={diag['fragmentation']} "
             f"detR={diag['detection_recall']:.3f} detP={diag['detection_precision']:.3f}")
 
-    _plot_diagnostics(exp, res_labels, result, diag, args.dataset, args.seq)
-    _plot_tracks(exp, gt_labels, res_labels, args.dataset, args.seq)
+    _plot_diagnostics(exp, result, diag, args.dataset, args.seq)
+    _plot_tracks(exp, dets, result.assignment, args.dataset, args.seq, mip=mip)
 
     if args.official:
         import subprocess
@@ -115,7 +136,7 @@ def main() -> None:
                        f"frag={diag['fragmentation']}")
 
 
-def _plot_diagnostics(exp: Experiment, res_labels, result, diag, dataset, seq) -> None:
+def _plot_diagnostics(exp: Experiment, result, diag, dataset, seq) -> None:
     import matplotlib.pyplot as plt
 
     fig, axes = plt.subplots(1, 2, figsize=(8.5, 2.9))
@@ -134,33 +155,31 @@ def _plot_diagnostics(exp: Experiment, res_labels, result, diag, dataset, seq) -
     savefig(fig, exp.figure_path("diagnostics"))
 
 
-def _plot_tracks(exp: Experiment, gt_labels, res_labels, dataset, seq) -> None:
-    """最大投影 + 轨迹连线（GT 与预测各一张）。"""
+def _plot_tracks(exp: Experiment, dets: Detections, assignment: dict[int, np.ndarray],
+                 dataset, seq, mip=None) -> None:
+    """最大投影背景 + 轨迹连线（用检测质心，不需要读整卷）。"""
     import matplotlib.pyplot as plt
 
-    ts = sorted(res_labels)
-    mid = ts[len(ts) // 2]
-    for name, labels in (("gt", gt_labels), ("pred", res_labels)):
-        fig, ax = plt.subplots(figsize=(4.6, 4.0))
-        ax.imshow(labels[mid].max(axis=0), cmap="gray_r")
-        cents: dict[int, list[tuple[float, float]]] = {}
-        for t in ts:
-            v = labels[t]
-            for lab in np.unique(v):
-                if lab == 0:
-                    continue
-                idx = np.nonzero(v == lab)
-                cents.setdefault(int(lab), []).append((idx[2].mean(), idx[1].mean()))
-        for pts in cents.values():
-            if len(pts) < 3:
-                continue
-            pts = np.array(pts)
-            ax.plot(pts[:, 0], pts[:, 1], lw=0.8, alpha=0.85)
-        ax.set_title(f"{dataset} {seq} — {name} (MIP frame {mid})")
-        ax.set_xticks([])
-        ax.set_yticks([])
-        ax.grid(False)
-        savefig(fig, exp.figure_path(f"tracks_{name}"))
+    ts = sorted(assignment)
+    cents: dict[int, list[tuple[float, float]]] = {}
+    for t in ts:
+        xy = dets.centroid(t)
+        for k, tid in enumerate(assignment[t]):
+            cents.setdefault(int(tid), []).append((xy[k, -1], xy[k, -2]))
+
+    fig, ax = plt.subplots(figsize=(5.4, 4.4))
+    if mip is not None:
+        ax.imshow(mip, cmap="gray_r")
+    for tid, pts in cents.items():
+        if len(pts) < 3:
+            continue
+        pts = np.array(pts)
+        ax.plot(pts[:, 0], pts[:, 1], lw=0.7, alpha=0.8)
+    ax.set_title(f"{dataset} {seq} — predicted tracks (n={len(cents)})")
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.grid(False)
+    savefig(fig, exp.figure_path("tracks_pred"))
 
 
 if __name__ == "__main__":
