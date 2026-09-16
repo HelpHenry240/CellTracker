@@ -35,6 +35,10 @@ def main() -> None:
     ap.add_argument("--exp-id", required=True)
     ap.add_argument("--tau-move", default="0.3,0.5,0.7")
     ap.add_argument("--tau-div", default="0.5,0.7,0.9")
+    ap.add_argument("--lam", default=None,
+                    help="残差强度 λ 网格（如 0,0.25,0.5,1）；给定时只扫 λ")
+    ap.add_argument("--tau-link", type=float, default=0.2)
+    ap.add_argument("--tau-split", type=float, default=0.25)
     ap.add_argument("--dataset", default="Fluo-N3DH-CE")
     ap.add_argument("--seq", default="01")
     args = ap.parse_args()
@@ -47,14 +51,23 @@ def main() -> None:
     exp.log("推理一次，复用预测结果扫描阈值 ...")
     preds = predict_pairs(args.ckpt, args.graphs, device="cpu")
 
+    if args.lam is not None:
+        grid = [(None, None, lam) for lam in (float(x) for x in args.lam.split(","))]
+    else:
+        grid = [(tm, td, 1.0)
+                for tm, td in itertools.product(
+                    [float(x) for x in args.tau_move.split(",")],
+                    [float(x) for x in args.tau_div.split(",")])]
+
     rows = []
-    for tm, td in itertools.product([float(x) for x in args.tau_move.split(",")],
-                                    [float(x) for x in args.tau_div.split(",")]):
-        res = reconstruct_tracks(dets, preds, InferConfig(tau_move=tm, tau_div=td))
+    for tm, td, lam in grid:
+        cfg = (InferConfig(lam=lam, tau_link=args.tau_link, tau_split=args.tau_split)
+               if tm is None else InferConfig(tau_move=tm, tau_div=td))
+        res = reconstruct_tracks(dets, preds, cfg)
         diag, _ = paint_and_write_stream(Path(args.h5), ts, dets, res.assignment,
                                          Path("/tmp/_gnn_sweep_res"), res.tracks,
                                          write_masks=False)
-        row = {"tau_move": tm, "tau_div": td, "n_tracks": res.n_tracks(),
+        row = {"tau_move": tm, "tau_div": td, "lam": lam, "n_tracks": res.n_tracks(),
                "IDsw": diag["id_switches"], "frag": diag["fragmentation"],
                "div_P": round(diag.get("division_precision", float("nan")), 4),
                "div_R": round(diag.get("division_recall", float("nan")), 4),
@@ -62,7 +75,7 @@ def main() -> None:
                "segments_split": res.meta.get("segments_split"),
                "parent_fixed": res.meta.get("parent_fixed")}
         rows.append(row)
-        exp.log(f"tau_move={tm} tau_div={td}: tracks={row['n_tracks']} "
+        exp.log(f"lambda={lam} (tau_move={tm} tau_div={td}): tracks={row['n_tracks']} "
                 f"IDsw={row['IDsw']} frag={row['frag']} "
                 f"divP={row['div_P']} divR={row['div_R']}")
 

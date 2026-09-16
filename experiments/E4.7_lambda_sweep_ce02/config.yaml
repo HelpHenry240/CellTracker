@@ -1,0 +1,27 @@
+experiment_id: E4.7_lambda_sweep_ce02
+date: '2026-09-16'
+purpose: GNN 决策阈值扫描
+params:
+  ckpt: experiments/E4.6_gnn_ce02_insample/artifacts/model/best.pt
+  graphs: data/interim/graphs_ce02
+  tau_move: 0.3,0.5,0.7
+  tau_div: 0.5,0.7,0.9
+argv:
+- scripts/sweep_gnn_thresholds.py
+- --graphs
+- data/interim/graphs_ce02
+- --ckpt
+- experiments/E4.6_gnn_ce02_insample/artifacts/model/best.pt
+- --h5
+- data/interim/Fluo-N3DH-CE_02.h5
+- --exp-id
+- E4.7_lambda_sweep_ce02
+- --lam
+- 0,0.25,0.5,0.75,1.0
+- --dataset
+- Fluo-N3DH-CE
+- --seq
+- '02'
+seed: 20260915
+status: done
+summary: 5 组阈值

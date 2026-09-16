@@ -172,11 +172,19 @@ ls {remote_dataset}/{args.seq}_RES/*.txt 2>/dev/null || true
     # 回传官方日志（评测证据）
     log_dir = out_path.parent / "official_logs"
     log_dir.mkdir(parents=True, exist_ok=True)
+    n_logs = 0
     for name in ("SEG_log.txt", "DET_log.txt", "TRA_log.txt"):
         rc_dl, _ = scp_download(f"{remote_dataset}/{args.seq}_RES/{name}",
                                 str(log_dir / f"{name}"), password)
         if rc_dl == 0:
+            n_logs += 1
             print(f"      日志 -> {log_dir / name}")
+
+    # 清理云端临时目录（每次评测会上传并解压整份掩码，不清理会撑爆数据盘）
+    if not args.keep_remote:
+        rc_rm, _ = ssh(["rm", "-rf", remote_dir], password)
+        if rc_rm == 0:
+            print(f"      已清理云端临时目录 {remote_dir}")
 
     print(f"[3/3] 指标: SEG={metrics['SEG']} DET={metrics['DET']} TRA={metrics['TRA']}")
     print(f"      -> {out_path}")

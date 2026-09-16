@@ -80,13 +80,15 @@ def cmd_infer(args) -> None:
     exp = Experiment(args.exp_id, purpose="P4 GNN 推理与评测",
                      params={"ckpt": args.ckpt, "graphs": args.graphs,
                              "tau_move": args.tau_move, "tau_div": args.tau_div,
+                             "fusion": args.fusion, "lam": args.lam,
                              "official_eval": args.official})
     dets = Detections.from_h5(args.h5)
     ts = dets.t_range
     preds = predict_pairs(args.ckpt, args.graphs, device=args.device)
     exp.log(f"预测完成: {len(preds)} 对帧")
     result = reconstruct_tracks(dets, preds,
-                                InferConfig(tau_move=args.tau_move, tau_div=args.tau_div))
+                                InferConfig(tau_move=args.tau_move, tau_div=args.tau_div,
+                                            fusion=args.fusion, lam=args.lam))
     exp.log(f"重建轨迹 {result.n_tracks()} 条")
 
     res_dir = exp.artifact_dir("submission") / f"{args.seq}_RES"
@@ -175,6 +177,9 @@ def main() -> None:
     i.add_argument("--exp-id", required=True)
     i.add_argument("--tau-move", type=float, default=0.5)
     i.add_argument("--tau-div", type=float, default=0.5)
+    i.add_argument("--fusion", action="store_true",
+                   help="消融：启用自创的 λ 加权融合（默认关闭，走论文口径）")
+    i.add_argument("--lam", type=float, default=0.5, help="仅 --fusion 时有效")
     i.add_argument("--device", default="cpu")
     i.add_argument("--official", action="store_true")
     i.set_defaults(func=cmd_infer)

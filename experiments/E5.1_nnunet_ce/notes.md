@@ -28,7 +28,28 @@
 | 每 epoch 耗时 | **26.7 s**（RTX 4090，GPU 利用率 96%，显存 6.6/24 GB） |
 | 预计 1000 epochs | 约 8.3 小时 |
 
-## 观察（截至 2026-09-16 20:57，epoch 21）
+## 训练最终结果（2026-09-16 23:31，按平台期判据停止）
+
+| 项 | 值 |
+| --- | --- |
+| 停止时 epoch | **338 / 1000** |
+| 最优 EMA pseudo Dice（验证集 77 例） | **0.9530** |
+| 已用时间 | 2 小时 48 分（约 30 s/epoch） |
+| 若跑满 1000 epoch | 还需约 5.5 小时（余弦调度剩余部分） |
+
+Dice 轨迹：epoch 21 → 0.9289，epoch 150 → 0.9496，epoch 240 → 0.9519，
+epoch 338 → 0.9530。**最近 100 个 epoch 仅提升 0.0011（每 50 epoch < 0.001）**，
+触发"平台期即停"的判据（见 `docs/` 计划中的策略）。
+
+证据与备份：
+- `figures/progress_final.png`（完整训练曲线）、`logs/training_log.txt`
+- 最优权重已备份到本地 `data/checkpoints/nnunet_ce_fold0/checkpoint_best_ep338.pth`
+  （348MB；含网络权重、优化器状态、grad scaler、epoch 计数）
+- 云上保留 `checkpoint_best.pth` / `checkpoint_latest.pth`，
+  如需继续训练：`nnUNetv2_train 501 3d_fullres 0 --c`
+  （**续训不要改 `--num_epochs`**，否则余弦学习率曲线会错位）
+
+## 观察（训练早期，epoch 21）
 
 - EMA pseudo Dice 已达 **0.9289**，且仍在上升（epoch 13 时 0.9238）。
 - 说明该任务对 nnU-Net 而言相对容易（银标准标签 + 胚胎核形态一致），

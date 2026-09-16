@@ -33,6 +33,17 @@ class GraphConfig:
     r_max: float = 30.0            # 候选位移门限（体素）
     knn: int = 4                   # 帧内 kNN 度数
     use_ot: bool = True            # 是否用 OT 计划作为边特征
+    # ---- 式 (26)：候选边由 OT 传输计划筛选 ----
+    cand_from_ot: bool = True      # True = 按式(26)筛；False = 纯 R_max 几何门控（消融对照）
+    theta_gamma: float = 0.05      # 式(26)：行归一化传输质量下限 Γ_ij ≥ θ_Γ
+    theta_c: float | None = None   # 式(26)：代价上限 C_ij ≤ θ_C；None 时取 r_max²
+    eps_rel: float | None = 0.1    # 熵正则按代价尺度自适应：eps = eps_rel × median(C)
+                                   # （代价是平方距离、量级 ~10²；直接给 eps=1 会让
+                                   #   传输计划退化成硬分配，失去 §1.3 的"软匹配"前提）
+    cand_topk: int = 3             # 式(26) 之外的保底：每行额外保留传输质量前 k 的目标。
+                                   # 漏斗诊断显示：仅靠 Γ ≥ θ_Γ 会让约 21% 的真实分裂
+                                   # 事件永久丢失一个子目标（GNN 无法挽回），
+                                   # 加入 top-k 后该比例降到 ~16%（k=3）。
     window: int = 0                # 时间上下文窗口：额外纳入前后各 window 帧
     eps: float = 1.0
     eta: float = 0.0               # >0 时用 FGW（结构项进入 OT 特征）
@@ -127,17 +138,42 @@ def build_pair_graph(dets: Detections, t: int, t_next: int,
     C, info = build_cost(src_xy, dst_xy, src_vol, dst_vol, None, cost_cfg)
     a = masses(src_vol, n_src, "uniform")
     b = masses(dst_vol, n_dst, "uniform")
+    # ε 与代价尺度匹配：代价是平方距离（量级 ~10²），若直接取 eps=1，传输计划
+    # 几乎退化为硬分配 —— 真实分裂边会拿到 0 质量，被式(26) 永久滤除，GNN 无法挽回。
+    finite_cost = C[np.isfinite(C)]
+    eps_eff = (cfg.eps_rel * float(np.median(finite_cost))
+               if cfg.eps_rel is not None and finite_cost.size else cfg.eps)
     plan = None
     if cfg.use_ot:
         if cfg.eta > 0:
             D, _ = gaussian_knn_graph(src_xy, k=cfg.knn)
             Dp, _ = gaussian_knn_graph(dst_xy, k=cfg.knn)
-            plan, _ = fused_gw(C, a, b, D, Dp, eta=cfg.eta, eps=cfg.eps, n_outer=20)
+            plan, _ = fused_gw(C, a, b, D, Dp, eta=cfg.eta, eps=eps_eff, n_outer=20)
         else:
-            plan = sinkhorn_log(C, a, b, eps=cfg.eps)
+            plan = sinkhorn_log(C, a, b, eps=eps_eff)
 
-    # ---- 候选边（R_max 门限内）----
-    ii, jj = np.where(np.isfinite(C))
+    # ---- 候选边：式(26) 用 OT 传输计划筛选 ----
+    #     E^t_time = { (i→j) | Γ_ij ≥ θ_Γ 且 C_ij ≤ θ_C }
+    # OT 在此处是"决定候选边的人"（而不是仅提供特征），GNN 只在候选集内做判定。
+    finite = np.isfinite(C)
+    if cfg.cand_from_ot and plan is not None:
+        row_sum = plan.sum(axis=1, keepdims=True) + 1e-12
+        rnorm_full = plan / row_sum
+        mask = (rnorm_full >= cfg.theta_gamma) & finite
+        if cfg.theta_c is not None:
+            mask &= (C <= cfg.theta_c)
+        # 保底：每行至少保留传输质量最大的目标（式(23) 的 argmax）。
+        # 否则源细胞可能一个候选都没有，必然产生缺失边（AOGM 罚 1.5）。
+        # 同时保留每行质量前 k 的目标（漏斗诊断：分裂的第二子目标常因质量低被误滤）。
+        k = max(int(cfg.cand_topk), 1)
+        order = np.argsort(-np.where(finite, plan, -1.0), axis=1)[:, :k]
+        rows = np.repeat(np.arange(n_src), k)
+        cols = order.reshape(-1)
+        ok = finite[rows, cols]
+        mask[rows[ok], cols[ok]] = True
+        ii, jj = np.where(mask)
+    else:
+        ii, jj = np.where(finite)
     pairs = np.stack([ii, jj], axis=1)
 
     # ---- 运动先验（用上一帧位移近似，若无则用 0）----
@@ -234,6 +270,7 @@ def build_pair_graph(dets: Detections, t: int, t_next: int,
         "cand_feat": cand_feat_p,
         "cand_label": labels,
         "intra_edges": intra.astype(np.int64),
+        "eps_eff": np.float64(eps_eff),
         "t": np.int64(t),
         "t_next": np.int64(t_next),
         "n_src": np.int64(n_src),

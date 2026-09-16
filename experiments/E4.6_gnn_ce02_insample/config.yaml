@@ -1,0 +1,21 @@
+experiment_id: E4.6_gnn_ce02_insample
+date: '2026-09-16'
+purpose: P4 GNN 训练
+params:
+  graphs: data/interim/graphs_ce02
+  epochs: 40
+  hidden: 64
+  layers: 3
+  lambda_ot: 0.1
+argv:
+- scripts/run_gnn.py
+- train
+- --graphs
+- data/interim/graphs_ce02
+- --exp-id
+- E4.6_gnn_ce02_insample
+- --epochs
+- '40'
+seed: 20260915
+status: done
+summary: best move_f1=0.977 div_f1=0.458
