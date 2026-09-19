@@ -1,0 +1,51 @@
+{
+  "gt_objects": 22418,
+  "res_objects": 22418,
+  "matched": 22418,
+  "fn": 0,
+  "fp": 0,
+  "detection_recall": 1.0,
+  "detection_precision": 1.0,
+  "id_switches": 221,
+  "fragmentation": 67,
+  "gt_tracks": 724,
+  "frames_evaluated": 190,
+  "division_gt": 361,
+  "division_pred": 76,
+  "division_recall": 0.481994459833795,
+  "division_precision": 0.868421052631579,
+  "experiment": "B3_seq02_eval",
+  "dataset": "Fluo-N3DH-CE",
+  "seq": "02",
+  "decision": "gnn",
+  "ablated": [],
+  "checkpoint": {
+    "path": "experiments/B3_seq02_train/artifacts/model/best.pt",
+    "md5": "7288fa6f74276946578939deefff656f",
+    "size_bytes": 423053,
+    "belongs_to_experiment": "B3_seq02_train"
+  },
+  "n_tracks_pred": 570,
+  "local_SEG": 0.0,
+  "pipeline_info": {
+    "n_frames": 190,
+    "ablated": [],
+    "n_couplings": 189,
+    "decision": "gnn",
+    "tracks_after_decision": 907,
+    "tracklet": {
+      "enabled": true,
+      "n_tracklets": 907,
+      "n_links": 337,
+      "n_chains": 190,
+      "tracks_before": 907,
+      "tracks_after": 570,
+      "theta_link": 0.2,
+      "ghost_dropped": 0,
+      "segments_split": 0,
+      "parent_fixed": 158,
+      "extra_children_removed": 0
+    },
+    "tracks_final": 570
+  }
+}

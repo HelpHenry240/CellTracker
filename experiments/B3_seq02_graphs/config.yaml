@@ -1,0 +1,20 @@
+experiment_id: B3_seq02_graphs
+date: '2026-09-19'
+purpose: pipeline 全链路运行
+params:
+  h5: data/interim/Fluo-N3DH-CE_02.h5
+  frames: null
+  ablate: ''
+argv:
+- scripts/run_pipeline.py
+- --h5
+- data/interim/Fluo-N3DH-CE_02.h5
+- --exp-id
+- B3_seq02_graphs
+- --config
+- configs/pipeline_default.yaml
+- --dump-graphs
+- data/interim/graphs_02_base
+seed: 20260915
+status: done
+summary: tracks=2603 decision=ot_rule

@@ -1,0 +1,25 @@
+{
+  "dataset": "Fluo-N3DH-CE",
+  "seq": "02",
+  "num_digits": 3,
+  "res_dir": "/home/henry/ot_idea/CellTracker/experiments/B3_seq02_eval/artifacts/submission/02_RES",
+  "evaluator": "CTC official EvaluationSoftware (cloud)",
+  "host": "root@connect.westc.seetacloud.com:10505",
+  "SEG": 0.0,
+  "DET": 1.0,
+  "TRA": 0.996369,
+  "raw_output": [
+    "=== SEGMeasure ===",
+    "SEG measure: 0.000000",
+    "=== DETMeasure ===",
+    "DET measure: 1.000000",
+    "=== TRAMeasure ===",
+    "TRA measure: 0.996369",
+    "=== logs ===",
+    "/root/autodl-tmp/celltracker/eval/Fluo-N3DH-CE_02_20260919-202211/Fluo-N3DH-CE/02_RES/DET_log.txt",
+    "/root/autodl-tmp/celltracker/eval/Fluo-N3DH-CE_02_20260919-202211/Fluo-N3DH-CE/02_RES/SEG_log.txt",
+    "/root/autodl-tmp/celltracker/eval/Fluo-N3DH-CE_02_20260919-202211/Fluo-N3DH-CE/02_RES/TRA_log.txt",
+    "/root/autodl-tmp/celltracker/eval/Fluo-N3DH-CE_02_20260919-202211/Fluo-N3DH-CE/02_RES/res_track.txt"
+  ],
+  "timestamp": "2026-09-19T20:24:13"
+}

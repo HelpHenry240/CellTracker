@@ -127,3 +127,26 @@ def test_coupling_roundtrip(tmp_path):
     np.testing.assert_allclose(back.plan, art.plan, atol=1e-12)
     np.testing.assert_allclose(back.cost, art.cost, atol=1e-12)
     assert back.eps_eff == pytest.approx(art.eps_eff)
+
+
+def test_topk_fallback_handles_fewer_targets_than_k():
+    """回归测试：目标数 < cand_topk 时 top-k 保底不能崩。
+
+    历史 bug：行索引按 k 构造、列索引只有 min(k, n_dst) 列 → 长度不匹配
+    → IndexError（seq02 早期帧只有 2 个目标时触发；seq01 每帧 ≥3 个目标未暴露）。
+    """
+    from celltracker.graph import GraphConfig, build_pair_graph
+    from celltracker.track.base import Detections
+
+    dets = Detections({
+        0: {"label": np.array([1, 2]),
+            "centroid": np.array([[0.0, 0.0, 0.0], [5.0, 0.0, 0.0]]),
+            "volume": np.array([100.0, 100.0])},
+        1: {"label": np.array([1, 2]),
+            "centroid": np.array([[1.0, 0.0, 0.0], [6.0, 0.0, 0.0]]),
+            "volume": np.array([100.0, 100.0])},
+    })
+    cfg = GraphConfig(r_max=30.0, cand_from_ot=True, theta_gamma=0.02, cand_topk=3)
+    g = build_pair_graph(dets, 0, 1, cfg, {1: 0, 2: 0},
+                         shape=np.array([4.0, 64.0, 64.0]), t_total=2)
+    assert g["cand_edges"].shape[0] >= 2

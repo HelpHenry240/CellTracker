@@ -167,9 +167,14 @@ def build_pair_graph(dets: Detections, t: int, t_next: int,
         # 保底：每行至少保留传输质量最大的目标（式(23) 的 argmax）。
         # 否则源细胞可能一个候选都没有，必然产生缺失边（AOGM 罚 1.5）。
         # 同时保留每行质量前 k 的目标（漏斗诊断：分裂的第二子目标常因质量低被误滤）。
+        #
+        # 注意 k_eff：必须用**实际可用的列数** min(k, n_dst)。
+        # 若按 k 直接构造行索引，在 n_dst < k 的稀疏帧上会与列索引长度不匹配
+        # （实测：seq02 早期帧只有 2 个目标时抛 IndexError；seq01 每帧目标数 ≥3 未触发）。
         k = max(int(cfg.cand_topk), 1)
         order = np.argsort(-np.where(finite, plan, -1.0), axis=1)[:, :k]
-        rows = np.repeat(np.arange(n_src), k)
+        k_eff = order.shape[1]
+        rows = np.repeat(np.arange(n_src), k_eff)
         cols = order.reshape(-1)
         ok = finite[rows, cols]
         mask[rows[ok], cols[ok]] = True

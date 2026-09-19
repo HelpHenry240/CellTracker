@@ -1,0 +1,21 @@
+{
+  "n_frames": 190,
+  "ablated": [],
+  "n_couplings": 189,
+  "decision": "gnn",
+  "tracks_after_decision": 907,
+  "tracklet": {
+    "enabled": true,
+    "n_tracklets": 907,
+    "n_links": 337,
+    "n_chains": 190,
+    "tracks_before": 907,
+    "tracks_after": 570,
+    "theta_link": 0.2,
+    "ghost_dropped": 0,
+    "segments_split": 0,
+    "parent_fixed": 158,
+    "extra_children_removed": 0
+  },
+  "tracks_final": 570
+}
