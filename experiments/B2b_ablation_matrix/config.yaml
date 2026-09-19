@@ -1,0 +1,26 @@
+experiment_id: B2b_ablation_matrix
+date: '2026-09-19'
+purpose: 消融矩阵（每项重建图+重训GNN+官方评测）
+params:
+  h5: data/interim/Fluo-N3DH-CE_01.h5
+  ablations:
+  - cand_topk
+  - fgw
+  epochs: 60
+  frames: null
+argv:
+- scripts/run_ablation_matrix.py
+- --h5
+- data/interim/Fluo-N3DH-CE_01.h5
+- --dataset
+- Fluo-N3DH-CE
+- --seq
+- '01'
+- --ablations
+- cand_topk,fgw
+- --exp-prefix
+- B2b
+- --official
+seed: 20260915
+status: done
+summary: 2 项消融完成

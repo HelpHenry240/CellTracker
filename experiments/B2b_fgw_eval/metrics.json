@@ -1,0 +1,42 @@
+{
+  "gt_objects": 23802,
+  "res_objects": 23802,
+  "matched": 23802,
+  "fn": 0,
+  "fp": 0,
+  "detection_recall": 1.0,
+  "detection_precision": 1.0,
+  "id_switches": 41,
+  "fragmentation": 422,
+  "gt_tracks": 720,
+  "frames_evaluated": 195,
+  "division_gt": 358,
+  "division_pred": 236,
+  "division_recall": 0.9022346368715084,
+  "division_precision": 0.8389830508474576,
+  "experiment": "B2b_fgw_eval",
+  "dataset": "Fluo-N3DH-CE",
+  "seq": "01",
+  "decision": "gnn",
+  "ablated": [
+    "fgw"
+  ],
+  "checkpoint": {
+    "path": "/home/henry/ot_idea/CellTracker/experiments/B2b_fgw_train/artifacts/model/best.pt",
+    "md5": "1b89a70b053f800583d1f181ca770e3e",
+    "size_bytes": 423053,
+    "belongs_to_experiment": "B2b_fgw_train"
+  },
+  "n_tracks_pred": 1101,
+  "local_SEG": 0.0,
+  "pipeline_info": {
+    "n_frames": 195,
+    "ablated": [
+      "fgw"
+    ],
+    "n_couplings": 194,
+    "decision": "gnn",
+    "tracks_after_decision": 1101,
+    "tracks_final": 1101
+  }
+}
