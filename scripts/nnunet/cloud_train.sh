@@ -41,8 +41,10 @@ if [[ "$STAGE" == "all" || "$STAGE" == "preprocess" ]]; then
 fi
 
 if [[ "$STAGE" == "all" || "$STAGE" == "train" ]]; then
-  echo "开始训练 3d_fullres fold 0 ..."
-  "$VENV/bin/nnUNetv2_train" "$DATASET" 3d_fullres 0
+  echo "开始训练 3d_fullres fold 0 ${TRAIN_ARGS:-} ..."
+  # TRAIN_ARGS="--c" 表示从 checkpoint_latest.pth 续训（不要改 --num_epochs，
+  # 否则余弦学习率调度会与 checkpoint 内的总 epoch 不一致）
+  "$VENV/bin/nnUNetv2_train" "$DATASET" 3d_fullres 0 ${TRAIN_ARGS:-}
 fi
 
 echo "=== [$(date +%H:%M:%S)] stage=$STAGE 完成 ==="

@@ -103,11 +103,15 @@ def build_pair_graph(dets: Detections, t: int, t_next: int,
                      cfg: GraphConfig | None = None,
                      gt_parent: dict[int, int] | None = None,
                      shape: np.ndarray | None = None,
-                     t_total: int | None = None) -> dict:
+                     t_total: int | None = None,
+                     coupling=None) -> dict:
     """构造单对相邻帧的图（含 3 分类边标签）。
 
     `cfg.window > 0` 时额外纳入前后各 window 帧作为**上下文**（其跨帧边不参与
     损失，只提供多步时间信息）——这正是 ideas.pdf §2.0.1 强调的"多步时间上下文"。
+
+    `coupling`：可传入 `pipeline.ot_stage.CouplingArtifacts`，复用上游 OT 阶段
+    已求好的传输计划（Γ）与代价矩阵（C），避免重复求解；为 None 时按 cfg 现场求解。
     """
     cfg = cfg or GraphConfig()
     all_ts = dets.t_range
@@ -133,24 +137,22 @@ def build_pair_graph(dets: Detections, t: int, t_next: int,
     if n_src == 0 or n_dst == 0:
         return {}
 
-    # ---- OT 计划（作为边特征）----
-    cost_cfg = CostConfig(r_max=cfg.r_max, beta=cfg.beta)
-    C, info = build_cost(src_xy, dst_xy, src_vol, dst_vol, None, cost_cfg)
-    a = masses(src_vol, n_src, "uniform")
-    b = masses(dst_vol, n_dst, "uniform")
-    # ε 与代价尺度匹配：代价是平方距离（量级 ~10²），若直接取 eps=1，传输计划
-    # 几乎退化为硬分配 —— 真实分裂边会拿到 0 质量，被式(26) 永久滤除，GNN 无法挽回。
-    finite_cost = C[np.isfinite(C)]
-    eps_eff = (cfg.eps_rel * float(np.median(finite_cost))
-               if cfg.eps_rel is not None and finite_cost.size else cfg.eps)
-    plan = None
-    if cfg.use_ot:
-        if cfg.eta > 0:
-            D, _ = gaussian_knn_graph(src_xy, k=cfg.knn)
-            Dp, _ = gaussian_knn_graph(dst_xy, k=cfg.knn)
-            plan, _ = fused_gw(C, a, b, D, Dp, eta=cfg.eta, eps=eps_eff, n_outer=20)
-        else:
-            plan = sinkhorn_log(C, a, b, eps=eps_eff)
+    # ---- §1.3 OT：优先复用上游 coupling，否则现场求解 ----
+    if coupling is not None:
+        C = np.asarray(coupling.cost, dtype=np.float64)
+        plan = np.asarray(coupling.plan, dtype=np.float64) if cfg.use_ot else None
+        eps_eff = float(getattr(coupling, "eps_eff", cfg.eps))
+        info = dict(getattr(coupling, "info", {}) or {})
+    else:
+        from ..pipeline.config import MeasureConfig, OTConfig
+        from ..pipeline.ot_stage import compute_pairwise_plan
+        art = compute_pairwise_plan(
+            src_xy, dst_xy,
+            OTConfig(alpha=1.0, beta=cfg.beta, r_max=cfg.r_max, eta=cfg.eta,
+                     eps=cfg.eps, eps_rel=cfg.eps_rel),
+            src_vol, dst_vol,
+            measure=MeasureConfig(mass_mode="uniform", knn_k=cfg.knn))
+        C, plan, eps_eff, info = art.cost, art.plan, art.eps_eff, art.info
 
     # ---- 候选边：式(26) 用 OT 传输计划筛选 ----
     #     E^t_time = { (i→j) | Γ_ij ≥ θ_Γ 且 C_ij ≤ θ_C }

@@ -1,0 +1,129 @@
+"""Phase A 接口层测试：配置 schema、消融开关、OT 阶段。"""
+
+from __future__ import annotations
+
+import numpy as np
+import pytest
+
+from celltracker.pipeline import (ABLATIONS, PipelineConfig, apply_ablation,
+                                  load_config, save_config)
+from celltracker.pipeline.ot_stage import compute_pairwise_plan
+from celltracker.pipeline.config import OTConfig
+
+
+def test_default_config_is_paper_faithful():
+    """默认配置应覆盖论文各模块，且默认不启用"论文之外的补充"。"""
+    cfg = PipelineConfig()
+    assert cfg.ot.eta == 0.0                      # FGW 结构项默认关闭
+    assert cfg.ot.tau_a is None                   # 默认平衡 OT
+    assert cfg.ot.alpha_pred == 0.0               # 运动先验默认关闭（两遍式第二步才开）
+    assert cfg.multiscale.enabled is False
+    assert cfg.tracklet.enabled is False
+    assert cfg.graph.cand_from_ot is True         # 式(26) 默认启用
+    assert cfg.measure.mass_mode == "uniform"     # 决策记录 0001
+
+
+def test_ablation_switches_turn_modules_off():
+    cfg = apply_ablation(PipelineConfig(), {"fgw", "multiscale", "ot_cand"})
+    assert cfg.ot.eta == 0.0
+    assert cfg.multiscale.enabled is False
+    assert cfg.graph.cand_from_ot is False
+    assert set(cfg.ablated) == {"fgw", "multiscale", "ot_cand"}
+    # 原配置不被修改（不可变语义）
+    base = PipelineConfig()
+    apply_ablation(base, {"fgw"})
+    assert base.ablated == ()
+
+
+def test_ablation_rejects_unknown_name():
+    with pytest.raises(ValueError, match="未知消融项"):
+        apply_ablation(PipelineConfig(), {"nonexistent"})
+
+
+def test_all_ablation_names_are_implemented():
+    """ABLATIONS 里声明的每一项都必须真的能改到配置。"""
+    for name in ABLATIONS:
+        cfg = apply_ablation(PipelineConfig(), {name})
+        assert name in cfg.ablated
+
+
+def test_config_roundtrip(tmp_path):
+    cfg = PipelineConfig()
+    cfg.ot.eta = 0.3
+    cfg.ot.tau_a = cfg.ot.tau_b = 1.0
+    cfg.multiscale.enabled = True
+    cfg.graph.theta_gamma = 0.05
+    path = save_config(cfg, tmp_path / "cfg.yaml")
+    back = load_config(path)
+    assert back.ot.eta == 0.3
+    assert back.ot.tau_a == 1.0
+    assert back.multiscale.enabled is True
+    assert back.graph.theta_gamma == 0.05
+
+
+def _two_frame_pair(seed=0):
+    rng = np.random.default_rng(seed)
+    src = rng.random((6, 3)) * 20
+    dst = src + rng.normal(0, 2.0, size=(6, 3))
+    return src, dst
+
+
+def test_ot_stage_balanced_vs_unbalanced():
+    src, dst = _two_frame_pair()
+    bal = compute_pairwise_plan(src, dst, OTConfig(eta=0.0, tau_a=None, tau_b=None))
+    unb = compute_pairwise_plan(src, dst, OTConfig(eta=0.0, tau_a=1.0, tau_b=1.0))
+    # 平衡 OT：行和 = a。
+    # 容差说明：ε 取 eps_rel×median(C)（此处 ~10¹）时，交替式 Sinkhorn 的
+    # 边际误差收敛到 ~2e-6（绝对），与 POT 的解最大差 ~1e-6、目标值一致到 4 位；
+    # 该精度比下游阈值（θ_Γ≈0.02）小 4 个数量级，工程上完全够用。
+    np.testing.assert_allclose(bal.plan.sum(axis=1), bal.mass_a, atol=1e-5)
+    # 非平衡：行和不再等于 a（软约束）
+    assert not np.allclose(unb.plan.sum(axis=1), unb.mass_a, atol=1e-3)
+    # τ 很大时应逼近平衡解
+    big = compute_pairwise_plan(src, dst, OTConfig(eta=0.0, tau_a=1e7, tau_b=1e7))
+    np.testing.assert_allclose(big.plan, bal.plan, atol=1e-6)
+
+
+def test_ot_stage_fgw_runs_and_keeps_marginals():
+    src, dst = _two_frame_pair()
+    art = compute_pairwise_plan(src, dst, OTConfig(eta=0.5, tau_a=None, tau_b=None))
+    assert art.plan.shape == (src.shape[0], dst.shape[0])
+    # FGW 的条件梯度会把多次 Sinkhorn 解做凸组合，边际残差比单次 Sinkhorn 略大
+    # （实测 ~1e-5 绝对，仍比下游阈值小 3 个数量级）。
+    np.testing.assert_allclose(art.plan.sum(axis=1), art.mass_a, atol=5e-5)
+    assert art.info["eta"] == 0.5
+
+
+def test_ot_stage_motion_prior_changes_cost():
+    """式(22)：给定时 x̂ 后，代价矩阵应发生变化（α′ 生效）。"""
+    src, dst = _two_frame_pair()
+    pred = src + 3.0                      # 与真实位移不同的外推
+    no_prior = compute_pairwise_plan(src, dst, OTConfig(alpha_pred=0.0))
+    with_prior = compute_pairwise_plan(src, dst, OTConfig(alpha_pred=1.0), pred_xy=pred)
+    assert not np.allclose(no_prior.cost, with_prior.cost)
+    assert with_prior.info["alpha_pred"] == 1.0
+
+
+def test_eps_is_scale_adaptive():
+    """ε 应按代价尺度自适应：坐标放大 2 倍（代价 ×4）时 eps_eff 也应 ×4。
+
+    注意 R_max 门限会破坏自相似性（放大会让远距离配对变成 +inf 被剔除），
+    所以这里同步放大 r_max 以隔离"ε 随代价尺度缩放"这一性质。
+    """
+    src, dst = _two_frame_pair()
+    a = compute_pairwise_plan(src, dst, OTConfig(eps_rel=0.1, r_max=200.0))
+    b = compute_pairwise_plan(src * 2.0, dst * 2.0,
+                              OTConfig(eps_rel=0.1, r_max=800.0))
+    assert b.eps_eff == pytest.approx(4.0 * a.eps_eff, rel=0.05)
+
+
+def test_coupling_roundtrip(tmp_path):
+    from celltracker.pipeline.ot_stage import load_coupling
+
+    src, dst = _two_frame_pair()
+    art = compute_pairwise_plan(src, dst, OTConfig(eta=0.0))
+    path = art.save(tmp_path / "coupling.npz")
+    back = load_coupling(path)
+    np.testing.assert_allclose(back.plan, art.plan, atol=1e-12)
+    np.testing.assert_allclose(back.cost, art.cost, atol=1e-12)
+    assert back.eps_eff == pytest.approx(art.eps_eff)
