@@ -1,0 +1,38 @@
+{
+  "gt_objects": 23802,
+  "res_objects": 23802,
+  "matched": 23802,
+  "fn": 0,
+  "fp": 0,
+  "detection_recall": 1.0,
+  "detection_precision": 1.0,
+  "id_switches": 80,
+  "fragmentation": 377,
+  "gt_tracks": 720,
+  "frames_evaluated": 195,
+  "division_gt": 358,
+  "division_pred": 106,
+  "division_recall": 0.8435754189944135,
+  "division_precision": 0.9716981132075472,
+  "experiment": "B2e_unbalanced_weak_eval",
+  "dataset": "Fluo-N3DH-CE",
+  "seq": "01",
+  "decision": "gnn",
+  "ablated": [],
+  "checkpoint": {
+    "path": "/home/henry/ot_idea/CellTracker/experiments/B2e_unbalanced_weak_train/artifacts/model/best.pt",
+    "md5": "98fa0656e842fca2cf665f31b4c194c9",
+    "size_bytes": 423053,
+    "belongs_to_experiment": "B2e_unbalanced_weak_train"
+  },
+  "n_tracks_pred": 1017,
+  "local_SEG": 0.0,
+  "pipeline_info": {
+    "n_frames": 195,
+    "ablated": [],
+    "n_couplings": 194,
+    "decision": "gnn",
+    "tracks_after_decision": 1017,
+    "tracks_final": 1017
+  }
+}

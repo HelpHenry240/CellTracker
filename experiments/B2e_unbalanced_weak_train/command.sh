@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+# 复现命令（自动记录）
+/home/henry/ot_idea/CellTracker/scripts/run_gnn.py train --graphs /home/henry/ot_idea/CellTracker/data/interim/graphs_01_unbalanced_weak --exp-id B2e_unbalanced_weak_train --epochs 60

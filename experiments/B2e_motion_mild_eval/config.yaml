@@ -1,0 +1,28 @@
+experiment_id: B2e_motion_mild_eval
+date: '2026-09-19'
+purpose: pipeline 评测
+params:
+  h5: data/interim/Fluo-N3DH-CE_01.h5
+  ckpt: /home/henry/ot_idea/CellTracker/experiments/B2e_motion_mild_train/artifacts/model/best.pt
+  ablate: ''
+  frames: null
+argv:
+- /home/henry/ot_idea/CellTracker/scripts/eval_pipeline.py
+- --h5
+- data/interim/Fluo-N3DH-CE_01.h5
+- --dataset
+- Fluo-N3DH-CE
+- --seq
+- '01'
+- --exp-id
+- B2e_motion_mild_eval
+- --config
+- /home/henry/ot_idea/CellTracker/configs/pipeline_default.yaml
+- --ckpt
+- /home/henry/ot_idea/CellTracker/experiments/B2e_motion_mild_train/artifacts/model/best.pt
+- --set
+- ot.alpha_pred=0.2
+- --official
+seed: 20260915
+status: done
+summary: tracks=1257 decision=gnn
