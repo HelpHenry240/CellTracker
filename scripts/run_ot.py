@@ -24,7 +24,8 @@ from celltracker.eval.local_metrics import seg_measure  # noqa: E402
 from celltracker.experiment import Experiment  # noqa: E402
 from celltracker.track import Detections, paint_result  # noqa: E402
 from celltracker.track.ot_tracker import OTTrackConfig, run_tracking_ot  # noqa: E402
-from celltracker.track.tracklets import TrackletMergeConfig, merge_tracklets  # noqa: E402
+from celltracker.pipeline.tracklet_stage import link_tracklets  # noqa: E402
+from celltracker.pipeline.config import TrackletConfig  # noqa: E402
 
 import h5py  # noqa: E402
 import numpy as np  # noqa: E402
@@ -99,11 +100,12 @@ def main() -> None:
         result = run_tracking_ot(dets, cfg)
     exp.log(f"predicted tracks={result.n_tracks()}")
     if args.merge_tracklets:
-        result = merge_tracklets(dets, result,
-                                 TrackletMergeConfig(max_gap=args.merge_max_gap,
-                                                     r_max=args.merge_rmax))
-        exp.log(f"二层合并后 tracks={result.n_tracks()} "
-                f"(merged_pairs={result.meta.get('merged_pairs')})")
+        tr_res = link_tracklets(
+            dets, result,
+            TrackletConfig(enabled=True, max_gap=args.merge_max_gap,
+                           r_max=args.merge_rmax))
+        result = tr_res.result
+        exp.log(f"第二层 tracklet OT: {tr_res.info}")
 
     res_dir = exp.artifact_dir("submission") / f"{args.seq}_RES"
     mip_frame = ts[len(ts) // 2]

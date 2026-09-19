@@ -84,6 +84,13 @@ class TrackletConfig:
     r_max: float = 30.0            # 门限（实际门限 = r_max × gap）
     velocity_weight: float = 1.0
     merge_division_children: bool = False
+    theta_link: float = 0.2        # 第二层 OT 的行归一化质量下限（接受关联）
+    tau: float = 0.5               # 第二层用**非平衡** OT：轨迹可在此终止/起始
+    # 关键格式约束：CTC 要求轨迹在起止帧之间**每帧都出现**。
+    # 因此只有 gap==1（前后紧邻）的合并天然合法；gap>1 会留下帧空洞，
+    # 提交时会被格式校验拆回去（实测：19 个连接里 16 个被拆断）。
+    # 若要支持跨空洞的遮挡恢复，必须**在空洞帧里补出检测/掩码**（见 Phase C）。
+    allow_gap_filling: bool = False
 
 
 @dataclass
