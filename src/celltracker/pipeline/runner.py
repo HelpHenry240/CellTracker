@@ -133,12 +133,17 @@ def ot_rule_reconstruct(dets: Detections, couplings: dict[int, CouplingArtifacts
 def run_pipeline(h5_path: str | Path, cfg: PipelineConfig,
                  frames: list[int] | None = None,
                  artifacts_dir: str | Path | None = None,
-                 gnn=None) -> PipelineRun:
+                 gnn=None,
+                 dump_graphs: str | Path | None = None) -> PipelineRun:
     """按论文顺序执行 pipeline。
 
     `gnn`：为 None 时走 §1.6 的 OT 规则重建（消融对照）；
            否则应为可调用对象 `gnn(dets, couplings, cfg) -> TrackResult`，
            由 `gnn/` 侧提供（Phase B 接入训练好的模型）。
+
+    `dump_graphs`：给定目录时，把**本次耦合**导出的图数据集写盘
+    （格式与 `graph.build_dataset` 一致，可直接喂给 `run_gnn.py train`）。
+    消融实验必须走这条路径，才能保证"训练用的图"与"评测用的耦合"同源。
     """
     h5_path = Path(h5_path)
     dets = Detections.from_h5(h5_path)
@@ -192,6 +197,13 @@ def run_pipeline(h5_path: str | Path, cfg: PipelineConfig,
     else:
         track_result = ot_rule_reconstruct(dets, couplings, cfg)
         info["decision"] = "ot_rule"
+
+    # ---- 可选：导出一致的图数据集（供 GNN 训练；消融实验必需）----
+    if dump_graphs is not None:
+        graph_dir = Path(dump_graphs)
+        graph_dir.mkdir(parents=True, exist_ok=True)
+        n_written = _dump_graphs(dets, couplings, cfg, graph_dir, h5_path)
+        info["dumped_graphs"] = {"dir": str(graph_dir), "n_pairs": n_written}
     info["tracks_after_decision"] = track_result.n_tracks()
 
     # ---- §1.6 第二层 tracklet OT ----
@@ -225,3 +237,42 @@ def _ot_only_run(dets: Detections, cfg: PipelineConfig, alpha_pred: float) -> Tr
                                    measure=cfg1.measure)
         for pos, (t, t_next) in enumerate(zip(ts[:-1], ts[1:]))}
     return ot_rule_reconstruct(dets, couplings, cfg1)
+
+
+def _dump_graphs(dets: Detections, couplings, cfg: PipelineConfig,
+                 graph_dir: Path, h5_path: Path) -> int:
+    """把当前耦合导成图数据集（与 `graph.build_dataset` 同格式，可直接训练）。
+
+    需要的 GT 血缘（边标签）从 h5 读；图构建配置由 pipeline 配置段映射
+    （`gnn.adapter.graph_cfg_from_pipeline`，单一配置源）。
+    """
+    import h5py
+
+    from ..graph.build import build_pair_graph
+    from ..gnn.adapter import graph_cfg_from_pipeline
+
+    graph_cfg = graph_cfg_from_pipeline(cfg)
+    ts = dets.t_range
+    with h5py.File(h5_path, "r") as f:
+        gt = np.asarray(f["tracks"]) if "tracks" in f else np.zeros(
+            0, dtype=[("label", "i4"), ("begin", "i4"), ("end", "i4"), ("parent", "i4")])
+    gt_parent = {int(l): int(p) for l, p in zip(gt["label"], gt["parent"])} if len(gt) else {}
+    shape = dets.meta.get("shape")
+
+    n = 0
+    for pos in sorted(couplings):
+        if pos + 1 >= len(ts):
+            continue
+        t, t_next = ts[pos], ts[pos + 1]
+        g = build_pair_graph(dets, t, t_next, graph_cfg, gt_parent, shape, len(ts),
+                             coupling=couplings[pos])
+        if not g:
+            continue
+        np.savez_compressed(graph_dir / f"pair_{t:04d}.npz", **g)
+        n += 1
+    import json
+    (graph_dir / "meta.json").write_text(json.dumps(
+        {"n_pairs": n, "config": {"graph": vars(cfg.graph), "ot": vars(cfg.ot),
+                                  "ablated": list(cfg.ablated)},
+         "source_h5": str(h5_path)}, ensure_ascii=False, indent=2))
+    return n

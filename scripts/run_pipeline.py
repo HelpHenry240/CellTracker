@@ -73,6 +73,8 @@ def main() -> None:
     ap.add_argument("--config", default=None, help="从 yaml 载入基础配置")
     ap.add_argument("--set", nargs="*", default=[], help="覆盖配置，如 ot.eta=0.3")
     ap.add_argument("--ablate", default="", help="逗号分隔的消融项")
+    ap.add_argument("--dump-graphs", default=None,
+                    help="导出本次耦合对应的图数据集（供 GNN 训练；消融实验必需）")
     args = ap.parse_args()
 
     cfg = load_config(args.config) if args.config else PipelineConfig()
@@ -91,7 +93,8 @@ def main() -> None:
                              "ablate": args.ablate})
     save_config(cfg, exp.dir / "pipeline_config.yaml")
     run = run_pipeline(args.h5, cfg, frames=frames,
-                       artifacts_dir=exp.artifact_dir("pipeline"))
+                       artifacts_dir=exp.artifact_dir("pipeline"),
+                       dump_graphs=args.dump_graphs)
     exp.log(f"pipeline info: {run.info}")
     exp.save_metrics({"info": run.info, "n_tracks": run.track_result.n_tracks()})
     exp.finish(summary=f"tracks={run.track_result.n_tracks()} "
