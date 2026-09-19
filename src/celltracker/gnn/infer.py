@@ -14,7 +14,17 @@ from .data import PairDataset, collate
 from .fusion import conditional_division_prob, fused_existence, move_division_scores
 from .model import EdgeGNN, ModelConfig, N_CLASSES
 
-__all__ = ["InferConfig", "predict_pairs", "reconstruct_tracks"]
+__all__ = ["InferConfig", "predict_pairs", "predict_from_couplings",
+           "reconstruct_tracks", "load_model"]
+
+
+def load_model(checkpoint: str | Path, device: str = "cpu") -> EdgeGNN:
+    """载入训练好的边分类模型。"""
+    ckpt = torch.load(checkpoint, map_location=device, weights_only=False)
+    model = EdgeGNN(ModelConfig(**ckpt["model_config"])).to(device)
+    model.load_state_dict(ckpt["model"])
+    model.eval()
+    return model
 
 
 @dataclass
@@ -39,10 +49,7 @@ class InferConfig:
 def predict_pairs(checkpoint: str | Path, graph_root: str | Path,
                   batch_pairs: int = 16, device: str = "cpu") -> dict[int, dict]:
     """对图数据集里的每一对帧输出候选边的类别概率。"""
-    ckpt = torch.load(checkpoint, map_location=device, weights_only=False)
-    model = EdgeGNN(ModelConfig(**ckpt["model_config"])).to(device)
-    model.load_state_dict(ckpt["model"])
-    model.eval()
+    model = load_model(checkpoint, device)
 
     ds = PairDataset(graph_root, split="train", val_fraction=0.0)
     ds.sel = sorted(Path(graph_root).glob("pair_*.npz"))   # 全部帧对
@@ -69,6 +76,77 @@ def predict_pairs(checkpoint: str | Path, graph_root: str | Path,
             }
             offset += n_cand
     return out
+
+
+@torch.no_grad()
+def predict_from_couplings(dets, couplings, checkpoint: str | Path,
+                           graph_cfg=None, batch_pairs: int = 8,
+                           device: str = "cpu") -> dict[int, dict]:
+    """**B0 适配层**：直接在内存里用上游 OT 阶段产出的耦合构图并推理。
+
+    与 `predict_pairs`（从磁盘读图数据集）的区别：这里不再经过 `build_dataset`
+    的磁盘往返，因此 GNN 可以无缝插进 `pipeline.runner` 的主链路。
+
+    返回结构与 `predict_pairs` 一致（键为帧号 t），可直接喂给 `reconstruct_tracks`。
+    """
+    from ..graph.build import GraphConfig, build_pair_graph
+    from .data import collate
+
+    graph_cfg = graph_cfg or GraphConfig()
+    ts = dets.t_range
+    shape = dets.meta.get("shape")
+    t_total = len(ts)
+    model = load_model(checkpoint, device)
+
+    items, keys = [], []
+    for pos in sorted(couplings):
+        if pos + 1 >= len(ts):
+            continue
+        t, t_next = ts[pos], ts[pos + 1]
+        g = build_pair_graph(dets, t, t_next, graph_cfg, None, shape, t_total,
+                             coupling=couplings[pos])
+        if not g:
+            continue
+        items.append(_graph_to_item(g))
+        keys.append(t)
+    if not items:
+        return {}
+
+    out: dict[int, dict] = {}
+    for start in range(0, len(items), batch_pairs):
+        chunk = items[start:start + batch_pairs]
+        batch = collate(chunk)
+        batch = {k: (v.to(device) if torch.is_tensor(v) else v)
+                 for k, v in batch.items()}
+        logits = model(batch["node_feat"], batch["edge_index"], batch["edge_feat"])
+        prob = torch.softmax(logits[batch["cand_mask"]], dim=-1).cpu().numpy()
+        cand = batch["cand_feat"].cpu().numpy()
+        offset = 0
+        for it, t in zip(chunk, keys[start:start + batch_pairs]):
+            n_cand = it["cand_feat"].shape[0]
+            out[t] = {"prob": prob[offset:offset + n_cand],
+                      "feat": cand[offset:offset + n_cand],
+                      "pairs": it["cand_edges"].numpy(),
+                      "t_next": int(t + 1),
+                      "n_src": int(it["meta"]["n_src"]),
+                      "n_dst": int(it["meta"]["n_dst"])}
+            offset += n_cand
+    return out
+
+
+def _graph_to_item(g: dict) -> dict:
+    """把 `build_pair_graph` 的输出转成 `collate` 期望的 item 结构。"""
+    return {
+        "node_feat": torch.from_numpy(g["node_feat"]),
+        "edge_index": torch.from_numpy(g["edge_index"].astype(np.int64)),
+        "edge_feat": torch.from_numpy(g["edge_feat"]),
+        "is_target": torch.from_numpy(g["is_target"]),
+        "label": torch.from_numpy(g["cand_label"]),
+        "cand_feat": torch.from_numpy(g["cand_feat"]),
+        "cand_edges": torch.from_numpy(g["cand_edges"].astype(np.int64)),
+        "meta": {"t": int(g["t"]), "n_src": int(g["n_src"]),
+                 "n_dst": int(g["n_dst"])},
+    }
 
 
 def reconstruct_tracks(dets: Detections, preds: dict[int, dict],

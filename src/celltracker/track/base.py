@@ -18,6 +18,9 @@ class Detections:
     """
 
     frames: dict[int, dict[str, np.ndarray]] = field(default_factory=dict)
+    # 序列级元信息（如 `shape`：体数据尺寸，用于节点特征归一化）；
+    # `from_h5` 会自动填入，便于下游阶段（如图构建）不需要额外的 h5 句柄。
+    meta: dict = field(default_factory=dict)
 
     @property
     def t_range(self) -> list[int]:
@@ -42,7 +45,12 @@ class Detections:
         import h5py
 
         out: dict[int, dict[str, np.ndarray]] = {}
+        meta: dict = {}
         with h5py.File(h5_path, "r") as f:
+            if "shape" in f.attrs:
+                meta["shape"] = np.asarray([int(x) for x in f.attrs["shape"]], dtype=float)
+            meta["name"] = str(f.attrs.get("name", ""))
+            meta["seq"] = str(f.attrs.get("seq", ""))
             keys = sorted(f["frames"].keys())
             for key in keys:
                 t = int(key)
@@ -55,7 +63,7 @@ class Detections:
                     "volume": np.asarray(g["volume"], dtype=float),
                     "intensity_mean": np.asarray(g["intensity_mean"], dtype=float),
                 }
-        return cls(out)
+        return cls(out, meta=meta)
 
 
 @dataclass
