@@ -1,0 +1,8 @@
+{
+  "n_frames": 71,
+  "ablated": [],
+  "n_couplings": 70,
+  "decision": "ot_rule",
+  "tracks_after_decision": 388,
+  "tracks_final": 388
+}

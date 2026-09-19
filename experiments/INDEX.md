@@ -36,3 +36,4 @@
 | **A6** | 2026-09-19 | PhaseA | **统一 runner + 接口收口（Phase A 完成）** | 见目录 | 七阶段端到端跑通（9 帧 74 秒）；消融/配置接口齐备 | — | 修 OT 规则阈值语义错位；多尺度线搜索性能问题待 Phase B 优化 | `experiments/A6_pipeline_runner/` |
 | **B0** | 2026-09-19 | PhaseB | **GNN 接入主链路（适配层）** | 见目录 | GNN 路径 510 轨迹 / OT 规则 634（16 帧，仅验证链路） | — | 单一配置源；消融开关可切换决策阶段 | `experiments/B0_gnn_adapter/` |
 | **B1** | 2026-09-19 | PhaseB | **论文口径训练 GNN + 全链路评测（目前最好）** | 见目录 | **DET 1.000000 / TRA 0.996513**，AOGM 954.5（比基线低 21%） | — | 严格按论文口径即带来实质提升：ED 90→58、碎片 301→174 | `experiments/B1_gnn_paper_ce01/` |
+| **B2** | 2026-09-19 | PhaseB | **消融矩阵首批（GNN / tracklet）** | 见目录 | OT规则 0.993135 / GNN 0.996513 / **GNN+tracklet 0.996622** | — | GNN 贡献 +0.0034（手工规则找不到好工作点）；tracklet 使碎片 174→79 | `experiments/B2_ablation_ce01/` |

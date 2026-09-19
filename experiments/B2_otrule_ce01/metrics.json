@@ -1,0 +1,32 @@
+{
+  "gt_objects": 23802,
+  "res_objects": 23802,
+  "matched": 23802,
+  "fn": 0,
+  "fp": 0,
+  "detection_recall": 1.0,
+  "detection_precision": 1.0,
+  "id_switches": 255,
+  "fragmentation": 2675,
+  "gt_tracks": 720,
+  "frames_evaluated": 195,
+  "division_gt": 358,
+  "division_pred": 1533,
+  "division_recall": 0.5977653631284916,
+  "division_precision": 0.07566862361382909,
+  "experiment": "B2_otrule_ce01",
+  "dataset": "Fluo-N3DH-CE",
+  "seq": "01",
+  "decision": "ot_rule",
+  "ablated": [],
+  "n_tracks_pred": 3142,
+  "local_SEG": 0.0,
+  "pipeline_info": {
+    "n_frames": 195,
+    "ablated": [],
+    "n_couplings": 194,
+    "decision": "ot_rule",
+    "tracks_after_decision": 3142,
+    "tracks_final": 3142
+  }
+}

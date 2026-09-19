@@ -47,6 +47,8 @@ def main() -> None:
     ap.add_argument("--exp-id", required=True)
     ap.add_argument("--config", default=str(ROOT / "configs" / "pipeline_default.yaml"))
     ap.add_argument("--ablate", default="")
+    ap.add_argument("--set", nargs="*", default=[],
+                    help="覆盖配置，如 tracklet.enabled=true ot.eta=0.3")
     ap.add_argument("--ckpt", default=None, help="GNN 权重；不给则走 §1.6 OT 规则")
     ap.add_argument("--frames", default=None, help="帧范围，如 120:190（冒烟用）")
     ap.add_argument("--official", action="store_true", help="调用云端官方 DTI/SEG/TRA")
@@ -54,6 +56,9 @@ def main() -> None:
     args = ap.parse_args()
 
     cfg = load_config(args.config)
+    if args.set:
+        from run_pipeline import _set_dotted
+        cfg = _set_dotted(cfg, args.set)
     if args.ablate:
         cfg = apply_ablation(cfg, [s for s in args.ablate.split(",") if s])
 

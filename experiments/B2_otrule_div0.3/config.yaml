@@ -1,0 +1,25 @@
+experiment_id: B2_otrule_div0.3
+date: '2026-09-19'
+purpose: pipeline 评测
+params:
+  h5: data/interim/Fluo-N3DH-CE_01.h5
+  ckpt: null
+  ablate: ''
+  frames: 120:190
+argv:
+- scripts/eval_pipeline.py
+- --h5
+- data/interim/Fluo-N3DH-CE_01.h5
+- --dataset
+- Fluo-N3DH-CE
+- --seq
+- '01'
+- --exp-id
+- B2_otrule_div0.3
+- --frames
+- 120:190
+- --set
+- reconstruct.div_ratio=0.3
+seed: 20260915
+status: done
+summary: tracks=1610 decision=ot_rule
