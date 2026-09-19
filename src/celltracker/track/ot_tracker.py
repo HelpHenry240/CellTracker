@@ -35,6 +35,7 @@ class OTTrackConfig:
     theta_gamma: float = 0.2         # θ_Γ：接受关联所需的最小归一化传输质量（式 24）
     theta_c: float | None = None     # θ_C：最大允许位移；None 时用 cost.r_max
     n_outer: int = 40                # FGW 条件梯度外层迭代
+    eps_rel: float | None = 0.1      # ε 按代价尺度自适应（见 pipeline/ot_stage.py）
     use_velocity: bool = False
     velocity_weight: float = 1.0
     div_ratio: float = 0.25          # 分裂判定：一行中显著目标的最小质量占比
@@ -82,27 +83,28 @@ def run_tracking_ot(dets: Detections, cfg: OTTrackConfig | None = None) -> Track
         src_ids = assignment[t_prev]
         n_src, n_dst = src_xy.shape[0], dst_xy.shape[0]
 
+        # 运动先验（式20-22）：用上一帧建立的关联估计速度并外推位置
         pred_xy = None
         if cfg.use_velocity:
             v = np.array([velocity.get(int(i), np.zeros_like(dst_xy[0])) for i in src_ids])
             pred_xy = src_xy + v
-        cost_cfg = cfg.cost
-        if pred_xy is not None:
-            cost_cfg = CostConfig(**{**cfg.cost.__dict__,
-                                     "alpha_pred": cfg.velocity_weight,
-                                     "alpha": 1.0})
-        C, info = build_cost(src_xy, dst_xy, src_vol, dst_vol, pred_xy, cost_cfg)
 
-        a = masses(src_vol, n_src, cfg.mass_mode)
-        b = masses(dst_vol, n_dst, cfg.mass_mode)
-
-        if cfg.eta > 0:
-            D, _ = gaussian_knn_graph(src_xy, k=cfg.knn_k)
-            Dp, _ = gaussian_knn_graph(dst_xy, k=cfg.knn_k)
-            P, _ = fused_gw(C, a, b, D, Dp, eta=cfg.eta, eps=cfg.eps,
-                            tau_a=cfg.tau_a, tau_b=cfg.tau_b, n_outer=cfg.n_outer)
-        else:
-            P = sinkhorn_log(C, a, b, eps=cfg.eps, tau_a=cfg.tau_a, tau_b=cfg.tau_b)
+        # 统一走 pipeline 的 OT 阶段（与图构建共用同一实现，避免"一个模块两套代码"）
+        from ..pipeline.config import MeasureConfig, OTConfig
+        from ..pipeline.ot_stage import compute_pairwise_plan
+        ot_cfg = OTConfig(
+            alpha=1.0, beta=cfg.cost.beta, sigma_s=cfg.cost.sigma_s,
+            r_max=cfg.cost.r_max,
+            alpha_pred=cfg.velocity_weight if pred_xy is not None else 0.0,
+            eta=cfg.eta, eps=cfg.eps,
+            eps_rel=getattr(cfg, "eps_rel", None),
+            tau_a=cfg.tau_a, tau_b=cfg.tau_b)
+        art = compute_pairwise_plan(
+            src_xy, dst_xy, ot_cfg, src_vol, dst_vol, pred_xy=pred_xy,
+            measure=MeasureConfig(mass_mode=cfg.mass_mode, knn_k=cfg.knn_k))
+        P, C = art.plan, art.cost
+        info = {"d_cur": art.d_cur if art.d_cur is not None else
+                np.linalg.norm(src_xy[:, None, :] - dst_xy[None, :, :], axis=-1)}
 
         Rn, row_sum = _row_normalize(P)
         col_sum = P.sum(axis=0)

@@ -34,6 +34,13 @@ def main() -> None:
     ap.add_argument("--theta-gamma", default="0.0,0.02,0.05,0.1,0.2")
     ap.add_argument("--r-max", type=float, default=30.0)
     ap.add_argument("--frames", default="60,120,170")
+    ap.add_argument("--eta", type=float, default=0.0,
+                    help="式(9) FGW 结构项权重（>0 启用）")
+    ap.add_argument("--tau", type=float, default=None,
+                    help="式(14) 非平衡 OT 的 KL 惩罚（不给=平衡 OT）")
+    ap.add_argument("--topk", type=int, default=3,
+                    help="工程补充：每行额外保留质量前 k（0=关闭）")
+    ap.add_argument("--eps-rel", type=float, default=0.1)
     args = ap.parse_args()
 
     dets = Detections.from_h5(args.h5)
@@ -48,7 +55,8 @@ def main() -> None:
           f"{'none 保留':>10s}")
     for tg in [float(x) for x in args.theta_gamma.split(",")]:
         cfg = GraphConfig(r_max=args.r_max, use_ot=True, cand_from_ot=True,
-                          theta_gamma=tg)
+                          theta_gamma=tg, eta=args.eta, eps_rel=args.eps_rel,
+                          cand_topk=args.topk)
         n_cand = keep = tot = 0
         per_class = {LABEL_MOVE: [0, 0], LABEL_DIV: [0, 0], 0: [0, 0]}
         for pos, t in enumerate(ts[:-1]):

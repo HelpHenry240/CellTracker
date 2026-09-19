@@ -43,6 +43,9 @@ class CouplingArtifacts:
     mass_b: np.ndarray
     eps_eff: float
     info: dict = field(default_factory=dict)
+    # 位移矩阵 (n_src, n_dst)（式8 的 ‖x_i−x_j‖，下游用于 θ_C 门限与诊断）。
+    # 单独成字段而不放进 info，避免把大数组写进 json。
+    d_cur: np.ndarray | None = None
 
     @property
     def rnorm(self) -> np.ndarray:
@@ -106,6 +109,7 @@ def compute_pairwise_plan(
 
     art = CouplingArtifacts(
         plan=plan, cost=C, mass_a=a, mass_b=b, eps_eff=eps_eff,
+        d_cur=info.pop("d_cur", None),
         info={"eta": cfg.eta, "tau_a": cfg.tau_a, "tau_b": cfg.tau_b,
               "alpha_pred": cfg.alpha_pred, "r_max": cfg.r_max,
               "n_candidates": int(np.isfinite(C).sum()), **extra})
@@ -120,7 +124,9 @@ def save_coupling(art: CouplingArtifacts, path: str | Path) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(path, plan=art.plan, cost=art.cost,
                         mass_a=art.mass_a, mass_b=art.mass_b,
-                        eps_eff=np.array([art.eps_eff]))
+                        eps_eff=np.array([art.eps_eff]),
+                        d_cur=(art.d_cur if art.d_cur is not None
+                               else np.zeros((0, 0))))
     path.with_suffix(".json").write_text(
         json.dumps(art.info, ensure_ascii=False, indent=2, default=str))
     return path
@@ -133,4 +139,5 @@ def load_coupling(path: str | Path) -> CouplingArtifacts:
     info = json.loads(info_path.read_text()) if info_path.exists() else {}
     return CouplingArtifacts(plan=z["plan"], cost=z["cost"], mass_a=z["mass_a"],
                              mass_b=z["mass_b"], eps_eff=float(z["eps_eff"][0]),
-                             info=info)
+                             info=info,
+                             d_cur=(z["d_cur"] if z["d_cur"].size else None))

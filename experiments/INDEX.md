@@ -29,3 +29,4 @@
 | E4.2d | 2026-09-16 | P4 | **GNN 追踪官方评测（首次超过基线）** | 见目录 | **DET 1.000000 / TRA 0.996089**（IDsw 111，div P/R 0.854/0.802） | `training_history`, `diagnostics` | AOGM 1070.5 vs 基线 1206（-11%），ED -79%、EC -74%，**验证 §2.0.1** | `experiments/E4.2d_gnn_ce01_official/` |
 | E4.3 | 2026-09-16 | P4 | GNN 决策阈值扫描（tau_move×tau_div） | 见目录 | tm0.5/td0.5 最优 TRA 0.996089 | — | 提高分裂阈值反而伤 TRA：瓶颈是召回不是精确率；本地指标与 TRA 不单调 | `experiments/E4.3_gnn_threshold_sweep/` |
 | E4.4 | 2026-09-16 | P4 | 多步时间上下文消融（window=1） | 见目录 | TRA 0.996023（略低于 0.996089） | — | **负结果**：原始帧级上下文无收益，多步应落在 tracklet 层 | `experiments/E4.4b_gnn_ctx1_official/` |
+| **A2** | 2026-09-19 | PhaseA | **相邻帧 OT 阶段接入（η/τ）+ 消融** | 见目录 | 先验 AUC: η=0 **0.9931** / η=0.5 0.9870；τ=1 0.9873 | — | 候选覆盖度与 η/τ 无关；η/τ 均略降先验判别力；ε 与手工阈值强耦合 | `experiments/A2_ot_stage_ablation/` |
