@@ -1,4 +1,46 @@
-# E5.1 nnU-Net 3D 分割前端（Fluo-N3DH-CE）
+# E5.1 nnU-Net 3D 分割前端（Fluo-N3DH-CE）—— **训练完成**
+
+## 训练完成（2026-09-19 20:12）
+
+| 项 | 值 |
+| --- | --- |
+| 完成 epoch | **1000 / 1000**（按 nnU-Net 默认协议） |
+| **最优 EMA pseudo Dice** | **0.9605**（验证集 77 例） |
+| 训练总时长 | 分两段：09-16 20:44–23:31（epoch 1–338）+ 09-19 14:31–20:12（续训 339–1000） |
+| 每 epoch 耗时 | 26.5 s（RTX 4090，显存 6.7/24 GB） |
+| 产物 | `checkpoint_best.pth` / `checkpoint_latest.pth` / **`checkpoint_final.pth`** |
+
+### Dice 轨迹（说明"续训"的价值）
+
+| 时间 | epoch | 最优 EMA Dice |
+| --- | --- | --- |
+| 09-16 23:31（当初误判为平台期而停止） | 338 | 0.9530 |
+| 09-19 15:51 | 463 | 0.9531 |
+| 09-19 16:50 | 586 | 0.9550 |
+| 09-19 20:12 | 1000 | **0.9605** |
+
+从"平台期"继续训练后又提升 **+0.0075**，说明当初的停止判断偏早
+（余弦学习率衰减的后段仍有实质收益）。
+
+### 备份
+
+| 位置 | 内容 |
+| --- | --- |
+| 本地 `data/checkpoints/nnunet_ce_fold0/` | `checkpoint_best_ep338.pth`、`checkpoint_final_ep1000.pth` |
+| 云端 `/root/autodl-tmp/nnunet/nnUNet_results/.../fold_0/` | `checkpoint_best.pth`、`checkpoint_latest.pth`、`checkpoint_final.pth` |
+| 训练曲线 | `experiments/E5.1_nnunet_ce/figures/progress_final.png`、`progress_ep1000.png` |
+
+**注意**：checkpoint 约 348 MB/个，不入库（走本地/云端备份）；
+GNN 的 413 KB checkpoint 则已入库。
+
+### 续训命令（若日后需要）
+
+```bash
+# 不要改 --num_epochs，否则余弦学习率调度会与 checkpoint 内的总 epoch 不一致
+nnUNetv2_train 501 3d_fullres 0 --c
+```
+
+## 以下为早期记录（保留）
 
 ## 目的
 
