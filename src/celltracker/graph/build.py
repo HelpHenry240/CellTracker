@@ -127,7 +127,9 @@ def build_pair_graph(dets: Detections, t: int, t_next: int,
 
     src_xy, dst_xy = dets.centroid(t), dets.centroid(t_next)
     src_vol, dst_vol = dets.volume(t), dets.volume(t_next)
-    src_lab, dst_lab = dets.label(t), dets.label(t_next)
+    # 训练 GNN 时用 **GT 轨迹 id** 生成边标签（预测检测的 h5 用 `gt_label` 提供，
+    # 未匹配的检测为 0 → 相关边自然成为负样本，对应假阳性）
+    src_lab, dst_lab = dets.gt_label(t), dets.gt_label(t_next)
     imean_s = dets.frames[t].get("intensity_mean")
     istd_s = dets.frames[t].get("intensity_std")
     imean_d = dets.frames[t_next].get("intensity_mean")

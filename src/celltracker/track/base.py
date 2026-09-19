@@ -35,6 +35,16 @@ class Detections:
     def label(self, t: int) -> np.ndarray:
         return np.asarray(self.frames[t]["label"], dtype=np.int64)
 
+    def gt_label(self, t: int) -> np.ndarray:
+        """检测对应的 GT 轨迹 id。
+
+        预测检测的 h5 通过 `gt_label` 提供（未匹配到 GT 的检测为 0）；
+        普通 GT 的 h5 里「标签即轨迹 id」，故回退到 `label`。
+        训练 GNN 时用它生成边标签（同一轨迹 = 移动边，父子关系 = 分裂边）。
+        """
+        v = self.frames[t].get("gt_label")
+        return np.asarray(v, dtype=np.int64) if v is not None else self.label(t)
+
     def volume(self, t: int) -> np.ndarray:
         v = self.frames[t].get("volume")
         return np.asarray(v, dtype=float) if v is not None else np.ones(self.n(t))
@@ -57,12 +67,16 @@ class Detections:
                 if frames is not None and t not in frames:
                     continue
                 g = f["frames"][key]
-                out[t] = {
+                entry = {
                     "label": np.asarray(g["label"], dtype=np.int64),
                     "centroid": np.asarray(g["centroid"], dtype=float),
                     "volume": np.asarray(g["volume"], dtype=float),
                     "intensity_mean": np.asarray(g["intensity_mean"], dtype=float),
                 }
+                # 预测检测的 h5 额外带 `gt_label`（每个检测对应的 GT 轨迹 id）
+                if "gt_label" in g:
+                    entry["gt_label"] = np.asarray(g["gt_label"], dtype=np.int64)
+                out[t] = entry
         return cls(out, meta=meta)
 
 

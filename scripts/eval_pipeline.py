@@ -42,6 +42,8 @@ from celltracker.track.base import paint_result  # noqa: E402
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--h5", required=True)
+    ap.add_argument("--gt-h5", default=None,
+                    help="GT 所在的 h5（检测来自预测时用；默认与 --h5 相同）")
     ap.add_argument("--dataset", required=True)
     ap.add_argument("--seq", required=True)
     ap.add_argument("--exp-id", required=True)
@@ -100,20 +102,24 @@ def main() -> None:
     ts = dets.t_range
     res_dir = exp.artifact_dir("submission") / f"{args.seq}_RES"
     writer = ResultWriter(res_dir)
-    with h5py.File(args.h5, "r") as f:
-        gt_tracks = np.asarray(f["tracks"]) if "tracks" in f else None
+    gt_h5 = args.gt_h5 or args.h5
+    # 两个来源各司其职：
+    #   --h5    检测/实例来源（GT 标记点，或 nnU-Net 预测拆分后的实例）
+    #   --gt-h5 评测真值（提供 GT 标记用于诊断与 SEG）
+    with h5py.File(args.h5, "r") as f_det, h5py.File(gt_h5, "r") as f_gt:
+        gt_tracks = np.asarray(f_gt["tracks"]) if "tracks" in f_gt else None
         # 传入 GT 血缘，才能计算分裂事件的精确率/召回率
         diag = StreamingDiagnostics(gt_tracks=gt_tracks)
         for t in ts:
-            gt = np.asarray(f[f"frames/{t:04d}/labels"])
-            key = ts.index(t) if t != ts[0] else 0
             ids = run.track_result.assignment.get(t)
             if ids is None:
                 continue
-            res = paint_result(gt, dets.label(t), ids)
+            canvas = np.asarray(f_det[f"frames/{t:04d}/labels"])   # 检测来源的实例体数据
+            gt = np.asarray(f_gt[f"frames/{t:04d}/labels"])        # 评测真值
+            res = paint_result(canvas, dets.label(t), ids)
             writer.add(t, res)
             diag.add_frame(t, gt, res)
-            del gt, res
+            del canvas, gt, res
     writer.close(run.track_result.tracks)
 
     diag_stats = diag.result()
