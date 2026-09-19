@@ -74,7 +74,21 @@ def main() -> None:
     save_config(cfg, exp.dir / "pipeline_config.yaml")
 
     runner = None
+    ckpt_ref = None
     if args.ckpt:
+        # 记录"是哪个模型产生了这组数字"（便于日后选取与复核）
+        import hashlib
+        ckpt_path = Path(args.ckpt)
+        ckpt_ref = {
+            "path": str(ckpt_path),
+            "md5": hashlib.md5(ckpt_path.read_bytes()).hexdigest() if ckpt_path.exists() else None,
+            "size_bytes": ckpt_path.stat().st_size if ckpt_path.exists() else None,
+            "belongs_to_experiment": ckpt_path.parts[-4] if len(ckpt_path.parts) >= 4 else None,
+        }
+        (exp.dir / "checkpoint_ref.json").write_text(
+            __import__("json").dumps(ckpt_ref, ensure_ascii=False, indent=2))
+        exp.log(f"使用 checkpoint: {ckpt_ref['belongs_to_experiment']} "
+                f"md5={ckpt_ref['md5']}")
         runner = make_gnn_runner(args.ckpt, InferConfig(), device="cpu",
                                  artifacts_dir=exp.artifact_dir("gnn"))
     run = run_pipeline(args.h5, cfg, frames=frames,
@@ -109,6 +123,7 @@ def main() -> None:
     metrics = {**diag_stats, "experiment": args.exp_id, "dataset": args.dataset,
                "seq": args.seq, "decision": run.info.get("decision"),
                "ablated": run.info.get("ablated"),
+               "checkpoint": ckpt_ref,
                "n_tracks_pred": run.track_result.n_tracks(),
                "local_SEG": sego, "pipeline_info": run.info}
     exp.save_metrics(metrics)

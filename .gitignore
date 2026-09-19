@@ -20,6 +20,10 @@ data/
 *.ckpt
 checkpoints/
 
+# 例外：GNN 模型极小（约 413 KB/个），入库即可保证"产生报告数字的那个模型"可追溯
+# （nnU-Net 的 348MB checkpoint 不适用，仍走本地/云端备份）
+!experiments/**/artifacts/model/best.pt
+
 # --- 实验结果：默认入库（只增不改），但大二进制产物排除 ---
 experiments/**/artifacts/*.zip
 experiments/**/artifacts/*.tar.gz
