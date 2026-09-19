@@ -1,5 +1,8 @@
 # --- 凭据：绝不入库 ---
 本地文档/
+# 本地行为约束文件（auto-load），不入库
+AGENTS.md
+AGENT.md
 agent.md
 *.pem
 .env
