@@ -1,4 +1,4 @@
-"""多尺度时间一致性与全局目标（ideas.pdf 式 17–19）。
+"""多尺度时间一致性的**基元**（ideas.pdf 式 17–19）。
 
 基础目标（逐对独立求解）::
 
@@ -9,10 +9,13 @@
     R^(k)(P_t..P_{t+k-1}) = || D_{t,t+k} - P_t P_{t+1} ... P_{t+k-1} ||_F^2
 
 其中 `D_{t,t+k}` 是帧 t 与 t+k 之间**直接**求解（可在空间上粗化/下采样）的 OT 耦合。
-本模块提供：
-  - `direct_jump_coupling`：跳帧直接 OT
-  - `temporal_regularizer`：多步复合与直接耦合的不一致度
-  - `multiscale_refine`：交替优化（先逐对求解，再按时间正则梯度微调）
+本模块只提供两个基元：
+  - `direct_jump_coupling`：跳帧直接 OT（式19 的 `D_{t,t+k}`）
+  - `temporal_regularizer`：多步复合与直接耦合的不一致度（式19）
+
+**阶段实现**（交替优化、接入 pipeline 的 CouplingArtifacts 接口）在
+`pipeline/multiscale_stage.py`；此处不再保留第二份精炼实现，
+避免"一个模块两套代码"导致口径漂移。
 """
 
 from __future__ import annotations
@@ -22,19 +25,30 @@ import numpy as np
 from ..cost.features import CostConfig, build_cost, masses
 from .sinkhorn import sinkhorn_log
 
-__all__ = ["direct_jump_coupling", "temporal_regularizer", "multiscale_refine"]
+__all__ = ["direct_jump_coupling", "temporal_regularizer"]
 
 
 def direct_jump_coupling(src_xy: np.ndarray, dst_xy: np.ndarray, gap: int,
-                         cfg: CostConfig, eps: float, tau_a: float | None = None,
-                         tau_b: float | None = None, subsample: int = 0,
-                         rng: np.random.Generator | None = None) -> np.ndarray:
-    """帧 t 与 t+gap 之间的直接 OT 耦合（可选随机下采样以控制复杂度）。"""
-    a = masses(None, src_xy.shape[0], "uniform")
-    b = masses(None, dst_xy.shape[0], "uniform")
-    cfg_jump = CostConfig(**{**cfg.__dict__, "r_max": cfg.r_max * gap})
-    C, _ = build_cost(src_xy, dst_xy, None, None, None, cfg_jump)
-    return sinkhorn_log(C, a, b, eps=eps, tau_a=tau_a, tau_b=tau_b)
+                         ot_cfg, eps: float | None = None,
+                         tau_a: float | None = None,
+                         tau_b: float | None = None) -> np.ndarray:
+    """式(19) 的 `D_{t,t+k}`：帧 t 与 t+gap 之间的**直接** OT 耦合。
+
+    R_max 按 gap 线性放宽（`r_max × gap`），与式(19)"跨 k 帧的直接耦合"一致。
+    统一走 `pipeline.ot_stage.compute_pairwise_plan`，保证与相邻帧 OT 同口径。
+    """
+    from ..pipeline.config import MeasureConfig, OTConfig
+    from ..pipeline.ot_stage import compute_pairwise_plan
+
+    jump_cfg = OTConfig(alpha=ot_cfg.alpha, beta=ot_cfg.beta,
+                        sigma_s=ot_cfg.sigma_s, r_max=ot_cfg.r_max * gap,
+                        alpha_pred=0.0, eta=0.0,
+                        eps=(eps if eps is not None else ot_cfg.eps),
+                        eps_rel=(None if eps is not None else ot_cfg.eps_rel),
+                        tau_a=tau_a, tau_b=tau_b)
+    art = compute_pairwise_plan(src_xy, dst_xy, jump_cfg,
+                                measure=MeasureConfig(mass_mode="uniform"))
+    return art.plan
 
 
 def temporal_regularizer(P_list: list[np.ndarray], t: int, k: int,
@@ -47,79 +61,3 @@ def temporal_regularizer(P_list: list[np.ndarray], t: int, k: int,
         prod = prod @ P_list[t + i]
     return float(np.sum((D_direct - prod) ** 2))
 
-
-def multiscale_refine(dets, pair_cfg, gap_scales=(2, 3), lambdas: dict[int, float] | None = None,
-                      n_rounds: int = 2, eps: float = 1.0,
-                      tau_a: float | None = None, tau_b: float | None = None,
-                      verbose: bool = False) -> dict:
-    """交替优化：逐对求解 → 用多尺度时间正则的梯度微调。
-
-    返回 {"P": {t: P_t}, "history": [...], "reg": {...}}。
-    """
-    ts = dets.t_range
-    n_frames = len(ts)
-    lambdas = lambdas or {k: 0.5 for k in gap_scales}
-    # P[i] = 帧 ts[i] 与 ts[i+1] 之间的耦合，i = 0..n_frames-2
-    P: dict[int, np.ndarray] = {}
-
-    # --- 初始化：逐对（平衡）OT ---
-    cost_cache: dict[int, np.ndarray] = {}
-    for i in range(n_frames - 1):
-        C, _ = build_cost(dets.centroid(ts[i]), dets.centroid(ts[i + 1]),
-                          None, None, None, pair_cfg)
-        cost_cache[i] = C
-        a = masses(None, dets.n(ts[i]), pair_cfg.mass_mode)
-        b = masses(None, dets.n(ts[i + 1]), pair_cfg.mass_mode)
-        P[i] = sinkhorn_log(C, a, b, eps=eps, tau_a=tau_a, tau_b=tau_b)
-
-    # 跳帧直接耦合（每个尺度预计算一次）
-    direct: dict[tuple[int, int], np.ndarray] = {}
-    for i in range(n_frames):
-        for k in gap_scales:
-            if i + k <= n_frames - 1:
-                direct[(i, k)] = direct_jump_coupling(
-                    dets.centroid(ts[i]), dets.centroid(ts[i + k]), k, pair_cfg, eps,
-                    tau_a, tau_b)
-
-    def _prod(idxs) -> np.ndarray:
-        out = P[idxs[0]]
-        for i in idxs[1:]:
-            out = out @ P[i]
-        return out
-
-    history = []
-    for _round in range(n_rounds):
-        reg_total = 0.0
-        for i in range(n_frames - 1):
-            C = cost_cache[i]
-            G = np.where(np.isfinite(C), C, 0.0)
-            # --- P[i] 作为乘积首因子的项：区间 (i, k) ---
-            for k, lam in lambdas.items():
-                if (i, k) not in direct:
-                    continue
-                tail = np.eye(P[i].shape[1]) if k == 1 else _prod(range(i + 1, i + k))
-                D = direct[(i, k)]
-                diff = (P[i] @ tail) - D
-                G = G + lam * 2.0 * (diff @ tail.T)
-                reg_total += lam * float(np.sum(diff ** 2))
-            # --- P[i] 作为乘积中间/末尾因子：区间 (j, k)，j < i <= j+k-1 ---
-            for k, lam in lambdas.items():
-                for j in range(max(0, i - k + 1), i):
-                    if (j, k) not in direct:
-                        continue
-                    head = np.eye(P[j].shape[0]) if j == i else _prod(range(j, i))
-                    tail_idxs = list(range(i + 1, j + k))
-                    tail = np.eye(P[i].shape[1]) if not tail_idxs else _prod(tail_idxs)
-                    D = direct[(j, k)]
-                    diff = (head @ P[i] @ tail) - D
-                    G = G + lam * 2.0 * (head.T @ diff @ tail.T)
-                    reg_total += lam * float(np.sum(diff ** 2))
-            G = np.where(np.isfinite(C), G, np.inf)
-            a = masses(None, dets.n(ts[i]), pair_cfg.mass_mode)
-            b = masses(None, dets.n(ts[i + 1]), pair_cfg.mass_mode)
-            P[i] = sinkhorn_log(G, a, b, eps=eps, tau_a=tau_a, tau_b=tau_b)
-        history.append(reg_total)
-        if verbose:
-            print(f"  round {_round}: temporal regularizer = {reg_total:.6f}")
-
-    return {"P": P, "history": history, "direct": direct}

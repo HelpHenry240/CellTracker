@@ -67,7 +67,11 @@ class MultiscaleConfig:
 
     enabled: bool = False          # 关闭时退化为逐对独立求解
     ks: tuple[int, ...] = (2, 3, 5)  # K：时间尺度集合
-    lambda_temp: float = 0.5       # λ_temp：时间正则权重
+    # λ_temp：时间正则权重。实现里已把正则梯度按量级归一化并缩放到代价尺度，
+    # 所以 λ_temp 的含义是"每轮允许的扰动幅度 = λ_temp × median(C)"。
+    # 交替优化**没有线搜索**，λ_temp 过大会震荡甚至发散（实测 ≥0.5 时正则跳升 3 个量级），
+    # 建议取值区间 [0.01, 0.2]；加入回溯线搜索是 Phase B 的候选改进。
+    lambda_temp: float = 0.1
     n_rounds: int = 2              # 交替优化轮数
 
 
