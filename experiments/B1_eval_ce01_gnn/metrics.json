@@ -1,0 +1,28 @@
+{
+  "gt_objects": 23802,
+  "res_objects": 23802,
+  "matched": 23802,
+  "fn": 0,
+  "fp": 0,
+  "detection_recall": 1.0,
+  "detection_precision": 1.0,
+  "id_switches": 139,
+  "fragmentation": 174,
+  "gt_tracks": 720,
+  "frames_evaluated": 195,
+  "experiment": "B1_eval_ce01_gnn",
+  "dataset": "Fluo-N3DH-CE",
+  "seq": "01",
+  "decision": "gnn",
+  "ablated": [],
+  "n_tracks_pred": 755,
+  "local_SEG": 0.0,
+  "pipeline_info": {
+    "n_frames": 195,
+    "ablated": [],
+    "n_couplings": 194,
+    "decision": "gnn",
+    "tracks_after_decision": 755,
+    "tracks_final": 755
+  }
+}

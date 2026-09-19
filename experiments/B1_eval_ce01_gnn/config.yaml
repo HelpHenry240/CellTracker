@@ -1,0 +1,24 @@
+experiment_id: B1_eval_ce01_gnn
+date: '2026-09-19'
+purpose: pipeline 评测
+params:
+  h5: data/interim/Fluo-N3DH-CE_01.h5
+  ckpt: experiments/B1_gnn_paper_ce01/artifacts/model/best.pt
+  ablate: ''
+  frames: null
+argv:
+- scripts/eval_pipeline.py
+- --h5
+- data/interim/Fluo-N3DH-CE_01.h5
+- --dataset
+- Fluo-N3DH-CE
+- --seq
+- '01'
+- --exp-id
+- B1_eval_ce01_gnn
+- --ckpt
+- experiments/B1_gnn_paper_ce01/artifacts/model/best.pt
+- --official
+seed: 20260915
+status: done
+summary: tracks=755 decision=gnn

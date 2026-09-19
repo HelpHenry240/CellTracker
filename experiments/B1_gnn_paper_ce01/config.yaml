@@ -1,0 +1,21 @@
+experiment_id: B1_gnn_paper_ce01
+date: '2026-09-19'
+purpose: P4 GNN 训练
+params:
+  graphs: data/interim/graphs_ce01_otcand3
+  epochs: 60
+  hidden: 64
+  layers: 3
+  lambda_ot: 0.1
+argv:
+- scripts/run_gnn.py
+- train
+- --graphs
+- data/interim/graphs_ce01_otcand3
+- --exp-id
+- B1_gnn_paper_ce01
+- --epochs
+- '60'
+seed: 20260915
+status: done
+summary: best move_f1=0.992 div_f1=0.521

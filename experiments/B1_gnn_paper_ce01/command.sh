@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+# 复现命令（自动记录）
+scripts/run_gnn.py train --graphs data/interim/graphs_ce01_otcand3 --exp-id B1_gnn_paper_ce01 --epochs 60

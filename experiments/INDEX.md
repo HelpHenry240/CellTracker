@@ -35,3 +35,4 @@
 | **A5** | 2026-09-19 | PhaseA | **第二层 tracklet OT（§1.6）接入** | 见目录 | 接口通过（610→605 轨迹，拆断 0）；CTC 格式合法 | — | 第二层必须非平衡 OT；跨空洞合并受 CTC 格式约束，需 Phase C 补检测 | `experiments/A5_tracklet_ot/` |
 | **A6** | 2026-09-19 | PhaseA | **统一 runner + 接口收口（Phase A 完成）** | 见目录 | 七阶段端到端跑通（9 帧 74 秒）；消融/配置接口齐备 | — | 修 OT 规则阈值语义错位；多尺度线搜索性能问题待 Phase B 优化 | `experiments/A6_pipeline_runner/` |
 | **B0** | 2026-09-19 | PhaseB | **GNN 接入主链路（适配层）** | 见目录 | GNN 路径 510 轨迹 / OT 规则 634（16 帧，仅验证链路） | — | 单一配置源；消融开关可切换决策阶段 | `experiments/B0_gnn_adapter/` |
+| **B1** | 2026-09-19 | PhaseB | **论文口径训练 GNN + 全链路评测（目前最好）** | 见目录 | **DET 1.000000 / TRA 0.996513**，AOGM 954.5（比基线低 21%） | — | 严格按论文口径即带来实质提升：ED 90→58、碎片 301→174 | `experiments/B1_gnn_paper_ce01/` |
