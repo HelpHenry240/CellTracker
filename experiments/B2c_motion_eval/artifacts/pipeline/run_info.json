@@ -1,0 +1,10 @@
+{
+  "n_frames": 195,
+  "ablated": [],
+  "velocity_live": true,
+  "n_with_predecessor": 20660,
+  "n_couplings": 194,
+  "decision": "gnn",
+  "tracks_after_decision": 1139,
+  "tracks_final": 1139
+}

@@ -1,0 +1,46 @@
+{
+  "rows": [
+    {
+      "ablation": "fgw",
+      "overrides": "ot.eta=0.3",
+      "train_experiment": "B2c_fgw_train",
+      "eval_experiment": "B2c_fgw_eval",
+      "checkpoint": "experiments/B2c_fgw_train/artifacts/model/best.pt",
+      "best_move_f1": 0.9948,
+      "best_div_f1": 0.554,
+      "tracks": 1120,
+      "IDsw": 45,
+      "frag": 445,
+      "DET": 1.0,
+      "TRA": 0.995574
+    },
+    {
+      "ablation": "unbalanced",
+      "overrides": "ot.tau_a=1.0,ot.tau_b=1.0",
+      "train_experiment": "B2c_unbalanced_train",
+      "eval_experiment": "B2c_unbalanced_eval",
+      "checkpoint": "experiments/B2c_unbalanced_train/artifacts/model/best.pt",
+      "best_move_f1": 0.9886,
+      "best_div_f1": 0.5141,
+      "tracks": 1269,
+      "IDsw": 34,
+      "frag": 583,
+      "DET": 1.0,
+      "TRA": 0.994229
+    },
+    {
+      "ablation": "motion",
+      "overrides": "ot.alpha_pred=1.0",
+      "train_experiment": "B2c_motion_train",
+      "eval_experiment": "B2c_motion_eval",
+      "checkpoint": "experiments/B2c_motion_train/artifacts/model/best.pt",
+      "best_move_f1": 0.9932,
+      "best_div_f1": 0.5985,
+      "tracks": 1139,
+      "IDsw": 33,
+      "frag": 452,
+      "DET": 1.0,
+      "TRA": 0.995587
+    }
+  ]
+}
