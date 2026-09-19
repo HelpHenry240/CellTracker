@@ -49,7 +49,13 @@ def _row_normalize(P: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     return P / np.maximum(rs, 1e-300), rs[:, 0]
 
 
-def run_tracking_ot(dets: Detections, cfg: OTTrackConfig | None = None) -> TrackResult:
+def run_tracking_ot(dets: Detections, cfg: OTTrackConfig | None = None,
+                    pred_from_detections: bool = False) -> TrackResult:
+    """基于（非平衡）最优传输的追踪。
+
+    `pred_from_detections=True` 时使用**检测表里预置的速度**（两遍式的第二遍，
+    见 `pipeline/motion.py`），而不是边追踪边在线估速。
+    """
     debug = bool(os.environ.get("OT_TRACK_DEBUG"))
 
     def _put(arr: np.ndarray, j: int, val: int, tag: str) -> None:
@@ -83,11 +89,20 @@ def run_tracking_ot(dets: Detections, cfg: OTTrackConfig | None = None) -> Track
         src_ids = assignment[t_prev]
         n_src, n_dst = src_xy.shape[0], dst_xy.shape[0]
 
-        # 运动先验（式20-22）：用上一帧建立的关联估计速度并外推位置
+        # 运动先验（式20-22）：
+        #   pred_from_detections=True → 用 pipeline 两遍式预置的速度（论文口径）
+        #   否则                     → 用本遍追踪过程中在线累积的速度
         pred_xy = None
-        if cfg.use_velocity:
+        cost_alpha_pred = 0.0
+        if pred_from_detections:
+            v_pre = dets.frames[t_prev].get("velocity")
+            if v_pre is not None and cfg.cost.alpha_pred > 0:
+                pred_xy = src_xy + np.asarray(v_pre, dtype=float)
+                cost_alpha_pred = cfg.cost.alpha_pred
+        elif cfg.use_velocity:
             v = np.array([velocity.get(int(i), np.zeros_like(dst_xy[0])) for i in src_ids])
             pred_xy = src_xy + v
+            cost_alpha_pred = cfg.velocity_weight
 
         # 统一走 pipeline 的 OT 阶段（与图构建共用同一实现，避免"一个模块两套代码"）
         from ..pipeline.config import MeasureConfig, OTConfig
@@ -95,7 +110,9 @@ def run_tracking_ot(dets: Detections, cfg: OTTrackConfig | None = None) -> Track
         ot_cfg = OTConfig(
             alpha=1.0, beta=cfg.cost.beta, sigma_s=cfg.cost.sigma_s,
             r_max=cfg.cost.r_max,
-            alpha_pred=cfg.velocity_weight if pred_xy is not None else 0.0,
+            # pred_xy 不为空即启用式(22) 的 α′ 项（取 cost 里配置的 alpha_pred，
+            # 两遍式第二遍由 motion.run_two_pass 设好该值）
+            alpha_pred=(cost_alpha_pred if pred_xy is not None else 0.0),
             eta=cfg.eta, eps=cfg.eps,
             eps_rel=getattr(cfg, "eps_rel", None),
             tau_a=cfg.tau_a, tau_b=cfg.tau_b)

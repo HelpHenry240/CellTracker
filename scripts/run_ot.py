@@ -37,6 +37,10 @@ def main() -> None:
     ap.add_argument("--seq", required=True)
     ap.add_argument("--exp-id", required=True)
     ap.add_argument("--eps", type=float, default=1.0)
+    ap.add_argument("--eps-rel", type=float, default=0.1,
+                    help="ε = eps_rel × median(C)；给 0 则用绝对 --eps")
+    ap.add_argument("--no-eps-rel", action="store_true",
+                    help="禁用自适应 ε，改用绝对 --eps")
     ap.add_argument("--eta", type=float, default=0.0, help="结构项权重（0=纯 OT）")
     ap.add_argument("--tau", type=float, default=None, help="KL 松弛系数（越大越接近平衡）")
     ap.add_argument("--r-max", type=float, default=30.0)
@@ -48,6 +52,8 @@ def main() -> None:
     ap.add_argument("--div-sum-min", type=float, default=0.6)
     ap.add_argument("--velocity", action="store_true")
     ap.add_argument("--velocity-weight", type=float, default=1.0)
+    ap.add_argument("--alpha-pred", type=float, default=0.0,
+                    help="式(22) 运动先验权重 α′；>0 时启用两遍式（pipeline/motion.py）")
     ap.add_argument("--mass-mode", default="uniform", choices=["uniform", "volume"])
     ap.add_argument("--limit-frames", type=int, default=None)
     ap.add_argument("--official", action="store_true")
@@ -61,9 +67,11 @@ def main() -> None:
     cfg = OTTrackConfig(
         cost=CostConfig(alpha=args.alpha, beta=args.beta, r_max=args.r_max,
                         mass_mode=args.mass_mode),
-        eta=args.eta, eps=args.eps, tau_a=args.tau, tau_b=args.tau,
-        knn_k=args.knn, theta_gamma=args.theta_gamma, div_ratio=args.div_ratio,
-        div_sum_min=args.div_sum_min,
+        eta=args.eta, eps=args.eps,
+        eps_rel=(None if args.no_eps_rel else args.eps_rel),
+        tau_a=args.tau, tau_b=args.tau,
+        div_ratio=args.div_ratio, div_sum_min=args.div_sum_min,
+        knn_k=args.knn, theta_gamma=args.theta_gamma,
         use_velocity=args.velocity, velocity_weight=args.velocity_weight,
         mass_mode=args.mass_mode,
     )
@@ -81,7 +89,14 @@ def main() -> None:
     exp.log(f"frames={len(ts)} mean objects/frame="
             f"{np.mean([dets.n(t) for t in ts]):.1f}")
 
-    result = run_tracking_ot(dets, cfg)
+    if args.alpha_pred > 0:
+        from celltracker.pipeline.motion import run_two_pass, velocity_feature_is_live
+        result, pass_info = run_two_pass(dets, cfg, args.alpha_pred)
+        exp.log(f"两遍式: {pass_info}")
+        if not velocity_feature_is_live(dets):
+            raise RuntimeError("运动先验验收失败：速度特征全为 0（死特征）")
+    else:
+        result = run_tracking_ot(dets, cfg)
     exp.log(f"predicted tracks={result.n_tracks()}")
     if args.merge_tracklets:
         result = merge_tracklets(dets, result,
