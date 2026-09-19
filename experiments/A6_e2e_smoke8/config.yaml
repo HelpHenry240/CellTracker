@@ -1,0 +1,23 @@
+experiment_id: A6_e2e_smoke8
+date: '2026-09-19'
+purpose: pipeline 全链路运行
+params:
+  h5: data/interim/Fluo-N3DH-CE_01.h5
+  frames: 150:158
+  ablate: ''
+argv:
+- scripts/run_pipeline.py
+- --h5
+- data/interim/Fluo-N3DH-CE_01.h5
+- --exp-id
+- A6_e2e_smoke8
+- --frames
+- 150:158
+- --config
+- configs/pipeline_default.yaml
+- --set
+- multiscale.enabled=true
+- tracklet.enabled=true
+seed: 20260915
+status: done
+summary: tracks=328 decision=ot_rule

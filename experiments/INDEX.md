@@ -33,3 +33,4 @@
 | **A3** | 2026-09-19 | PhaseA | **运动先验（式20-22）两遍式接入** | 见目录 | 功能验证通过（`velocity_live=True`，23102 个检测有前驱） | — | 死特征已打通；性能消融留到 Phase B | `experiments/A3_motion_prior/` |
 | **A4** | 2026-09-19 | PhaseA | **多尺度时间正则（式17-19）接入** | 见目录 | 接口链路打通（OT→多尺度→图构建）；修 3 个缺陷后精炼生效（计划改变 7/7） | — | 发现质量尺度错配/归一化跳过/无线搜索三个真 bug；下降效率待调优 | `experiments/A4_multiscale/` |
 | **A5** | 2026-09-19 | PhaseA | **第二层 tracklet OT（§1.6）接入** | 见目录 | 接口通过（610→605 轨迹，拆断 0）；CTC 格式合法 | — | 第二层必须非平衡 OT；跨空洞合并受 CTC 格式约束，需 Phase C 补检测 | `experiments/A5_tracklet_ot/` |
+| **A6** | 2026-09-19 | PhaseA | **统一 runner + 接口收口（Phase A 完成）** | 见目录 | 七阶段端到端跑通（9 帧 74 秒）；消融/配置接口齐备 | — | 修 OT 规则阈值语义错位；多尺度线搜索性能问题待 Phase B 优化 | `experiments/A6_pipeline_runner/` |

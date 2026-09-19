@@ -1,0 +1,36 @@
+# 默认 pipeline 配置（论文口径）
+# 用法: python scripts/run_pipeline.py --config configs/pipeline_default.yaml ...
+measure:
+  mass_mode: uniform      # 依据 decisions/0001-mass-uniform-vs-size.md
+  knn_k: 6
+ot:
+  alpha: 1.0
+  beta: 0.0
+  r_max: 30.0
+  alpha_pred: 0.0         # 运动先验（>0 启用两遍式）
+  eta: 0.0                # 式(9) FGW 结构项
+  eps: 1.0
+  eps_rel: 0.1            # ε = 0.1 × median(C)，避免量纲失配
+  tau_a: null             # null = 平衡 OT；给数值则启用式(14) 非平衡
+  tau_b: null
+multiscale:
+  enabled: false          # 式(17-19)
+  ks: [2, 3, 5]
+  lambda_temp: 0.1
+  n_rounds: 2
+tracklet:
+  enabled: false          # §1.6 第二层 OT
+  max_gap: 3
+  r_max: 30.0
+  theta_link: 0.2
+  tau: 0.5
+  allow_gap_filling: false
+graph:
+  cand_from_ot: true      # 式(26)
+  theta_gamma: 0.02
+  cand_topk: 3
+reconstruct:
+  tau_move: 0.5
+  tau_div: 0.5
+  div_ratio: 0.2          # OT 规则重建的分裂判据（与 ε 强耦合，GNN 路径不用）
+detection_source: gt_tra  # Phase C 改为 nnunet

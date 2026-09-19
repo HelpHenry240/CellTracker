@@ -112,6 +112,10 @@ class ReconstructConfig:
     tau_move: float = 0.5          # 接受"移动边"的分数阈值
     tau_div: float = 0.5           # 接受"分裂边"的分数阈值
     max_children: int = 2
+    # OT 规则重建（GNN 关闭时）专用：一行中出现 ≥2 个质量占比 ≥ div_ratio 的目标
+    # 即判为分裂。**注意**：该阈值与 ε 强耦合（ε 越大计划越软，需要越高的 div_ratio），
+    # 见 A2 记录。GNN 路径不使用本字段（分裂由 GNN 概率决定）。
+    div_ratio: float = 0.2
 
 
 @dataclass

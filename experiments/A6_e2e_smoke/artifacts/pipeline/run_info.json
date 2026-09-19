@@ -1,0 +1,33 @@
+{
+  "n_frames": 26,
+  "ablated": [],
+  "velocity_live": true,
+  "n_with_predecessor": 4790,
+  "n_couplings": 25,
+  "multiscale": {
+    "enabled": true,
+    "ks": [
+      2,
+      3,
+      5
+    ],
+    "lambda_temp": 0.1,
+    "n_pairs": 25
+  },
+  "decision": "ot_rule",
+  "tracks_after_decision": 1993,
+  "tracklet": {
+    "enabled": true,
+    "n_tracklets": 1993,
+    "n_links": 70,
+    "n_chains": 59,
+    "tracks_before": 1993,
+    "tracks_after": 1923,
+    "theta_link": 0.2,
+    "ghost_dropped": 0,
+    "segments_split": 0,
+    "parent_fixed": 56,
+    "extra_children_removed": 0
+  },
+  "tracks_final": 1923
+}
