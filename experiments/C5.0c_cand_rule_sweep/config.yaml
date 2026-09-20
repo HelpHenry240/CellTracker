@@ -1,0 +1,14 @@
+experiment_id: C5.0c_cand_rule_sweep
+date: 2026-09-20
+purpose: "候选规则变体：cand_topk / theta_gamma 对分裂事件覆盖的影响"
+seed: 20260915
+params:
+  detections: data/interim/Fluo-N3DH-CE_01_pred_v2.h5（C5.0 修复后的检测）
+  labels: GT 血缘来自 --gt-h5（C5.0b 修复后）
+  variants:
+    base: {cand_topk: 3, theta_gamma: 0.02}
+    topk5: {cand_topk: 5}
+    theta0005: {theta_gamma: 0.005}
+    topk5_theta0005: {cand_topk: 5, theta_gamma: 0.005}
+  metric: 事件级漏斗（一次分裂要求两个子目标都进入候选/决策/重建）
+status: 待官方指标裁决（本地指标混合）

@@ -1,0 +1,27 @@
+experiment_id: C5.0c_topk5_local
+date: '2026-09-20'
+purpose: pipeline 评测
+params:
+  h5: data/interim/Fluo-N3DH-CE_01_pred_v2.h5
+  ckpt: experiments/C5.0c_topk5_train/artifacts/model/best.pt
+  ablate: ''
+  frames: null
+argv:
+- scripts/eval_pipeline.py
+- --h5
+- data/interim/Fluo-N3DH-CE_01_pred_v2.h5
+- --gt-h5
+- data/interim/Fluo-N3DH-CE_01.h5
+- --dataset
+- Fluo-N3DH-CE
+- --seq
+- '01'
+- --exp-id
+- C5.0c_topk5_local
+- --set
+- graph.cand_topk=5
+- --ckpt
+- experiments/C5.0c_topk5_train/artifacts/model/best.pt
+seed: 20260915
+status: done
+summary: tracks=4304 decision=gnn

@@ -1,0 +1,22 @@
+experiment_id: C5.0c_topk5_graphs
+date: '2026-09-20'
+purpose: pipeline 全链路运行
+params:
+  h5: data/interim/Fluo-N3DH-CE_01_pred_v2.h5
+  frames: null
+  ablate: ''
+argv:
+- scripts/run_pipeline.py
+- --h5
+- data/interim/Fluo-N3DH-CE_01_pred_v2.h5
+- --gt-h5
+- data/interim/Fluo-N3DH-CE_01.h5
+- --exp-id
+- C5.0c_topk5_graphs
+- --set
+- graph.cand_topk=5
+- --dump-graphs
+- data/interim/graphs_v2b_topk5
+seed: 20260915
+status: done
+summary: tracks=8711 decision=ot_rule

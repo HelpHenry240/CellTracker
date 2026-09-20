@@ -1,0 +1,12 @@
+{
+  "n_frames": 195,
+  "ablated": [],
+  "n_couplings": 194,
+  "decision": "ot_rule",
+  "dumped_graphs": {
+    "dir": "data/interim/graphs_v2b_theta0005",
+    "n_pairs": 194
+  },
+  "tracks_after_decision": 8711,
+  "tracks_final": 8711
+}
