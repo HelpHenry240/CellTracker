@@ -1,0 +1,33 @@
+{
+  "gt_objects": 9835,
+  "res_objects": 9835,
+  "matched": 9835,
+  "fn": 0,
+  "fp": 0,
+  "detection_recall": 1.0,
+  "detection_precision": 1.0,
+  "id_switches": 7735,
+  "fragmentation": 6643,
+  "gt_tracks": {
+    "n_tracks": 0,
+    "n_divisions": 0
+  },
+  "frames_evaluated": 195,
+  "experiment": "C4_pred_hungarian",
+  "dataset": "Fluo-N3DH-CE",
+  "seq": "01",
+  "method": "hungarian",
+  "config": {
+    "method": "hungarian",
+    "max_dist": 30.0,
+    "use_velocity": false,
+    "velocity_weight": 1.0,
+    "size_weight": 0.0,
+    "size_sigma": 1.0,
+    "detect_division": true,
+    "division_max_dist": 45.0
+  },
+  "n_frames": 195,
+  "n_tracks_pred": 1116,
+  "local_SEG": 0.6825073683039335
+}

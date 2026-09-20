@@ -1,0 +1,31 @@
+experiment_id: C4_pred_hungarian
+date: '2026-09-20'
+purpose: 经典基线 hungarian
+params:
+  dataset: Fluo-N3DH-CE
+  seq: '01'
+  method: hungarian
+  max_dist: 30.0
+  use_velocity: false
+  velocity_weight: 1.0
+  size_weight: 0.0
+  size_sigma: 1.0
+  detect_division: true
+  division_max_dist: 45.0
+  official_eval: false
+  limit_frames: null
+argv:
+- scripts/run_baseline.py
+- --h5
+- data/interim/Fluo-N3DH-CE_01_pred.h5
+- --dataset
+- Fluo-N3DH-CE
+- --seq
+- '01'
+- --exp-id
+- C4_pred_hungarian
+- --method
+- hungarian
+seed: 20260915
+status: done
+summary: FN=0 FP=0 IDsw=7735 frag=6643
