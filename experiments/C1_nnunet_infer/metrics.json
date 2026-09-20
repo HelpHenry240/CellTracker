@@ -1,0 +1,18 @@
+{
+  "seq": "01",
+  "n_frames": 195,
+  "instances_per_frame_mean": 50.43589743589744,
+  "markers_per_frame_mean": 122.06153846153846,
+  "instances_per_marker": 0.41320057138055627,
+  "detection_recall": 0.9968153624383471,
+  "detection_precision": 0.9824120087847777,
+  "instance_config": {
+    "min_distance": 6,
+    "min_volume": 100,
+    "watershed": true
+  },
+  "instances_per_marker_first_50_frames": 1.0002747252747253,
+  "instances_per_marker_last_50_frames": 0.3209958660022438,
+  "marker_exclusivity_last_50_frames": 0.0651860761560524,
+  "source": "/home/henry/ot_idea/CellTracker/data/interim/pred_report_01.json"
+}

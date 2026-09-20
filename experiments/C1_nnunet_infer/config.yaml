@@ -1,0 +1,21 @@
+experiment_id: C1_nnunet_infer
+date: 2026-09-19        # 推理执行日
+recorded: 2026-09-20    # 留痕补录日（C0）
+purpose: "nnU-Net 3d_fullres 推理（CE seq01+seq02，385 帧）→ 语义掩码"
+seed: 20260915
+params:
+  dataset: Dataset501_CellTrackerCE
+  configuration: 3d_fullres
+  fold: 0
+  checkpoint: checkpoint_best   # 训练期最优（E5.1，验证 Dice 0.9605）
+  tta: true                     # nnUNetv2_predict 默认开启
+  spacing_xyz: [0.09, 0.09, 1.0]
+  frames:
+    seq01: 195
+    seq02: 190
+  gpu: RTX 4090 24GB
+  wall_time_min: 36
+artifacts:
+  preds_dir: data/interim/preds_nnunet   # 385 × *.nii.gz，33MB
+  downstream: experiments/C3 的 data/interim/Fluo-N3DH-CE_01_pred.h5
+status: done

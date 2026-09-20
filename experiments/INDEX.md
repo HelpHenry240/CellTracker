@@ -41,3 +41,5 @@
 | **B2-c** | 2026-09-19 | PhaseB | **消融矩阵完整表**（7 项，均重训 GNN） | 见目录 | 基准 0.996513；GNN −0.0034、式26 −0.0012、top-k −0.0011；FGW/非平衡/运动先验均**负收益** | — | 学习型决策最关键；论文三个扩展在本数据上无正收益（需参数扫描确认） | `experiments/B2c_ablation_matrix/` |
 | **B2-d/e** | 2026-09-19 | PhaseB | **参数扫描：η / τ / α′** | 见目录 | FGW 损害与 η 无关；非平衡随 τ 单调收敛向平衡；运动先验非单调且两值均负 | — | 与 A2 先验 AUC 两条独立证据一致 → 朴素平衡 OT 已是最优先验 | `experiments/B2de_param_sweeps/` |
 | **B3** | 2026-09-19 | PhaseB | **seq02 复验（双序列一致性）** | 见目录 | **seq02 TRA 0.996369**（基线 0.995052），AOGM 936（比基线低 27%），碎片 67 | — | 论文口径在双序列上一致胜出；修掉 top-k 越界 latent bug | `experiments/B3_seq02_validation/` |
+| **C1** | 2026-09-19 | PhaseC | **nnU-Net 推理（CE 双序列 385 帧，真实检测来源）** | 见目录 | 385 帧 / 33MB；训练验证 Dice 0.9605；36 分钟（4090） | `instances_vs_markers` | 语义质量高，但拆实例后平均 50.4 实例/帧 vs 122.1 标记（0.41） | `experiments/C1_nnunet_infer/` |
+| **C2** | 2026-09-19 | PhaseC | **语义掩码→实例拆分标定（间距×体积×h-maxima）** | 见目录 | 所有工作点实例/标记 0.29–0.86；召回≈1.0；exclusive 0.34–0.59 | `calibration_tradeoff` | 后处理无法解决欠分割；**F1 奖励欠分割、不可作选参判据**；发现"标定配置≠部署配置"（h_frac 未记录）并已修 | `experiments/C2_instance_split/` |

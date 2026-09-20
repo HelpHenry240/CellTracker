@@ -62,3 +62,24 @@ def test_detection_recall_zero_when_prediction_empty():
     gt[m1], gt[m2] = 1, 2
     stats = detection_recall_vs_markers(np.zeros_like(gt), gt)
     assert stats["recall"] == 0.0
+
+
+def test_h_frac_positive_ignores_min_distance():
+    """回归：`h_frac>0` 时种子由 h-maxima 决定，`min_distance` **不生效**。
+
+    背景（C0 留痕复核）：部署用的 `pred.h5` 实际跑的是 `h_frac=0.35`（类默认值），
+    而标定脚本默认 `h_frac=0.0`，两者的 `min_distance` 语义完全不同——
+    这就是"标定配置 ≠ 部署配置"的事故来源，故用测试固化该语义。
+    """
+    m1, m2 = _two_balls(gap=0)
+    mask = m1 | m2
+    a = split_instances(mask, InstanceSplitConfig(min_distance=2, min_volume=10, h_frac=0.35))
+    b = split_instances(mask, InstanceSplitConfig(min_distance=20, min_volume=10, h_frac=0.35))
+    assert np.array_equal(a, b)
+
+
+def test_h_frac_positive_keeps_single_cell_intact():
+    """回归：单个细胞核在尺度自适应种子下必须仍是 1 个实例（不产生碎片）。"""
+    m1, _ = _two_balls(gap=0)
+    labels = split_instances(m1, InstanceSplitConfig(min_volume=10, h_frac=0.35))
+    assert len(np.unique(labels)) - 1 == 1

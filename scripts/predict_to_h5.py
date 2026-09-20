@@ -10,7 +10,11 @@
     python scripts/predict_to_h5.py \
         --pred-dir preds_eval --img-root data/raw/Fluo-N3DH-CE \
         --seq 01 --out data/interim/Fluo-N3DH-CE_01_pred.h5 \
-        --min-distance 3 --min-volume 30
+        --min-distance 3 --min-volume 30 --h-frac 0.0
+
+种子策略（二选一，必须显式记录，否则实验无法复现）：
+  - `h_frac > 0`：**尺度自适应**，用 h-maxima 取种子（`min_distance` 不生效）；
+  - `h_frac = 0`：固定尺度，用 `min_distance` 控制种子间距（稀疏帧/稠密帧难兼顾）。
 """
 
 from __future__ import annotations
@@ -40,6 +44,8 @@ def main() -> None:
     ap.add_argument("--out", required=True)
     ap.add_argument("--min-distance", type=int, default=3)
     ap.add_argument("--min-volume", type=int, default=30)
+    ap.add_argument("--h-frac", type=float, default=InstanceSplitConfig.h_frac,
+                    help="h-maxima 相对高度（>0 = 尺度自适应种子；0 = 用 min_distance）")
     ap.add_argument("--no-watershed", action="store_true")
     ap.add_argument("--gt-root", default=None, help="GT 根目录（用于标定报告，可选）")
     ap.add_argument("--report", default=None, help="检测层面对比报告（json）")
@@ -52,6 +58,7 @@ def main() -> None:
     img_dir = Path(args.img_root) / args.seq
     cfg = InstanceSplitConfig(min_distance=args.min_distance,
                               min_volume=args.min_volume,
+                              h_frac=args.h_frac,
                               use_watershed=not args.no_watershed)
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -74,6 +81,7 @@ def main() -> None:
                        ndim=3, shape=np.asarray(shape, dtype=np.int32),
                        source=str(pred_dir), min_distance=args.min_distance,
                        min_volume=args.min_volume,
+                       h_frac=args.h_frac,
                        watershed=not args.no_watershed)
         f.create_dataset("seg_frames", data=np.array([], dtype=np.int32))
         gf = f.create_group("frames")
