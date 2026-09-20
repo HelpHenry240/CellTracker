@@ -42,6 +42,8 @@ from celltracker.track import Detections  # noqa: E402
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--h5", required=True)
+    ap.add_argument("--gt-h5", default=None,
+                    help="GT 轨迹表所在的 h5（检测来自预测时必填；默认与 --h5 相同）")
     ap.add_argument("--graphs", required=True)
     ap.add_argument("--seq", required=True)
     ap.add_argument("--ckpt", default=None, help="GNN 权重；不给则只统计 OT 规则")
@@ -56,7 +58,8 @@ def main() -> None:
     args = ap.parse_args()
 
     dets = Detections.from_h5(args.h5)
-    with h5py.File(args.h5, "r") as f:
+    gt_h5 = args.gt_h5 or args.h5
+    with h5py.File(gt_h5, "r") as f:
         gt = np.asarray(f["tracks"])
         shape = np.asarray([int(x) for x in f.attrs["shape"]], dtype=float)
     parent = {int(l): int(p) for l, p in zip(gt["label"], gt["parent"])}
@@ -84,7 +87,9 @@ def main() -> None:
         tn = int(d["t_next"])
         if tn not in ts:
             continue
-        sl, dl = dets.label(t), dets.label(tn)
+        # 真实身份用 gt_label（预测 h5 通过重叠映射提供，未匹配为 0；
+        # GT h5 无该字段时自动回退到 label）——否则预测实例 id 会被当成轨迹 id。
+        sl, dl = dets.gt_label(t), dets.gt_label(tn)
         n_src, n_dst = sl.size, dl.size
         if n_src == 0 or n_dst == 0:
             continue
@@ -157,7 +162,7 @@ def main() -> None:
         t, tn = int(d["t"]), int(d["t_next"])
         if tn not in ts:
             continue
-        sl, dl = dets.label(t), dets.label(tn)
+        sl, dl = dets.gt_label(t), dets.gt_label(tn)
         C, _ = build_cost(dets.centroid(t), dets.centroid(tn), None, None, None,
                           CostConfig(r_max=args.r_max))
         finite = np.isfinite(C)
@@ -201,7 +206,7 @@ def main() -> None:
         ("S3 重建后仍在同一轨迹", survived[1], survived[2]),
     ]
     print(f"序列 {args.seq}  GNN={'有' if preds else '无'}  λ={args.lam}"
-          f"  τ_link={args.tau_link} τ_split={args.tau_split}")
+          f"  τ_move={args.tau_move} τ_div={args.tau_div} R_max={args.r_max}")
     print(f"{'阶段':32s} {'move 边':>16s} {'division 边':>18s}")
     for name, m, dv in rows:
         print(f"{name:32s} {m:6d} ({pct(m, tot[1])}) {dv:6d} ({pct(dv, tot[2])})")

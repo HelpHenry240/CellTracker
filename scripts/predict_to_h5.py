@@ -46,6 +46,11 @@ def main() -> None:
     ap.add_argument("--min-volume", type=int, default=30)
     ap.add_argument("--h-frac", type=float, default=InstanceSplitConfig.h_frac,
                     help="h-maxima 相对高度（>0 = 尺度自适应种子；0 = 用 min_distance）")
+    ap.add_argument("--spacing-zyx", default=None,
+                    help="体素物理间距 (z,y,x) µm；默认从预测文件头自动读取")
+    ap.add_argument("--gaussian-sigma", type=float,
+                    default=InstanceSplitConfig.gaussian_sigma,
+                    help="距离图平滑强度，单位 µm（按间距折算到各轴）")
     ap.add_argument("--no-watershed", action="store_true")
     ap.add_argument("--gt-root", default=None, help="GT 根目录（用于标定报告，可选）")
     ap.add_argument("--report", default=None, help="检测层面对比报告（json）")
@@ -56,17 +61,27 @@ def main() -> None:
 
     pred_dir = Path(args.pred_dir)
     img_dir = Path(args.img_root) / args.seq
-    cfg = InstanceSplitConfig(min_distance=args.min_distance,
-                              min_volume=args.min_volume,
-                              h_frac=args.h_frac,
-                              use_watershed=not args.no_watershed)
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
     files = sorted(pred_dir.glob(f"CE{args.seq}_f*.nii.gz"))
     if not files:
         sys.exit(f"未找到预测文件: {pred_dir}/CE{args.seq}_f*.nii.gz")
-    print(f"seq {args.seq}: {len(files)} 帧预测")
+
+    # 体素间距：优先命令行，否则读预测文件头（sitk 给 (x,y,z)，数组顺序是 (z,y,x)）
+    if args.spacing_zyx:
+        spacing_zyx = tuple(float(v) for v in args.spacing_zyx.split(","))
+    else:
+        spacing_zyx = tuple(float(v) for v in reversed(
+            sitk.ReadImage(str(files[0])).GetSpacing()))
+    cfg = InstanceSplitConfig(min_distance=args.min_distance,
+                              min_volume=args.min_volume,
+                              h_frac=args.h_frac,
+                              gaussian_sigma=args.gaussian_sigma,
+                              spacing_zyx=spacing_zyx,
+                              use_watershed=not args.no_watershed)
+    print(f"seq {args.seq}: {len(files)} 帧预测；spacing(z,y,x)={spacing_zyx} µm，"
+          f"gaussian_sigma={args.gaussian_sigma} µm")
 
     gt_markers = None
     if args.gt_root:
@@ -82,6 +97,8 @@ def main() -> None:
                        source=str(pred_dir), min_distance=args.min_distance,
                        min_volume=args.min_volume,
                        h_frac=args.h_frac,
+                       spacing_zyx=np.asarray(spacing_zyx, dtype=np.float32),
+                       gaussian_sigma=args.gaussian_sigma,
                        watershed=not args.no_watershed)
         f.create_dataset("seg_frames", data=np.array([], dtype=np.int32))
         gf = f.create_group("frames")
@@ -147,8 +164,17 @@ def main() -> None:
         agg = {
             "n_frames": len(stats_rows),
             "mean_instances": float(np.mean([r["n_pred"] for r in stats_rows])),
-            "config": {"min_distance": args.min_distance, "min_volume": args.min_volume,
-                       "watershed": not args.no_watershed},
+            # 必须写**生效**的配置（h_frac>0 时 min_distance 无效；间距/平滑是物理量），
+            # 否则报告会与 h5 attrs 不一致——C0 已踩过一次这个坑。
+            "config": {
+                "h_frac": cfg.h_frac,
+                "min_distance": cfg.min_distance,
+                "min_distance_effective": cfg.h_frac <= 0,
+                "min_volume": cfg.min_volume,
+                "gaussian_sigma_um": cfg.gaussian_sigma,
+                "spacing_zyx": list(cfg.spacing_zyx),
+                "watershed": cfg.use_watershed,
+            },
         }
         if "recall" in stats_rows[0]:
             agg["detection_recall"] = float(np.mean([r["recall"] for r in stats_rows]))

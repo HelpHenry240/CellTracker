@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""C0 留痕补图：把 C1（推理）与 C2（实例拆分）的证据画成论文可用图。
+"""Phase C 留痕图：把 C1（推理）/ C2（实例拆分）/ C5.0（间距修复重标定）的证据画成论文可用图。
 
 输入都是**已在本地留存的中间产物**，不重跑推理：
   - `data/interim/pred_report_01.json`：逐帧实例数 / GT 标记数 / 召回 / 精确 / 独立性
@@ -9,6 +9,7 @@
   - `experiments/C1_nnunet_infer/figures/instances_vs_markers.{png,pdf}`
   - `experiments/C1_nnunet_infer/metrics.json`
   - `experiments/C2_instance_split/figures/calibration_tradeoff.{png,pdf}`
+  - `experiments/C5.0_spacing_fix/figures/spacing_recalibration.{png,pdf}`
 
 用法::
 
@@ -129,6 +130,7 @@ def plot_calibration_tradeoff(files: list[Path], fig_dir: Path) -> dict:
 def main() -> None:
     c1_dir = ROOT / "experiments/C1_nnunet_infer"
     c2_dir = ROOT / "experiments/C2_instance_split"
+    c5_dir = ROOT / "experiments/C5.0_spacing_fix"
     c1_metrics = plot_instance_profile(
         ROOT / "data/interim/pred_report_01.json",
         c1_dir / "figures", c1_dir / "metrics.json")
@@ -145,7 +147,49 @@ def main() -> None:
             "n_configs_swept": len(c2_metrics["fixed_scale_sweep"])
             + len(c2_metrics["adaptive_sweep"]),
         }, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    if (c5_dir / "metrics_sweep.json").exists():
+        plot_spacing_recalibration(
+            [c5_dir / "metrics_bracket.json", c5_dir / "metrics_sweep.json"],
+            c5_dir / "figures")
     print(json.dumps(c1_metrics, indent=2, ensure_ascii=False))
+
+
+def plot_spacing_recalibration(files: list[Path], fig_dir: Path) -> None:
+    """C5.0 证据：物理间距 EDT 之后，用"实例/标记 + exclusive"重新标定 h_frac。
+
+    刻意**不**画 F1：C2 已证明 F1 在欠分割时单调升高（奖励错误方向）。
+    """
+    rows = []
+    for p in files:
+        if p.exists():
+            rows.extend(json.loads(p.read_text())["sweep"])
+    if not rows:
+        return
+    rows.sort(key=lambda r: r["h_frac"])
+    hf = [r["h_frac"] for r in rows]
+    ratio = [r["instances_per_marker"] for r in rows]
+    excl = [r["exclusive"] for r in rows]
+    prec = [r["precision"] for r in rows]
+
+    fig, ax = plt.subplots(figsize=(6.2, 3.6))
+    ax.plot(hf, ratio, "o-", color=PALETTE["red"], label="instances / marker")
+    ax.plot(hf, excl, "s-", color=PALETTE["green"], label="marker exclusivity")
+    ax.plot(hf, prec, "^-", color=PALETTE["blue"], label="detection precision")
+    ax.axhline(1.0, color=PALETTE["grey"], ls="--", lw=1.0)
+    for x, y in zip(hf, ratio):
+        ax.annotate(f"{y:.2f}", (x, y), textcoords="offset points",
+                    xytext=(0, 6), fontsize=7, color=PALETTE["red"], ha="center")
+    ax.axvline(0.10, color=PALETTE["grey"], ls=":", lw=1.0)
+    ax.annotate("chosen\nh_frac=0.10", (0.10, 1.12), fontsize=7,
+                color=PALETTE["grey"])
+    ax.axvline(0.35, color="k", ls=":", lw=1.0)
+    ax.annotate("previously\ndeployed 0.35", (0.35, 0.30), fontsize=7)
+    ax.set_xlabel("h_frac (h-maxima threshold, physical spacing EDT)")
+    ax.set_ylim(0, 1.45)
+    ax.set_title("Re-calibration after fixing EDT sampling (7 frames, seq01)")
+    ax.legend(frameon=False, fontsize=7, loc="center right")
+    savefig(fig, fig_dir / "spacing_recalibration")
 
 
 if __name__ == "__main__":

@@ -54,7 +54,8 @@ def test_perfect_detections_reach_all_levels(tmp_path):
     r = _run(tmp_path, pred, gt)
     assert r["U0_gt_nodes_detected"]["fraction"] == 1.0
     assert r["U1_move_edges_both_detected"]["fraction"] == 1.0
-    assert r["U2_move_edges_same_instance"]["fraction_of_gt"] == 1.0
+    # 合成数据：两个球心相距 2*radius+gap 体素，用大一些的 r_max 保证可达
+    assert r["U2_move_edges_within_r_max"]["fraction_of_gt"] == 1.0
     assert r["U3_division_edges_parent_and_children_detected"]["fraction"] == 1.0
     assert r["U3_division_edges_parent_and_children_detected"][
         "fraction_children_distinct"] == 1.0
@@ -75,4 +76,4 @@ def test_merged_children_are_not_distinct_instances(tmp_path):
     assert r["U3_division_edges_parent_and_children_detected"][
         "fraction_children_distinct"] == 0.0
     # 移动边仍完好（t=0,1 的实例映射未变）
-    assert r["U2_move_edges_same_instance"]["fraction_of_gt"] == 1.0
+    assert r["U2_move_edges_within_r_max"]["fraction_of_gt"] == 1.0

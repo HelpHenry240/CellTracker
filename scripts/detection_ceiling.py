@@ -5,12 +5,15 @@
 "检测就是 GT"。真实前端（nnU-Net 预测实例）下，这个假设不成立：
 很多真实关联边的端点在检测层就不存在，**在候选生成之前就已经输掉了**。
 
-本脚本量化三级天花板（不依赖图与 GNN，纯 h5 计算）：
+本脚本量化四级天花板（不依赖图与 GNN，纯 h5 计算）：
 
     U0  GT 节点（marker）在检测集中出现的比例          ← 缺检/粘连的直接后果
     U1  GT 移动边的**两端**都被检测到的比例
-    U2  两端不仅被检测到，且落在**同一个预测实例**上的比例   ← 实例跨帧不一致
+    U2  两端被检出且**位移在候选半径 R_max 内**（体素单位，与图阶段口径一致）
     U3  分裂边的父+两子都被检测到的比例
+
+注意：这里**没有**"两端是否为同一个实例 id"这一层——预测实例 id 是逐帧局部标签，
+跨帧比较 id 没有意义（早期版本混淆过，已在 2026-09-20 修正）。
 
 用法::
 
@@ -76,12 +79,27 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--pred-h5", required=True)
     ap.add_argument("--gt-h5", required=True)
+    ap.add_argument("--r-max", type=float, default=30.0,
+                    help="候选半径（体素单位，与 pipeline GraphConfig.r_max 一致）")
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
     gt_frames, parent, start, end, children = load_gt(Path(args.gt_h5))
     inst2gt, gt2inst, n_pred = load_pred(Path(args.pred_h5))
     ts = sorted(gt_frames)
+
+    # 逐帧 GT 标记质心（U2 的可达性判断用，按需缓存）
+    from scipy import ndimage
+    centroid_cache: dict[int, dict[int, np.ndarray]] = {}
+
+    def gt_centroids(t: int) -> dict[int, np.ndarray]:
+        if t not in centroid_cache:
+            vol = gt_frames[t]
+            ids = [int(i) for i in np.unique(vol) if i > 0]
+            cents = ndimage.center_of_mass(vol > 0, vol, ids) if ids else []
+            centroid_cache[t] = {i: np.asarray(c, dtype=float)
+                                 for i, c in zip(ids, cents)}
+        return centroid_cache[t]
 
     # ---- U0：GT 节点（marker）被检测到的比例 ----
     n_nodes = n_nodes_det = 0
@@ -99,11 +117,11 @@ def main() -> None:
     # ---- U1/U2：GT 移动边 ----
     # 注意 CTC 的 tracks 表在**每次分裂处断开**（父轨迹的 end 停在分裂前），
     # 所以"移动边"= 同一轨迹 id 在相邻两帧的连续出现，而不是父子对。
-    n_move = n_move_det = n_move_same_inst = 0
+    n_move = n_move_det = n_move_reach = 0
     # ---- U3：分裂边（父 + 两个子都要在） ----
     n_div = n_div_det = n_div_disjoint = 0
     per_frame_move: dict[int, dict[str, int]] = defaultdict(
-        lambda: {"n": 0, "det": 0, "same": 0})
+        lambda: {"n": 0, "det": 0, "reach": 0})
 
     for l in parent:
         for t in range(start[l], end[l]):
@@ -118,9 +136,11 @@ def main() -> None:
             if a and b:
                 n_move_det += 1
                 per_frame_move[t]["det"] += 1
-                if a & b:                 # 同一预测实例在相邻两帧代表该 GT 细胞
-                    n_move_same_inst += 1
-                    per_frame_move[t]["same"] += 1
+                ca, cb = gt_centroids(t).get(l), gt_centroids(t + 1).get(l)
+                if ca is not None and cb is not None:
+                    if float(np.linalg.norm(ca - cb)) <= args.r_max:
+                        n_move_reach += 1
+                        per_frame_move[t]["reach"] += 1
 
     for p, kids in children.items():
         if len(kids) != 2:
@@ -157,10 +177,11 @@ def main() -> None:
             "n_both_detected": n_move_det,
             "fraction": n_move_det / max(n_move, 1),
         },
-        "U2_move_edges_same_instance": {
-            "n_same_instance": n_move_same_inst,
-            "fraction_of_gt": n_move_same_inst / max(n_move, 1),
-            "fraction_of_detected": n_move_same_inst / max(n_move_det, 1),
+        "U2_move_edges_within_r_max": {
+            "r_max_voxels": args.r_max,
+            "n_reachable": n_move_reach,
+            "fraction_of_gt": n_move_reach / max(n_move, 1),
+            "fraction_of_detected": n_move_reach / max(n_move_det, 1),
         },
         "U3_division_edges_parent_and_children_detected": {
             "n_gt_division_parents": n_div,

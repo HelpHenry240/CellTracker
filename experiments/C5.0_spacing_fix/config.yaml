@@ -1,0 +1,23 @@
+experiment_id: C5.0_spacing_fix
+date: 2026-09-20
+purpose: "EDT 物理间距修复 + 实例拆分重新标定（判据改为 实例/标记 + exclusive）"
+seed: 20260915
+params:
+  bug: "distance_transform_edt 未传 sampling（体素单位 EDT vs 物理间距 (1.0,0.09,0.09) µm）"
+  fix: "InstanceSplitConfig.spacing_zyx；gaussian_sigma 语义改为 µm 并按轴折算"
+  chosen: {h_frac: 0.10, gaussian_sigma_um: 0.0, min_volume: 300,
+           spacing_zyx: [1.0, 0.09, 0.09], watershed: true}
+  alternative: {h_frac: 0.05, note: "过分割一侧，留作 GNN 消融对照"}
+  sweeps:
+    sigma_um: [0.0, 0.3, 0.9, 2.0]
+    h_frac: [0.03, 0.05, 0.10, 0.15, 0.20, 0.35]
+  eval_frames: [10, 50, 90, 130, 160, 180, 194]
+status: done
+artifacts:
+  metrics_sweep: metrics_sweep.json
+  metrics_bracket: metrics_bracket.json
+  ceiling_v2: detection_ceiling_v2.json
+  funnel_v2: funnel_v2.json
+  figure: figures/spacing_recalibration.png
+  new_pred_h5: data/interim/Fluo-N3DH-CE_01_pred_v2.h5（195 帧，38.2MB，未入库）
+  downstream_runs: [C5.0_pred_v2_graphs, C5.0_pred_v2_train, C5.0_pred_v2_local]

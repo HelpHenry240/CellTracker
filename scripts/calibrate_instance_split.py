@@ -45,6 +45,10 @@ def main() -> None:
     ap.add_argument("--min-volume", default="30")
     ap.add_argument("--h-frac", default="0.0",
                     help="h-maxima 相对高度（>0 启用尺度自适应种子）")
+    ap.add_argument("--gaussian-sigma", default=str(InstanceSplitConfig.gaussian_sigma),
+                    help="距离图平滑强度，单位 µm（按间距折算；可给多个值用逗号分隔）")
+    ap.add_argument("--spacing-zyx", default=None,
+                    help="体素物理间距 (z,y,x) µm；默认从预测文件头自动读取")
     ap.add_argument("--frame-stride", type=int, default=1,
                     help="帧抽样步长（>1 时按等间隔抽帧，覆盖稀疏与密集阶段）")
     ap.add_argument("--frames", default=None,
@@ -69,6 +73,14 @@ def main() -> None:
           f"t={files[0].name} .. {files[-1].name}")
 
     # 预读所有帧的分割结果与标记，避免重复 I/O
+    if args.spacing_zyx:
+        spacing_zyx = tuple(float(v) for v in args.spacing_zyx.split(","))
+    else:
+        import SimpleITK as _sitk
+        spacing_zyx = tuple(float(v) for v in reversed(
+            _sitk.ReadImage(str(files[0])).GetSpacing()))
+    print(f"spacing(z,y,x)={spacing_zyx} µm")
+
     cache = []
     for pf in files:
         t = int(pf.name.split("_f")[1][:3])
@@ -76,14 +88,18 @@ def main() -> None:
         gt = tifffile.imread(tra_dir / f"man_track{t:03d}.tif")
         cache.append((t, sem, gt))
 
-    print(f"{'h_frac':>7s} {'min_dist':>9s} {'min_vol':>8s} {'实例/帧':>8s} {'标记/帧':>8s} "
+    print(f"{'h_frac':>7s} {'sig_um':>7s} {'min_dist':>9s} {'min_vol':>8s} {'实例/帧':>8s} {'标记/帧':>8s} "
           f"{'召回':>7s} {'精确':>7s} {'独立':>7s} {'F1':>7s}")
     best = None
     rows = []
-    for hf in (float(x) for x in args.h_frac.split(",")):
-      for md in (int(x) for x in args.min_distance.split(",")):
-        for mv in (int(x) for x in args.min_volume.split(",")):
-            cfg = InstanceSplitConfig(min_distance=md, min_volume=mv, h_frac=hf)
+    grid = [(hf, gs, md, mv)
+            for hf in (float(x) for x in args.h_frac.split(","))
+            for gs in (float(x) for x in str(args.gaussian_sigma).split(","))
+            for md in (int(x) for x in args.min_distance.split(","))
+            for mv in (int(x) for x in args.min_volume.split(","))]
+    for hf, gs, md, mv in grid:
+            cfg = InstanceSplitConfig(min_distance=md, min_volume=mv, h_frac=hf,
+                                      gaussian_sigma=gs, spacing_zyx=spacing_zyx)
             recalls, precs, n_pred, n_gt, excl = [], [], [], [], []
             for _t, sem, gt in cache:
                 lab = split_instances(sem, cfg)
@@ -94,10 +110,11 @@ def main() -> None:
             r, p = float(np.mean(recalls)), float(np.mean(precs))
             e = float(np.mean(excl))
             f1 = 2 * r * p / max(r + p, 1e-9)
-            print(f"{hf:7.2f} {md:9d} {mv:8d} {np.mean(n_pred):8.1f} {np.mean(n_gt):8.1f} "
+            print(f"{hf:7.2f} {gs:7.2f} {md:9d} {mv:8d} {np.mean(n_pred):8.1f} {np.mean(n_gt):8.1f} "
                   f"{r:7.3f} {p:7.3f} {e:7.3f} {f1:7.3f}")
             rows.append({
                 "h_frac": hf, "min_distance": md, "min_volume": mv,
+                "gaussian_sigma": gs, "spacing_zyx": list(spacing_zyx),
                 "instances_per_frame": float(np.mean(n_pred)),
                 "markers_per_frame": float(np.mean(n_gt)),
                 "recall": r, "precision": p, "exclusive": e, "f1": f1,

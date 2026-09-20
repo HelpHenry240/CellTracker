@@ -26,9 +26,15 @@ __all__ = ["InstanceSplitConfig", "split_instances", "detection_recall_vs_marker
 @dataclass
 class InstanceSplitConfig:
     min_distance: int = 3        # 种子间最小距离（体素）；h_frac>0 时作为兜底
-    gaussian_sigma: float = 1.0  # 距离图平滑，抑制噪声极值
+    gaussian_sigma: float = 1.0  # 距离图平滑强度，单位 **µm**（按 spacing 折算到各轴）
     min_volume: int = 30         # 过滤过小的实例（体素），抑制假阳性
     use_watershed: bool = True   # False = 纯连通域（消融对照）
+    # 体素物理尺寸，顺序 (z, y, x)，单位 µm。**必须传真实间距**：
+    # CE 数据的间距是 (0.09, 0.09, 1.0) µm，z 比 x/y 粗 11 倍；
+    # 若按体素单位算欧氏距离，距离图/h-maxima 峰/分水岭边界全部失真
+    # （实测：seq01 末帧实例数 85 → 148、标记独立性 0.044 → 0.210）。
+    # 默认 (1,1,1) 表示各向同性体素，保持与旧行为一致。
+    spacing_zyx: tuple[float, float, float] = (1.0, 1.0, 1.0)
     # **尺度自适应**：用 h-maxima 提取种子，h = h_frac × 距离图的 90 分位数。
     # 为什么需要它：胚胎发育过程中细胞大小变化数倍（实测 CE 上"每细胞核体素"
     # 从早期 ~2.4e4 降到晚期 ~4e3），任何绝对的 min_distance 都无法同时适配
@@ -47,9 +53,12 @@ def split_instances(mask: np.ndarray, cfg: InstanceSplitConfig | None = None) ->
         labels, n = ndimage.label(binary)
         return _filter_small(labels, n, cfg.min_volume)
 
-    dist = ndimage.distance_transform_edt(binary)
+    spacing = tuple(float(s) for s in cfg.spacing_zyx)
+    dist = ndimage.distance_transform_edt(binary, sampling=spacing)
     if cfg.gaussian_sigma > 0:
-        dist = ndimage.gaussian_filter(dist, sigma=cfg.gaussian_sigma)
+        # gaussian_sigma 以 µm 计：各轴折算成体素 sigma（各向异性必须分轴处理）
+        sigma_vox = tuple(cfg.gaussian_sigma / max(s, 1e-9) for s in spacing)
+        dist = ndimage.gaussian_filter(dist, sigma=sigma_vox)
 
     if cfg.h_frac > 0:
         # 尺度自适应种子：h-maxima（相对高度阈值），自动适配细胞大小

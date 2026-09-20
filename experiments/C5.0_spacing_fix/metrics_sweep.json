@@ -1,0 +1,133 @@
+{
+  "seq": "01",
+  "pred_dir": "data/interim/preds_nnunet",
+  "frame_stride": 1,
+  "n_frames": 7,
+  "frames": [
+    "CE01_f010.nii.gz",
+    "CE01_f050.nii.gz",
+    "CE01_f090.nii.gz",
+    "CE01_f130.nii.gz",
+    "CE01_f160.nii.gz",
+    "CE01_f180.nii.gz",
+    "CE01_f194.nii.gz"
+  ],
+  "best": {
+    "f1": 0.9411454910760247,
+    "min_distance": 6,
+    "min_volume": 300,
+    "recall": 0.9978013491363006,
+    "precision": 0.8905778578021867,
+    "h_frac": 0.35
+  },
+  "sweep": [
+    {
+      "h_frac": 0.1,
+      "min_distance": 6,
+      "min_volume": 100,
+      "gaussian_sigma": 0.0,
+      "spacing_zyx": [
+        1.0,
+        0.09000000357627869,
+        0.09000000357627869
+      ],
+      "instances_per_frame": 168.0,
+      "markers_per_frame": 173.28571428571428,
+      "recall": 0.9970120831536644,
+      "precision": 0.8467327675702548,
+      "exclusive": 0.8601866303854616,
+      "f1": 0.915747968205279,
+      "instances_per_marker": 0.9694971145919209
+    },
+    {
+      "h_frac": 0.1,
+      "min_distance": 6,
+      "min_volume": 300,
+      "gaussian_sigma": 0.0,
+      "spacing_zyx": [
+        1.0,
+        0.09000000357627869,
+        0.09000000357627869
+      ],
+      "instances_per_frame": 167.28571428571428,
+      "markers_per_frame": 173.28571428571428,
+      "recall": 0.9970120831536644,
+      "precision": 0.8679676746384952,
+      "exclusive": 0.8601866303854616,
+      "f1": 0.9280253641206638,
+      "instances_per_marker": 0.9653751030502885
+    },
+    {
+      "h_frac": 0.2,
+      "min_distance": 6,
+      "min_volume": 100,
+      "gaussian_sigma": 0.0,
+      "spacing_zyx": [
+        1.0,
+        0.09000000357627869,
+        0.09000000357627869
+      ],
+      "instances_per_frame": 139.71428571428572,
+      "markers_per_frame": 173.28571428571428,
+      "recall": 0.9974067161449826,
+      "precision": 0.8621894726225235,
+      "exclusive": 0.741213008777034,
+      "f1": 0.9248820531872151,
+      "instances_per_marker": 0.8062654575432812
+    },
+    {
+      "h_frac": 0.2,
+      "min_distance": 6,
+      "min_volume": 300,
+      "gaussian_sigma": 0.0,
+      "spacing_zyx": [
+        1.0,
+        0.09000000357627869,
+        0.09000000357627869
+      ],
+      "instances_per_frame": 139.0,
+      "markers_per_frame": 173.28571428571428,
+      "recall": 0.9974067161449826,
+      "precision": 0.8835095673007389,
+      "exclusive": 0.741213008777034,
+      "f1": 0.937009673380856,
+      "instances_per_marker": 0.8021434460016489
+    },
+    {
+      "h_frac": 0.35,
+      "min_distance": 6,
+      "min_volume": 100,
+      "gaussian_sigma": 0.0,
+      "spacing_zyx": [
+        1.0,
+        0.09000000357627869,
+        0.09000000357627869
+      ],
+      "instances_per_frame": 107.14285714285714,
+      "markers_per_frame": 173.28571428571428,
+      "recall": 0.9978013491363006,
+      "precision": 0.8841676013919304,
+      "exclusive": 0.6117374413358206,
+      "f1": 0.9375538584564348,
+      "instances_per_marker": 0.6183017312448474
+    },
+    {
+      "h_frac": 0.35,
+      "min_distance": 6,
+      "min_volume": 300,
+      "gaussian_sigma": 0.0,
+      "spacing_zyx": [
+        1.0,
+        0.09000000357627869,
+        0.09000000357627869
+      ],
+      "instances_per_frame": 107.0,
+      "markers_per_frame": 173.28571428571428,
+      "recall": 0.9978013491363006,
+      "precision": 0.8905778578021867,
+      "exclusive": 0.6117374413358206,
+      "f1": 0.9411454910760247,
+      "instances_per_marker": 0.6174773289365211
+    }
+  ]
+}

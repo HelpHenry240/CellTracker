@@ -83,3 +83,54 @@ def test_h_frac_positive_keeps_single_cell_intact():
     m1, _ = _two_balls(gap=0)
     labels = split_instances(m1, InstanceSplitConfig(min_volume=10, h_frac=0.35))
     assert len(np.unique(labels)) - 1 == 1
+
+
+def test_anisotropic_spacing_changes_distance_map():
+    """回归：各向异性 spacing 必须传给 EDT（否则距离图按体素单位算，尺度失真）。
+
+    构造 z 方向拉长 4 倍的椭球（体素空间半轴 12/3/3）。真实 CE 间距是
+    (0.09, 0.09, 1.0) µm，即数组顺序 (z,y,x) 的 spacing 为 (1.0, 0.09, 0.09)：
+    此时 x/y 半轴只有 3×0.09 = 0.27 µm，最大内切半径应 ≈ 0.27 µm，
+    而按各向同性体素算是 3.16 —— 量级差 11 倍，正是"没传 sampling"的后果。
+    """
+    z, y, x = np.ogrid[:40, :40, :40]
+    ellipsoid = ((z - 20) / 12.0) ** 2 + ((y - 20) / 3.0) ** 2 + ((x - 20) / 3.0) ** 2 <= 1
+    from scipy import ndimage
+    iso = ndimage.distance_transform_edt(ellipsoid, sampling=(1.0, 1.0, 1.0)).max()
+    aniso = ndimage.distance_transform_edt(
+        ellipsoid, sampling=(1.0, 0.09, 0.09)).max()
+    assert iso == pytest.approx(3.16, abs=0.1)
+    assert aniso == pytest.approx(0.285, abs=0.02)
+    assert iso / aniso > 10
+
+
+def test_split_uses_physical_spacing(monkeypatch):
+    """回归：`split_instances` 必须把 spacing 传给 EDT，且 sigma 按 µm 分轴折算。
+
+    用 monkeypatch 直接检查调用参数（比构造"恰好会变"的合成形状更可靠）：
+    这正是本次修复的接线点——配置里有 spacing 但没传给 EDT，是实际的 bug。
+    """
+    from celltracker.detect import instances as mod
+
+    seen: dict[str, object] = {}
+    real_edt = mod.ndimage.distance_transform_edt
+    real_gauss = mod.ndimage.gaussian_filter
+
+    def spy_edt(binary, sampling=None):      # noqa: ANN001
+        seen["sampling"] = sampling
+        return real_edt(binary, sampling=sampling)
+
+    def spy_gauss(dist, sigma=None):         # noqa: ANN001
+        seen["sigma"] = sigma
+        return real_gauss(dist, sigma=sigma)
+
+    monkeypatch.setattr(mod.ndimage, "distance_transform_edt", spy_edt)
+    monkeypatch.setattr(mod.ndimage, "gaussian_filter", spy_gauss)
+
+    m1, m2 = _two_balls(gap=0)
+    split_instances(m1 | m2, InstanceSplitConfig(
+        min_volume=10, h_frac=0.35, gaussian_sigma=0.9, spacing_zyx=(1.0, 0.09, 0.09)))
+
+    assert seen["sampling"] == (1.0, 0.09, 0.09)
+    # 0.9 µm 在各轴的体素 sigma = (0.9/1.0, 0.9/0.09, 0.9/0.09) = (0.9, 10, 10)
+    assert seen["sigma"] == pytest.approx((0.9, 10.0, 10.0))
