@@ -75,6 +75,9 @@ def main() -> None:
     ap.add_argument("--ablate", default="", help="逗号分隔的消融项")
     ap.add_argument("--dump-graphs", default=None,
                     help="导出本次耦合对应的图数据集（供 GNN 训练；消融实验必需）")
+    ap.add_argument("--gt-h5", default=None,
+                    help="GT 血缘（tracks 表）所在文件；检测来自预测 h5 时必须提供，"
+                         "否则分裂边无法标注")
     args = ap.parse_args()
 
     cfg = load_config(args.config) if args.config else PipelineConfig()
@@ -94,7 +97,8 @@ def main() -> None:
     save_config(cfg, exp.dir / "pipeline_config.yaml")
     run = run_pipeline(args.h5, cfg, frames=frames,
                        artifacts_dir=exp.artifact_dir("pipeline"),
-                       dump_graphs=args.dump_graphs)
+                       dump_graphs=args.dump_graphs,
+                       gt_h5=args.gt_h5)
     exp.log(f"pipeline info: {run.info}")
     exp.save_metrics({"info": run.info, "n_tracks": run.track_result.n_tracks()})
     exp.finish(summary=f"tracks={run.track_result.n_tracks()} "

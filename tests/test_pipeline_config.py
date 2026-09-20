@@ -150,3 +150,31 @@ def test_topk_fallback_handles_fewer_targets_than_k():
     g = build_pair_graph(dets, 0, 1, cfg, {1: 0, 2: 0},
                          shape=np.array([4.0, 64.0, 64.0]), t_total=2)
     assert g["cand_edges"].shape[0] >= 2
+
+
+def test_false_positive_edges_are_not_labelled_division():
+    """回归测试：未匹配检测（gt_label=0）的边不得被标成分裂。
+
+    历史 bug：标签规则 `gt_parent.get(gl_d, 0) == gl_s` 在 `gt_parent` 为空
+    （预测 h5 没有 tracks 表）且源检测是假阳性（gl_s=0）时退化成 `0 == 0`，
+    把所有假阳性源边标成 DIV → 分裂头在垃圾标签上训练
+    （C5.0 漏斗：分裂事件 S2 仅 13.8% 的直接原因之一）。
+    """
+    from celltracker.graph import GraphConfig, build_pair_graph
+    from celltracker.track.base import Detections
+
+    dets = Detections({
+        0: {"label": np.array([1, 2]),
+            "gt_label": np.array([0, 1]),          # 实例 1 是假阳性
+            "centroid": np.array([[0.0, 0.0, 0.0], [5.0, 0.0, 0.0]]),
+            "volume": np.array([100.0, 100.0])},
+        1: {"label": np.array([1, 2]),
+            "gt_label": np.array([2, 1]),          # 与上一帧身份不同
+            "centroid": np.array([[0.5, 0.0, 0.0], [5.5, 0.0, 0.0]]),
+            "volume": np.array([100.0, 100.0])},
+    })
+    cfg = GraphConfig(r_max=30.0, cand_from_ot=True, theta_gamma=0.02, cand_topk=2)
+    # gt_parent 为空（模拟预测 h5 无 tracks 表）
+    g = build_pair_graph(dets, 0, 1, cfg, {},
+                         shape=np.array([4.0, 64.0, 64.0]), t_total=2)
+    assert (np.asarray(g["cand_label"]) == 2).sum() == 0

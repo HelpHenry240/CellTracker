@@ -198,6 +198,13 @@ def build_pair_graph(dets: Detections, t: int, t_next: int,
     if gt_parent is not None:
         for k, (i, j) in enumerate(pairs):
             gl_s, gl_d = int(src_lab[i]), int(dst_lab[j])
+            # **任何一端没有 GT 身份（gt_label=0，来自未匹配的检测/假阳性）时，
+            # 这条边一律保持 NONE**：它既不是移动也不是分裂，而是"不该连"的负样本。
+            # 曾经的写法 `gt_parent.get(gl_d, 0) == gl_s` 在 gt_parent 为空（预测 h5
+            # 没有 tracks 表）且 gl_s=0 时退化成 `0 == 0`，把**所有假阳性源边标成分裂**，
+            # 导致分裂头在垃圾标签上训练（C5.0 漏斗里分裂事件 S2 只有 13.8% 的元凶之一）。
+            if gl_s == 0 or gl_d == 0:
+                continue
             if gl_s == gl_d:
                 labels[k] = LABEL_MOVE
             elif gt_parent.get(gl_d, 0) == gl_s:

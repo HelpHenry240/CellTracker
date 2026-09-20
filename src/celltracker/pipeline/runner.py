@@ -134,7 +134,8 @@ def run_pipeline(h5_path: str | Path, cfg: PipelineConfig,
                  frames: list[int] | None = None,
                  artifacts_dir: str | Path | None = None,
                  gnn=None,
-                 dump_graphs: str | Path | None = None) -> PipelineRun:
+                 dump_graphs: str | Path | None = None,
+                 gt_h5: str | Path | None = None) -> PipelineRun:
     """按论文顺序执行 pipeline。
 
     `gnn`：为 None 时走 §1.6 的 OT 规则重建（消融对照）；
@@ -143,6 +144,9 @@ def run_pipeline(h5_path: str | Path, cfg: PipelineConfig,
 
     `dump_graphs`：给定目录时，把**本次耦合**导出的图数据集写盘
     （格式与 `graph.build_dataset` 一致，可直接喂给 `run_gnn.py train`）。
+
+    `gt_h5`：GT 血缘所在文件（`tracks` 表）。检测来自预测 h5 时**必须**提供，
+    否则 `gt_parent` 为空 → 分裂边无法标注（历史上还会因此产生错误标签）。
     消融实验必须走这条路径，才能保证"训练用的图"与"评测用的耦合"同源。
     """
     h5_path = Path(h5_path)
@@ -202,7 +206,7 @@ def run_pipeline(h5_path: str | Path, cfg: PipelineConfig,
     if dump_graphs is not None:
         graph_dir = Path(dump_graphs)
         graph_dir.mkdir(parents=True, exist_ok=True)
-        n_written = _dump_graphs(dets, couplings, cfg, graph_dir, h5_path)
+        n_written = _dump_graphs(dets, couplings, cfg, graph_dir, h5_path, gt_h5)
         info["dumped_graphs"] = {"dir": str(graph_dir), "n_pairs": n_written}
     info["tracks_after_decision"] = track_result.n_tracks()
 
@@ -240,7 +244,8 @@ def _ot_only_run(dets: Detections, cfg: PipelineConfig, alpha_pred: float) -> Tr
 
 
 def _dump_graphs(dets: Detections, couplings, cfg: PipelineConfig,
-                 graph_dir: Path, h5_path: Path) -> int:
+                 graph_dir: Path, h5_path: Path,
+                 gt_h5: str | Path | None = None) -> int:
     """把当前耦合导成图数据集（与 `graph.build_dataset` 同格式，可直接训练）。
 
     需要的 GT 血缘（边标签）从 h5 读；图构建配置由 pipeline 配置段映射
@@ -253,10 +258,13 @@ def _dump_graphs(dets: Detections, couplings, cfg: PipelineConfig,
 
     graph_cfg = graph_cfg_from_pipeline(cfg)
     ts = dets.t_range
-    with h5py.File(h5_path, "r") as f:
+    with h5py.File(gt_h5 or h5_path, "r") as f:
         gt = np.asarray(f["tracks"]) if "tracks" in f else np.zeros(
             0, dtype=[("label", "i4"), ("begin", "i4"), ("end", "i4"), ("parent", "i4")])
     gt_parent = {int(l): int(p) for l, p in zip(gt["label"], gt["parent"])} if len(gt) else {}
+    if not gt_parent:
+        print("警告：GT lineage(tracks 表) 为空 → 分裂边无法标注，"
+              "只能用 --gt-h5 指定 GT 文件（预测检测训练时必须提供）")
     shape = dets.meta.get("shape")
 
     n = 0

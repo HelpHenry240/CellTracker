@@ -1,0 +1,13 @@
+experiment_id: C5.0b_label_fix
+date: 2026-09-20
+purpose: "修 gt_parent 空表导致的假阳性边误标为分裂（分裂头标签污染）"
+seed: 20260915
+params:
+  bug: "标签规则 gt_parent.get(gl_d,0)==gl_s 在 gt_parent 为空且 gl_s=0 时退化成 0==0"
+  effect: "预测 h5 无 tracks 表 → 5866 条候选边被标为分裂（真实 453）；另有 744 条 FP↔FP 被标为 move"
+  fix:
+    - "graph/build.py：任一端 gt_label=0 的边一律保持 NONE"
+    - "runner/run_pipeline 新增 --gt-h5：从 GT 文件读 tracks 提供分裂血缘；空表时告警"
+  detections: data/interim/Fluo-N3DH-CE_01_pred_v2.h5（C5.0 修复后的检测）
+  runs: [C5.0b_pred_v2_graphs, C5.0b_pred_v2_train, C5.0b_pred_v2_local]
+status: done

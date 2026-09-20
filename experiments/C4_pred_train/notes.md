@@ -34,3 +34,16 @@ python scripts/run_gnn.py train --graphs data/interim/graphs_01_pred \
 ## 下一步
 
 用该权重跑 C4c 官方评测（DET/SEG/TRA）。
+
+---
+
+## ⚠️ 事后更正（2026-09-20，C5.0b）
+
+本实验用的图数据集 `graphs_01_pred` 存在**分裂标签污染**：
+预测 h5 没有 `tracks` 表 → `gt_parent` 为空 → 标签规则
+`gt_parent.get(gl_d, 0) == gl_s` 在源检测是假阳性（`gl_s = 0`）时退化成 `0 == 0`，
+把所有假阳性源边标成了分裂（5866 条 vs 真实 453 条），假阳性↔假阳性边被标成移动。
+
+因此本目录报告的 move/div F1（0.748 / 0.384）是在污染标签上的读数，
+**不能作为"分裂头学不会"的证据**。修复见 `experiments/C5.0b_label_fix/`：
+修复后同一检测下分裂事件 S3 从 2.2% 升到 21.1%、本地分裂精确率 0.011 → 0.489。
