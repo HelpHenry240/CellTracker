@@ -1,0 +1,26 @@
+experiment_id: C4O_official_gnn
+date: '2026-09-21'
+purpose: pipeline 评测
+params:
+  h5: data/interim/Fluo-N3DH-CE_01_pred_oracle.h5
+  ckpt: experiments/C4O_oracle_train/artifacts/model/best.pt
+  ablate: ''
+  frames: null
+argv:
+- scripts/eval_pipeline.py
+- --h5
+- data/interim/Fluo-N3DH-CE_01_pred_oracle.h5
+- --gt-h5
+- data/interim/Fluo-N3DH-CE_01.h5
+- --dataset
+- Fluo-N3DH-CE
+- --seq
+- '01'
+- --exp-id
+- C4O_official_gnn
+- --ckpt
+- experiments/C4O_oracle_train/artifacts/model/best.pt
+- --official
+seed: 20260915
+status: done
+summary: tracks=1161 decision=gnn

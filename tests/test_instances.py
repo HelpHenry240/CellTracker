@@ -134,3 +134,50 @@ def test_split_uses_physical_spacing(monkeypatch):
     assert seen["sampling"] == (1.0, 0.09, 0.09)
     # 0.9 µm 在各轴的体素 sigma = (0.9/1.0, 0.9/0.09, 0.9/0.09) = (0.9, 10, 10)
     assert seen["sigma"] == pytest.approx((0.9, 10.0, 10.0))
+
+
+def _seeds_from_balls(m1, m2, shape=(32, 32, 32)):
+    """在两个球心各放一个单体素种子，模拟 GT 标记。"""
+    seeds = np.zeros(shape, dtype=np.int32)
+    seeds[10, 16, 16] = 1
+    seeds[18, 16, 16] = 2
+    return seeds
+
+
+def test_external_seeds_split_touching_balls():
+    """给定外部种子时跳过 h-maxima，直接把种子灌满粘连区域。"""
+    m1, m2 = _two_balls(gap=0)
+    mask = m1 | m2
+    labels = split_instances(mask, InstanceSplitConfig(min_volume=5, h_frac=0.35,
+                                                       spacing_zyx=(1.0, 1.0, 1.0)),
+                             seeds=_seeds_from_balls(m1, m2))
+    assert len(np.unique(labels)) - 1 == 2
+    # 每个种子必须落在**自己**的实例里（源到 region 的对应关系不能错）
+    assert labels[10, 16, 16] == 1
+    assert labels[18, 16, 16] == 2
+    assert labels[10, 16, 16] != labels[18, 16, 16]
+
+
+def test_seed_outside_mask_produces_no_instance():
+    """种子落在掩码外 → 该目标没有实例（oracle 实验里必须如实计入缺失）。"""
+    m1, _ = _two_balls(gap=0)                 # 只有第 1 个球在掩码里
+    seeds = _seeds_from_balls(m1, m1)         # 种子 2 落在掩码外
+    labels = split_instances(m1, InstanceSplitConfig(min_volume=5, h_frac=0.35),
+                             seeds=seeds)
+    assert len(np.unique(labels)) - 1 == 1
+    assert labels[10, 16, 16] == 1
+    assert labels[18, 16, 16] == 0            # 掩码外仍是背景
+
+
+def test_unseeded_component_policy_keep():
+    """掩码内没有种子的连通域：drop 丢弃、keep_component 各自成一个实例。"""
+    m1, m2 = _two_balls(gap=4)
+    seeds = np.zeros_like(m1, dtype=np.int32)
+    seeds[10, 16, 16] = 1                     # 只给第 1 个球种子
+    mask = m1 | m2
+    drop = split_instances(mask, InstanceSplitConfig(
+        min_volume=5, h_frac=0.35, unseeded_policy="drop"), seeds=seeds)
+    keep = split_instances(mask, InstanceSplitConfig(
+        min_volume=5, h_frac=0.35, unseeded_policy="keep_component"), seeds=seeds)
+    assert len(np.unique(drop)) - 1 == 1
+    assert len(np.unique(keep)) - 1 == 2

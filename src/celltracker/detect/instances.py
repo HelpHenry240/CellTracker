@@ -40,10 +40,23 @@ class InstanceSplitConfig:
     # 从早期 ~2.4e4 降到晚期 ~4e3），任何绝对的 min_distance 都无法同时适配
     # 稀疏帧与密集帧——密集帧会欠分割 4–6 倍（实测 46–75 个实例 vs 289 个标记）。
     h_frac: float = 0.35
+    # **外部种子**（oracle / 交互式修正用）：给定 seeds 时不再用 h-maxima 取峰，
+    # 直接把 seeds 当分水岭标记。种子落在掩码外的那些目标**不会**产生实例
+    # （这正是"该细胞在掩码里根本不存在"的真实后果，必须如实保留，不能补）。
+    # `unseeded_policy` 决定"掩码里没有任何种子的连通域"如何处理：
+    #   "drop"           → 丢弃（默认；对应"没有种子就不是细胞"）
+    #   "keep_component" → 每个这样的连通域各自成为一个实例（更保守，FP 会变多）
+    unseeded_policy: str = "drop"
 
 
-def split_instances(mask: np.ndarray, cfg: InstanceSplitConfig | None = None) -> np.ndarray:
-    """把二值语义掩码拆成实例标签图（0 = 背景，1..n = 实例）。"""
+def split_instances(mask: np.ndarray, cfg: InstanceSplitConfig | None = None,
+                    seeds: np.ndarray | None = None) -> np.ndarray:
+    """把二值语义掩码拆成实例标签图（0 = 背景，1..n = 实例）。
+
+    `seeds`：可选的外部种子标签图（>0 处为种子，数值即种子 id）。
+    给了 seeds 就**跳过 h-maxima**，直接做 marker-controlled watershed——
+    用于 oracle 实验（GT 标记作种子）或人工修正。种子在掩码外时不会产生实例。
+    """
     cfg = cfg or InstanceSplitConfig()
     binary = np.asarray(mask) > 0
     if not binary.any():
@@ -59,6 +72,25 @@ def split_instances(mask: np.ndarray, cfg: InstanceSplitConfig | None = None) ->
         # gaussian_sigma 以 µm 计：各轴折算成体素 sigma（各向异性必须分轴处理）
         sigma_vox = tuple(cfg.gaussian_sigma / max(s, 1e-9) for s in spacing)
         dist = ndimage.gaussian_filter(dist, sigma=sigma_vox)
+
+    if seeds is not None:
+        from skimage.segmentation import watershed
+
+        seed_vol = np.asarray(seeds)
+        if seed_vol.shape != binary.shape:
+            raise ValueError(f"seeds 形状 {seed_vol.shape} 与掩码 {binary.shape} 不一致")
+        # 只保留落在掩码内的种子：掩码外的不参与（其目标自然成为缺失）
+        markers, n_seeds = ndimage.label((seed_vol > 0) & binary)
+        if n_seeds == 0:
+            labels, n = ndimage.label(binary)
+            return _filter_small(labels, n, cfg.min_volume)
+        labels = watershed(-dist, markers, mask=binary)
+        if cfg.unseeded_policy == "keep_component":
+            unseeded = binary & (labels == 0)
+            if unseeded.any():
+                extra, n_extra = ndimage.label(unseeded)
+                labels = np.where(unseeded, extra + labels.max(), labels)
+        return _filter_small(labels, int(labels.max()), cfg.min_volume)
 
     if cfg.h_frac > 0:
         # 尺度自适应种子：h-maxima（相对高度阈值），自动适配细胞大小

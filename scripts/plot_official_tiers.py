@@ -30,8 +30,10 @@ NOISE_FLOOR = 0.0007
 
 # (标签, 官方指标 json 路径, 色)
 SERIES = [
-    ("GT markers (upper bound)", "experiments/B1_gnn_paper_ce01/metrics_official_01.json",
+    ("GT markers (upper bound)", "experiments/B1_eval_ce01_gnn/metrics_official_01.json",
      PALETTE["grey"]),
+    ("nnU-Net masks + GT seeds (oracle)",
+     "experiments/C4O_official_gnn/metrics_official_01.json", PALETTE["green"]),
     ("nnU-Net preds, top-k=3 (A)", "experiments/C4A_official_gnn_topk3/metrics_official_01.json",
      PALETTE["blue"]),
     ("nnU-Net preds, top-k=5 (B)", "experiments/C4B_official_gnn_topk5/metrics_official_01.json",

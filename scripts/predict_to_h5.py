@@ -54,6 +54,12 @@ def main() -> None:
     ap.add_argument("--no-watershed", action="store_true")
     ap.add_argument("--gt-root", default=None, help="GT 根目录（用于标定报告，可选）")
     ap.add_argument("--report", default=None, help="检测层面对比报告（json）")
+    ap.add_argument("--oracle-markers", action="store_true",
+                    help="oracle 模式：用 GT 标记作分水岭种子（需要 --gt-root）。"
+                         "用于量化\"实例分配完美时\"的全链路上界")
+    ap.add_argument("--unseeded-policy", default="drop",
+                    choices=["drop", "keep_component"],
+                    help="掩码内没有种子的连通域如何处理（oracle 模式下生效）")
     args = ap.parse_args()
 
     import SimpleITK as sitk
@@ -79,6 +85,7 @@ def main() -> None:
                               h_frac=args.h_frac,
                               gaussian_sigma=args.gaussian_sigma,
                               spacing_zyx=spacing_zyx,
+                              unseeded_policy=args.unseeded_policy,
                               use_watershed=not args.no_watershed)
     print(f"seq {args.seq}: {len(files)} 帧预测；spacing(z,y,x)={spacing_zyx} µm，"
           f"gaussian_sigma={args.gaussian_sigma} µm")
@@ -87,6 +94,8 @@ def main() -> None:
     if args.gt_root:
         tra = Path(args.gt_root) / f"{args.seq}_GT" / "TRA"
         gt_markers = lambda t: tifffile.imread(tra / f"man_track{t:03d}.tif")  # noqa: E731
+    if args.oracle_markers and gt_markers is None:
+        sys.exit("--oracle-markers 需要同时提供 --gt-root")
 
     stats_rows = []
     with h5py.File(out_path, "w") as f:
@@ -99,6 +108,8 @@ def main() -> None:
                        h_frac=args.h_frac,
                        spacing_zyx=np.asarray(spacing_zyx, dtype=np.float32),
                        gaussian_sigma=args.gaussian_sigma,
+                       oracle_markers=bool(args.oracle_markers),
+                       unseeded_policy=args.unseeded_policy,
                        watershed=not args.no_watershed)
         f.create_dataset("seg_frames", data=np.array([], dtype=np.int32))
         gf = f.create_group("frames")
@@ -106,7 +117,9 @@ def main() -> None:
         for i, pf in enumerate(files):
             t = int(pf.name.split("_f")[1][:3])
             sem = sitk.GetArrayFromImage(sitk.ReadImage(str(pf)))
-            labels = split_instances(sem, cfg)
+            # oracle 模式：用 GT 标记作种子（种子在掩码外的目标自然缺失，如实计入）
+            seeds_vol = gt_markers(t) if args.oracle_markers else None
+            labels = split_instances(sem, cfg, seeds=seeds_vol)
             img = tifffile.imread(img_dir / f"t{t:03d}.tif")
             tab = object_table_from_labels(labels, image=img)
 
