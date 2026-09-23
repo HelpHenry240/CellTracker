@@ -178,3 +178,26 @@ def test_false_positive_edges_are_not_labelled_division():
     g = build_pair_graph(dets, 0, 1, cfg, {},
                          shape=np.array([4.0, 64.0, 64.0]), t_total=2)
     assert (np.asarray(g["cand_label"]) == 2).sum() == 0
+
+
+def test_multi_step_context_window_runs():
+    """回归：`window>0`（多步时间上下文）此前直接 NameError（`cost_cfg` 未定义）。
+
+    该路径对应 E4.4 的多步上下文消融；重构代价函数时变量被删掉，导致这条
+    消融链路静默失效（默认 window=0 所以没暴露）。
+    """
+    from celltracker.graph import GraphConfig, build_pair_graph
+    from celltracker.track.base import Detections
+
+    dets = Detections({
+        t: {"label": np.array([1, 2]),
+            "centroid": np.array([[0.0, 0.0, 0.0], [5.0, 0.0, 0.0]]) + t * 0.2,
+            "volume": np.array([100.0, 100.0])}
+        for t in range(4)
+    })
+    g = build_pair_graph(dets, 1, 2, GraphConfig(window=1, r_max=30.0), {1: 0, 2: 0},
+                         shape=np.array([4.0, 64.0, 64.0]), t_total=4)
+    assert g["cand_edges"].shape[0] >= 2
+    # 上下文边被并入 edge_index（类型标志 2.0）；window=1 时节点覆盖 4 帧（t-1..t+2）
+    assert np.unique(g["node_frame"]).size == 4
+    assert g["edge_index"].shape[1] >= g["cand_edges"].shape[0]

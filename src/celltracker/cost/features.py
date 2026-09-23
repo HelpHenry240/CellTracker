@@ -17,13 +17,29 @@ class CostConfig:
     sigma_s: float = 1.0        # σ_s: 尺寸归一化
     r_max: float = 30.0         # R_max: 候选位移上限（超过则置 inf）
     mass_mode: str = "uniform"  # "uniform" | "volume"
+    # 体素物理间距 (z, y, x)，单位 µm。**None = 沿用历史的"体素单位"**。
+    #
+    # 为什么需要它：CE 的间距是 (1.0, 0.09, 0.09) µm，z 比 x/y 粗 11 倍。
+    # 按体素单位算距离时，同一个 `r_max=30` 在平面内等于 2.7 µm、在 z 方向等于
+    # **30 µm**（而整个体数据的 z 深度只有 35 µm）→ 门控在 z 方向近乎全放行；
+    # 代价 `α·d²` 也把"z 移动 1 µm"与"平面移动 0.09 µm"算成一样贵。
+    # 给定本字段后：距离用物理长度，`r_max` 的单位随之变成 **µm**。
+    # 参考量级（CE 真实移动边）：位移 p50=0.58 / p95=1.31 / p99.9=2.71 µm。
+    spacing_zyx: tuple[float, float, float] | None = None
 
 
-def pairwise_distance(x: np.ndarray, y: np.ndarray) -> np.ndarray:
-    """(n,d) 与 (m,d) 之间的欧氏距离矩阵 (n,m)。"""
+def pairwise_distance(x: np.ndarray, y: np.ndarray,
+                      spacing: tuple[float, ...] | None = None) -> np.ndarray:
+    """(n,d) 与 (m,d) 之间的欧氏距离矩阵 (n,m)。
+
+    `spacing` 给定时按物理长度计算（各轴先乘间距再取范数）；None = 体素单位。
+    """
     x = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float)
-    return np.linalg.norm(x[:, None, :] - y[None, :, :], axis=-1)
+    diff = x[:, None, :] - y[None, :, :]
+    if spacing is not None:
+        diff = diff * np.asarray(spacing, dtype=float)[None, None, :]
+    return np.linalg.norm(diff, axis=-1)
 
 
 def build_cost(src_xy: np.ndarray, dst_xy: np.ndarray,
@@ -35,11 +51,11 @@ def build_cost(src_xy: np.ndarray, dst_xy: np.ndarray,
     返回 (C, info)，info 中含位移矩阵 `d_cur`（用于阈值筛选与诊断）。
     """
     cfg = cfg or CostConfig()
-    d_cur = pairwise_distance(src_xy, dst_xy)
+    d_cur = pairwise_distance(src_xy, dst_xy, cfg.spacing_zyx)
     C = cfg.alpha * d_cur ** 2
 
     if cfg.alpha_pred > 0 and pred_xy is not None:
-        d_pred = pairwise_distance(pred_xy, dst_xy)
+        d_pred = pairwise_distance(pred_xy, dst_xy, cfg.spacing_zyx)
         C = C + cfg.alpha_pred * d_pred ** 2
 
     if cfg.beta > 0 and src_vol is not None and dst_vol is not None:
@@ -49,7 +65,8 @@ def build_cost(src_xy: np.ndarray, dst_xy: np.ndarray,
         C = C + cfg.beta * ((s_src[:, None] - s_dst[None, :]) / scale) ** 2
 
     C = np.where(d_cur <= cfg.r_max, C, np.inf)
-    return C, {"d_cur": d_cur}
+    return C, {"d_cur": d_cur,
+               "units": "physical_um" if cfg.spacing_zyx else "voxel"}
 
 
 def masses(vol: np.ndarray | None, n: int, mode: str = "uniform") -> np.ndarray:

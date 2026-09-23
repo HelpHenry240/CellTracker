@@ -51,6 +51,9 @@ class GraphConfig:
     node_feat_dim: int = 8
     edge_feat_dim: int = 10
     time_scale: float = 1.0
+    # 代价与 R_max 的单位：给定 (z,y,x) µm 间距则按物理长度（r_max 单位随之变 µm）；
+    # None = 体素单位（历史行为）。见 `cost/features.py::CostConfig.spacing_zyx`。
+    spacing_zyx: tuple[float, float, float] | None = None
 
 
 def _node_features(xy: np.ndarray, vol: np.ndarray, imean: np.ndarray,
@@ -151,7 +154,8 @@ def build_pair_graph(dets: Detections, t: int, t_next: int,
         art = compute_pairwise_plan(
             src_xy, dst_xy,
             OTConfig(alpha=1.0, beta=cfg.beta, r_max=cfg.r_max, eta=cfg.eta,
-                     eps=cfg.eps, eps_rel=cfg.eps_rel),
+                     eps=cfg.eps, eps_rel=cfg.eps_rel,
+                     spacing_zyx=cfg.spacing_zyx),
             src_vol, dst_vol,
             measure=MeasureConfig(mass_mode="uniform", knn_k=cfg.knn))
         C, plan, eps_eff, info = art.cost, art.plan, art.eps_eff, art.info
@@ -238,6 +242,10 @@ def build_pair_graph(dets: Detections, t: int, t_next: int,
     # ---- 上下文帧之间的跨帧边（不参与损失，只提供多步信息）----
     ctx_edges: list[np.ndarray] = []
     ctx_feats: list[np.ndarray] = []
+    # 回归修复（2026-09-23）：`cost_cfg` 此前**从未定义**，`window>0`（多步上下文）
+    # 一进入下面的循环就 NameError —— 即 E4.4 之后那条消融路径其实是坏的。
+    cost_cfg = CostConfig(r_max=cfg.r_max, beta=cfg.beta,
+                          spacing_zyx=cfg.spacing_zyx)
     for f, f_next in zip(win_frames[:-1], win_frames[1:]):
         if (f, f_next) == (t, t_next):
             continue

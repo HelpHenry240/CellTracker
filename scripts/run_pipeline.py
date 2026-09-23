@@ -41,7 +41,14 @@ def _coerce(v: str):
     try:
         return float(v)
     except ValueError:
-        return v
+        pass
+    if "," in v:                      # 元组/列表：如 ot.spacing_zyx=1.0,0.09,0.09
+        parts = [p.strip() for p in v.split(",") if p.strip()]
+        try:
+            return tuple(float(p) for p in parts)
+        except ValueError:
+            pass
+    return v
 
 
 def _set_dotted(cfg: PipelineConfig, pairs: list[str]) -> PipelineConfig:

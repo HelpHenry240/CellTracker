@@ -76,3 +76,44 @@ def test_unbalanced_mass_ratio_scaling():
                      tau_a=1.0, tau_b=1.0)
     # 对称惩罚下，最优总质量是两侧质量的几何折中（介于 1 与 2 之间）
     assert 1.0 < float(P[0, 0]) < 2.0
+
+
+def test_cost_with_physical_spacing_penalises_z_motion():
+    """回归：给定 spacing 时，代价必须按物理长度算（z 与 x/y 不等价）。
+
+    CE 的 (z,y,x) 间距是 (1.0, 0.09, 0.09) µm —— z 比 x/y 粗 11 倍。
+    按体素单位算时"z 走 1 格"和"平面走 1 格"一样贵；按物理单位算，
+    z 走 1 格 = 1 µm，平面 1 格 = 0.09 µm，代价比应为 (1/0.09)² ≈ 123。
+    """
+    import numpy as np
+
+    from celltracker.cost.features import CostConfig, build_cost
+
+    src = np.array([[0.0, 0.0, 0.0]])
+    dst_z = np.array([[1.0, 0.0, 0.0]])       # z 方向 1 体素
+    dst_xy = np.array([[0.0, 1.0, 0.0]])      # y 方向 1 体素
+
+    vox_cfg = CostConfig(r_max=1e9)
+    phys_cfg = CostConfig(r_max=1e9, spacing_zyx=(1.0, 0.09, 0.09))
+
+    c_z_vox, _ = build_cost(src, dst_z, None, None, None, vox_cfg)
+    c_xy_vox, _ = build_cost(src, dst_xy, None, None, None, vox_cfg)
+    c_z, info = build_cost(src, dst_z, None, None, None, phys_cfg)
+    c_xy, _ = build_cost(src, dst_xy, None, None, None, phys_cfg)
+
+    assert c_z_vox[0, 0] == pytest.approx(c_xy_vox[0, 0])      # 体素单位：等价
+    assert info["units"] == "physical_um"
+    assert c_z[0, 0] / c_xy[0, 0] == pytest.approx((1.0 / 0.09) ** 2, rel=1e-6)
+
+
+def test_cost_r_max_gate_uses_physical_units():
+    """回归：给定 spacing 时 R_max 是 µm —— z 方向 1 格 (1 µm) 应被 0.5 µm 门限挡掉。"""
+    import numpy as np
+
+    from celltracker.cost.features import CostConfig, build_cost
+
+    src = np.array([[0.0, 0.0, 0.0]])
+    dst = np.array([[1.0, 0.0, 0.0]])
+    C, _ = build_cost(src, dst, None, None, None,
+                      CostConfig(r_max=0.5, spacing_zyx=(1.0, 0.09, 0.09)))
+    assert not np.isfinite(C[0, 0])

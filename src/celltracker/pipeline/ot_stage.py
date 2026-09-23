@@ -81,7 +81,8 @@ def compute_pairwise_plan(
     # --- 式(8)(22) 特征代价 + R_max 门限 ---
     cost_cfg = CostConfig(alpha=cfg.alpha, alpha_pred=cfg.alpha_pred, beta=cfg.beta,
                           sigma_s=cfg.sigma_s, r_max=cfg.r_max,
-                          mass_mode=measure.mass_mode)
+                          mass_mode=measure.mass_mode,
+                          spacing_zyx=cfg.spacing_zyx)
     C, info = build_cost(src_xy, dst_xy, src_vol, dst_vol, pred_xy, cost_cfg)
 
     # --- 式(1) 质量向量 ---

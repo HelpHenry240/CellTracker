@@ -49,6 +49,9 @@ class OTConfig:
     beta: float = 0.0              # β：尺寸变化代价
     sigma_s: float = 1.0           # σ_s：尺寸归一化
     r_max: float = 30.0            # R_max：候选位移上限（超出置 +inf）
+    # 代价与 R_max 的单位：(z,y,x) µm 间距。None = 体素单位（历史行为，绑定数据集体素尺寸）；
+    # 给定后 r_max 的单位变为 µm（CE 参考：真实位移 p99.9 ≈ 2.7 µm → r_max≈3 µm）。
+    spacing_zyx: tuple[float, float, float] | None = None
     # --- 式(22) 运动先验（两遍式第二步启用）---
     alpha_pred: float = 0.0        # α′：匀速外推残差代价
     # --- 式(9) FGW 结构项 ---
@@ -103,6 +106,8 @@ class GraphStageConfig:
     cand_topk: int = 3             # 工程补充：每行额外保留质量前 k（见 day1_summary）
     window: int = 0                # 时间上下文窗口（0 = 仅相邻两帧）
     intra_knn: int = 4             # 式(28)：帧内 kNN 边
+    # 与 OTConfig 保持一致：给定后代价/门限用物理单位
+    spacing_zyx: tuple[float, float, float] | None = None
 
 
 @dataclass

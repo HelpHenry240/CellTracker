@@ -27,6 +27,7 @@ def graph_cfg_from_pipeline(cfg) -> GraphConfig:
     g = cfg.graph
     return GraphConfig(
         r_max=cfg.ot.r_max,
+        spacing_zyx=cfg.ot.spacing_zyx,
         knn=g.intra_knn,
         use_ot=True,
         cand_from_ot=g.cand_from_ot,

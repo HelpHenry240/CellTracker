@@ -53,10 +53,14 @@ def main() -> None:
     ap.add_argument("--tau-move", type=float, default=0.5)
     ap.add_argument("--tau-div", type=float, default=0.5)
     ap.add_argument("--r-max", type=float, default=30.0)
+    ap.add_argument("--spacing-zyx", default=None,
+                    help="(z,y,x) µm 间距；给定时 r_max 的单位是 µm（与 pipeline 一致）")
     ap.add_argument("--limit-pairs", type=int, default=None)
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
+    spacing = (tuple(float(x) for x in args.spacing_zyx.split(","))
+               if args.spacing_zyx else None)
     dets = Detections.from_h5(args.h5)
     gt_h5 = args.gt_h5 or args.h5
     with h5py.File(gt_h5, "r") as f:
@@ -95,7 +99,7 @@ def main() -> None:
             continue
         # S0：R_max 可达的全部真实边
         C, _ = build_cost(dets.centroid(t), dets.centroid(tn), None, None, None,
-                          CostConfig(r_max=args.r_max))
+                          CostConfig(r_max=args.r_max, spacing_zyx=spacing))
         finite = np.isfinite(C)
         gt_true = {}
         for i in range(n_src):
@@ -164,7 +168,7 @@ def main() -> None:
             continue
         sl, dl = dets.gt_label(t), dets.gt_label(tn)
         C, _ = build_cost(dets.centroid(t), dets.centroid(tn), None, None, None,
-                          CostConfig(r_max=args.r_max))
+                          CostConfig(r_max=args.r_max, spacing_zyx=spacing))
         finite = np.isfinite(C)
         events: dict[int, list[int]] = defaultdict(list)
         for i in range(sl.size):

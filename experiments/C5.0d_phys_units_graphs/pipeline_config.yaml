@@ -1,0 +1,53 @@
+measure:
+  mass_mode: uniform
+  knn_k: 6
+  sigma_x: null
+  sigma_f: null
+ot:
+  alpha: 1.0
+  beta: 0.0
+  sigma_s: 1.0
+  r_max: 3.0
+  spacing_zyx:
+  - 1.0
+  - 0.09
+  - 0.09
+  alpha_pred: 0.0
+  eta: 0.0
+  eps: 1.0
+  eps_rel: 0.1
+  tau_a: null
+  tau_b: null
+multiscale:
+  enabled: false
+  ks:
+  - 2
+  - 3
+  - 5
+  lambda_temp: 0.1
+  n_rounds: 2
+tracklet:
+  enabled: false
+  max_gap: 3
+  r_max: 30.0
+  velocity_weight: 1.0
+  merge_division_children: false
+  theta_link: 0.2
+  tau: 0.5
+  allow_gap_filling: false
+graph:
+  cand_from_ot: true
+  theta_gamma: 0.02
+  theta_c: null
+  cand_topk: 3
+  window: 0
+  intra_knn: 4
+  spacing_zyx: null
+reconstruct:
+  tau_move: 0.5
+  tau_div: 0.5
+  max_children: 2
+  div_ratio: 0.2
+seed: 20260919
+detection_source: gt_tra
+ablated: []

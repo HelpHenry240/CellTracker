@@ -1,0 +1,21 @@
+experiment_id: C5.0d_phys_units_train
+date: '2026-09-23'
+purpose: P4 GNN 训练
+params:
+  graphs: data/interim/graphs_v2_phys
+  epochs: 60
+  hidden: 64
+  layers: 3
+  lambda_ot: 0.1
+argv:
+- scripts/run_gnn.py
+- train
+- --graphs
+- data/interim/graphs_v2_phys
+- --exp-id
+- C5.0d_phys_units_train
+- --epochs
+- '60'
+seed: 20260915
+status: done
+summary: best move_f1=0.889 div_f1=0.364
