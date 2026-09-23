@@ -12,6 +12,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import sys
 from pathlib import Path
@@ -22,21 +23,61 @@ ROOT = Path(__file__).resolve().parent.parent
 CRED = ROOT / "本地文档" / "ssh&key"
 
 
-def parse_cred() -> tuple[str, str, str, str]:
-    text = CRED.read_text(encoding="utf-8").splitlines()
-    m = re.search(r"ssh\s+-p\s+(\d+)\s+(\S+)@(\S+)", " ".join(text))
-    if not m:
-        sys.exit(f"无法从 {CRED} 解析 ssh 命令")
-    port, user, host = m.group(1), m.group(2), m.group(3)
-    password = ""
-    for line in text:
-        line = line.strip()
-        if line and not line.startswith("ssh "):
-            password = line
-            break
-    if not password:
-        sys.exit(f"无法从 {CRED} 解析密码")
-    return host, port, user, password
+def parse_creds() -> list[tuple[str, str, str, str]]:
+    """解析凭据文件里的**所有**连接（支持主用 + 备用）。
+
+    文件格式（见 `本地文档/ssh&key`）：
+
+        ssh -p 10505 root@<host>      # 主用
+        <password>
+
+        备用连接：
+        ssh -p 21921 root@<host>      # 备用
+        <password>
+
+    中文标签行（如"备用连接："）会被跳过，不作为密码。
+    """
+    entries: list[dict[str, str]] = []
+    cur: dict[str, str] | None = None
+    for raw in CRED.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        m = re.match(r"ssh\s+-p\s+(\d+)\s+(\S+)@(\S+)", line)
+        if m:
+            cur = {"port": m.group(1), "user": m.group(2), "host": m.group(3),
+                   "password": ""}
+            entries.append(cur)
+            continue
+        if cur is None or cur["password"]:
+            continue
+        if re.search(r"[\u4e00-\u9fff:：]", line):
+            continue                       # 中文标签行
+        cur["password"] = line
+    return [(e["host"], e["port"], e["user"], e["password"])
+            for e in entries if e["password"]]
+
+
+def parse_cred(which: str | None = None) -> tuple[str, str, str, str]:
+    """选择要用的连接：`primary`（默认）/ `backup`，或用环境变量 `CT_CLOUD_CONN`。
+
+    云服务器有时只开放备用端口，此时 `CT_CLOUD_CONN=backup bash scripts/cloud_run.sh ...`。
+    也可以直接给端口号或主机名进行匹配。
+    """
+    creds = parse_creds()
+    if not creds:
+        sys.exit(f"无法从 {CRED} 解析任何 ssh 连接")
+    sel = (which or os.environ.get("CT_CLOUD_CONN") or "primary").strip().lower()
+    if sel in ("backup", "b", "2"):
+        if len(creds) < 2:
+            sys.exit(f"{CRED} 中未找到备用连接")
+        return creds[1]
+    if sel in ("primary", "main", "a", "1"):
+        return creds[0]
+    for c in creds:
+        if sel in (c[1].lower(), c[0].lower()):
+            return c
+    sys.exit(f"未知连接选择 {sel!r}（可用：primary/backup，或端口号/主机名）")
 
 
 def run(argv: list[str], echo: bool = True) -> int:
