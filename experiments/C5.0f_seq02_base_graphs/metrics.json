@@ -1,0 +1,15 @@
+{
+  "info": {
+    "n_frames": 190,
+    "ablated": [],
+    "n_couplings": 189,
+    "decision": "ot_rule",
+    "dumped_graphs": {
+      "dir": "data/interim/graphs_seq02_base",
+      "n_pairs": 189
+    },
+    "tracks_after_decision": 10156,
+    "tracks_final": 10156
+  },
+  "n_tracks": 10156
+}

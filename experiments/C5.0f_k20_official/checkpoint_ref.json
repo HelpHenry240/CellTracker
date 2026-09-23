@@ -1,0 +1,6 @@
+{
+  "path": "experiments/C5.0f_k20_train/artifacts/model/best.pt",
+  "md5": "31145c64459f73c377d2d249837ab599",
+  "size_bytes": 423053,
+  "belongs_to_experiment": "C5.0f_k20_train"
+}
