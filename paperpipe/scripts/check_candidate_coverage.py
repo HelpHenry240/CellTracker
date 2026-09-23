@@ -31,13 +31,14 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "paperpipe" / "src"))
-sys.path.insert(0, str(ROOT / "src"))
 
-from papertrack.config import load_config, override                # noqa: E402
-from papertrack.coupling import solve_coupling                     # noqa: E402
-from papertrack.graph import _candidates                           # noqa: E402
-from papertrack.measure import resolve_spacing                     # noqa: E402
-from papertrack.pipeline import load_detections, load_gt_parent    # noqa: E402
+import papertrack  # noqa: E402,F401  —— 触发 _paths（vendor 优先）
+
+from papertrack.config import load_config, override                 # noqa: E402
+from papertrack.coupling import solve_coupling                      # noqa: E402
+from papertrack.graph.build import _candidates                      # noqa: E402
+from papertrack.representation.measure import resolve_spacing       # noqa: E402
+from papertrack.runtime.pipeline import load_detections, load_gt_parent  # noqa: E402
 
 
 def coverage_for(dets, ts, idx, cfg, gt_parent, spacing, r_max, eps_rel, eta,

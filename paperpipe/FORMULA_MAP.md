@@ -9,6 +9,29 @@
 对照基线：`ideas.pdf`（16 页，§1.1–§1.7 + §2.0.1，式 1–35）；
 原仓库审计：`docs/论文对齐核对.md`（本表在它基础上逐条落地为代码）。
 
+> **目录结构（2026-09-24 重组）**：下表里的"代码位置"用 `模块.函数` 记法，
+> 对应的**文件路径**如下（`paperpipe/src/papertrack/` 下，按论文模块分了文件夹）：
+>
+> | 模块名 | 文件路径 |
+> | --- | --- |
+> | `measure` | `representation/measure.py` |
+> | `coupling` | `coupling/pairwise.py` |
+> | `multiscale` | `temporal/multiscale.py` |
+> | `motion` | `longrange/motion.py` |
+> | `tracklet` | `longrange/tracklet.py` |
+> | `reconstruct` | `reconstruction/rules.py` |
+> | `tracks` | `reconstruction/tracks.py` |
+> | `export_ctc` | `reconstruction/exporter.py` |
+> | `graph` | `graph/build.py` |
+> | `model` | `gnn/model.py` |
+> | `train` | `gnn/train.py` |
+> | `infer` | `gnn/infer.py` |
+> | `pipeline` | `runtime/pipeline.py` |
+> | `validate` | `runtime/validate.py` |
+>
+> 复用到的原仓库模块副本在 `paperpipe/src/vendor/celltracker/`（清单见 `vendor/README.md`），
+> 由 `_paths.py` 插到 `sys.path` 最前 ⇒ **paperpipe 自包含**。
+
 ---
 
 ## 1. 逐式对照

@@ -19,16 +19,16 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "paperpipe" / "src"))
-sys.path.insert(0, str(ROOT / "src"))
 
-from celltracker.track.base import Detections                     # noqa: E402
+from celltracker.track.base import Detections                       # noqa: E402  (vendor 副本)
 from papertrack.config import GraphConfig, MeasureConfig, PipelineConfig  # noqa: E402
 from papertrack.coupling import solve_coupling, solve_jump_coupling  # noqa: E402
-from papertrack.graph import EDGE_DIM, build_graph                # noqa: E402
-from papertrack.measure import knn_structure, masses              # noqa: E402
-from papertrack.reconstruct import (reconstruct_from_edges,       # noqa: E402
-                                    reconstruct_from_ot, volume_consistent)
-from papertrack.tracks import holes_of, normalize_tracks          # noqa: E402
+from papertrack.graph import EDGE_DIM, build_graph                 # noqa: E402
+from papertrack.reconstruction.rules import (reconstruct_from_edges,  # noqa: E402
+                                             reconstruct_from_ot,
+                                             volume_consistent)
+from papertrack.reconstruction.tracks import holes_of, normalize_tracks  # noqa: E402
+from papertrack.representation.measure import knn_structure, masses  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
@@ -79,6 +79,28 @@ def test_masses_follow_size():
     assert a.sum() == pytest.approx(1.0)
     assert a[1] / a[0] == pytest.approx(3.0)          # 式(1)：质量 ∝ 尺寸
     assert masses(None, 4, "uniform") == pytest.approx(np.full(4, 0.25))
+
+
+def test_self_contained_vendor(tmp_path):
+    """paperpipe 必须自包含：只给 `paperpipe/src` 时，`import celltracker` 应命中 vendor 副本。
+
+    用**子进程 + 干净 PYTHONPATH + 仓库外的 cwd** 验证，避免污染同一次 pytest 会话里
+    仓库自身测试对 `celltracker` 的导入（早先的 conftest 改全局 sys.path 就踩过这个坑）。
+    """
+    import os
+    import subprocess
+    import sys
+
+    env = {k: v for k, v in os.environ.items() if k != "PYTHONPATH"}
+    env["PYTHONPATH"] = str(ROOT / "paperpipe" / "src")
+    code = ("import papertrack, celltracker;"
+            "print(celltracker.__file__);"
+            "from papertrack.runtime import run_pipeline;"
+            "from papertrack.reconstruction import export_ctc")
+    proc = subprocess.run([sys.executable, "-c", code], cwd=str(tmp_path), env=env,
+                          capture_output=True, text=True, timeout=300)
+    assert proc.returncode == 0, proc.stderr[-2000:]
+    assert "vendor" in proc.stdout, proc.stdout
 
 
 def test_knn_structure_uses_eq6_weight_and_eq7_distance():
@@ -262,9 +284,9 @@ def test_hole_policy_split_cuts_the_track():
 def test_gnn_forward_and_train_smoke(tmp_path):
     import torch
 
-    from papertrack.graph import build_dataset
-    from papertrack.model import EdgeGNN, ModelConfig
-    from papertrack.train import TrainConfig, train
+    from papertrack.gnn.model import EdgeGNN, ModelConfig
+    from papertrack.gnn.train import TrainConfig, train
+    from papertrack.graph.build import build_dataset
 
     dets = _dets(volumes=[[100.0, 90.0], [100.0, 90.0], [100.0, 90.0]],
                  cents=[[[4, 5, 5], [4, 20, 20]],
@@ -333,8 +355,9 @@ def _write_h5(path: Path, dets: Detections, vol_shape=(16, 32, 32)) -> Path:
 
 def test_end_to_end_synthetic(tmp_path):
     from papertrack.config import PipelineConfig as PC
-    from papertrack.pipeline import export_ctc, run_pipeline
-    from papertrack.validate import validate_ctc_dir
+    from papertrack.reconstruction import export_ctc
+    from papertrack.runtime import run_pipeline
+    from papertrack.runtime.validate import validate_ctc_dir
 
     dets = _dets(volumes=[[100.0], [], [100.0]],
                  cents=[[[4, 5, 5]], [], [[4, 9, 9]]])

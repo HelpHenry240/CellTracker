@@ -36,8 +36,8 @@ from celltracker.ot.sinkhorn import sinkhorn_log
 from celltracker.track.base import Detections, TrackResult
 from celltracker.track.tracklets import tracklet_stats   # 复用：超级节点汇总特征
 
-from .config import CouplingConfig, MeasureConfig, TrackletConfig
-from .tracks import normalize_tracks
+from ..config import CouplingConfig, MeasureConfig, TrackletConfig
+from ..reconstruction.tracks import normalize_tracks
 
 __all__ = ["TrackletResult", "link_tracklets", "cut_pieces"]
 

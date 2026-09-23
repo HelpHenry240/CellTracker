@@ -33,7 +33,7 @@ import numpy as np
 # 复用：与式(1)(3) 完全一致的质量归一化（原仓库实现）
 from celltracker.cost.features import pairwise_distance  # noqa: F401  (式7 的距离原语)
 
-from .config import MeasureConfig
+from ..config import MeasureConfig
 
 __all__ = ["resolve_spacing", "masses", "point_features", "knn_structure",
            "sigma_from", "pairwise_distance"]
@@ -191,7 +191,7 @@ def build_cost(src_xy: np.ndarray, dst_xy: np.ndarray,
 
     返回 `(C, d_cur, info)`；`d_cur` 是式(8) 的位移矩阵（µm），下游用于 θ_C 与诊断。
     """
-    from .config import CouplingConfig
+    from ..config import CouplingConfig
 
     cfg = cfg or CouplingConfig()
     d_cur = pairwise_distance(src_xy, dst_xy, spacing)

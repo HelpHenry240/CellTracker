@@ -27,11 +27,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "paperpipe" / "src"))
-sys.path.insert(0, str(ROOT / "src"))
 
-from celltracker.experiment import Experiment                      # noqa: E402
-from papertrack.config import load_config, override, save_config   # noqa: E402
-from papertrack.pipeline import export_ctc, run_pipeline           # noqa: E402
+import papertrack  # noqa: E402,F401  —— 触发 _paths：把 vendor 里的 celltracker 副本加入 sys.path
+
+from celltracker.experiment import Experiment                        # noqa: E402  (vendor 副本)
+from papertrack.config import load_config, override, save_config     # noqa: E402
+from papertrack.reconstruction import export_ctc                     # noqa: E402
+from papertrack.runtime import run_pipeline                          # noqa: E402
 
 
 def main() -> None:
@@ -84,7 +86,7 @@ def main() -> None:
     exp.log(f"本地指标: {json.dumps(stats, ensure_ascii=False, default=str)}")
 
     if not args.no_validate:
-        from papertrack.validate import validate_ctc_dir
+        from papertrack.runtime.validate import validate_ctc_dir
 
         check = validate_ctc_dir(res_dir)
         stats["format_validation"] = check

@@ -19,25 +19,39 @@
 ```
 paperpipe/
   configs/paper_default.yaml     # 全参数（含 PAPER/CALIB/ENG 标记）
-  src/papertrack/
-    measure.py      §1.2 式(1)-(7)   测度、帧内 kNN 图与边权 W、C_feat
-    coupling.py     §1.3 式(8)-(14)  相邻帧（FGW / 非平衡）熵正则 OT
-    multiscale.py   §1.4 式(15)-(19) 时间展开图 + 多尺度时间正则（交替优化）
-    motion.py       §1.5 式(20)-(22) 两遍式运动先验（复用估速实现）
-    tracklet.py     §1.5末/§1.6      滑动窗口 tracklet + 第二层 OT
-    reconstruct.py  §1.6 式(23)-(24) 轨迹重建（OT 规则 / GNN 边决策两条路径）
-    graph.py        §2.0.1 式(25)-(29) 时间展开图（含跨帧桥接边）
-    model.py        §2.0.1 式(30)-(33) 边–节点消息传递 + sigmoid 边分类头
-    train.py        §2.0.1 式(34)-(35) BCE + OT 一致性正则
-    pipeline.py     主流程 + CTC 导出（含空洞帧补画）
-    tracks.py       轨迹规范化（CTC 合法性、空洞登记）
-    validate.py     CTC 提交格式校验（E2）
+  src/
+    vendor/                        # 复用到的 celltracker 模块**副本**（自包含，见 vendor/README.md）
+      celltracker/{ot,cost,track,data,eval,gnn,pipeline,experiment}/
+    papertrack/
+      _paths.py                    # 把 vendor 插到 sys.path 最前（paperpipe 不依赖外层仓库）
+      config.py                    # 全参数（论文符号 + PAPER/CALIB/ENG 标记）
+      representation/  §1.2         measure.py           式(1)-(7) 测度、帧内图与 W、C_feat
+      coupling/        §1.3         pairwise.py          式(8)-(14) FGW / 平衡 / 非平衡 OT
+      temporal/        §1.4         multiscale.py        式(15)-(19) 时间展开图 + 多尺度正则
+      longrange/       §1.5         motion.py            式(20)-(22) 两遍式运动先验
+                                    tracklet.py          §1.5末/§1.6 滑动窗口 tracklet + 二层 OT
+      reconstruction/  §1.6/§2.0.1  rules.py             式(23)(24) OT 规则重建 + 式(33) GNN 边决策
+                                    tracks.py            轨迹规范化（CTC 合法性、空洞登记）
+                                    exporter.py          流式写 CTC 提交 + 空洞帧补画
+      graph/           §2.0.1       build.py             式(25)-(29) 时间展开图（含跨帧桥接边）
+      gnn/             §2.0.1       model.py             式(30)-(33) 消息传递 + sigmoid 边分类头
+                                    train.py             式(34)(35) BCE + OT 正则；时间块切分
+                                    infer.py             载入权重 → 边决策
+      runtime/                      pipeline.py          端到端编排（§1.2→§2.0.1）
+                                    validate.py          CTC 提交格式校验（E2）
   scripts/
     run_paper_pipeline.py   # 端到端入口（OT 规则 或 GNN 决策 + 导出 + 可选官方指标）
     train_paper_gnn.py      # 训练 §2.0.1 的 GNN
     calibrate_params.py     # 论文未给数值的参数按物理量纲标定（R3）
+    check_candidate_coverage.py  # 候选覆盖率标定（R5：不可逆筛选必须量化）
+    cloud_nnunet_infer.sh   # 云端 nnU-Net 推理（固化命令，便于复现）
   tests/test_papertrack.py  # 15 项回归测试（合成数据，秒级）
 ```
+
+**自包含**：`paperpipe/` 只需要自己这一个目录即可运行（`vendor/` 里是复用到的
+`celltracker` 模块副本，`_paths.py` 会把它插到 `sys.path` 最前）。
+自检：`python -c "import papertrack, celltracker; print(celltracker.__file__)"`
+应打印 `paperpipe/src/vendor/celltracker/...`（测试里有一条专门的回归用例）。
 
 ## 2. 怎么跑
 

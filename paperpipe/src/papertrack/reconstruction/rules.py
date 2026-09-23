@@ -37,8 +37,8 @@ import numpy as np
 from celltracker.data.ctc import Track
 from celltracker.track.base import Detections, TrackResult
 
-from .config import ReconstructConfig
-from .coupling import PairCoupling
+from ..config import ReconstructConfig
+from ..coupling.pairwise import PairCoupling
 from .tracks import normalize_tracks
 
 __all__ = ["reconstruct_from_ot", "reconstruct_from_edges", "volume_consistent"]

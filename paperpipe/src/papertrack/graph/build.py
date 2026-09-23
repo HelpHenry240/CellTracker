@@ -41,9 +41,9 @@ import numpy as np
 
 from celltracker.track.base import Detections
 
-from .config import GraphConfig, MeasureConfig
-from .coupling import PairCoupling
-from .measure import knn_structure, pairwise_distance, point_features
+from ..config import GraphConfig, MeasureConfig
+from ..coupling.pairwise import PairCoupling
+from ..representation.measure import knn_structure, pairwise_distance, point_features
 
 __all__ = ["NODE_COLS", "EDGE_COLS", "build_graph", "build_dataset",
            "load_encoder_features", "node_dim_for"]

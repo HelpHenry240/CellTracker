@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from .graph import EDGE_DIM, build_graph, node_dim_for
+from ..graph.build import EDGE_DIM, build_graph, node_dim_for
 from .model import EdgeGNN, ModelConfig
 
 __all__ = ["load_model", "predict_graph", "make_edge_decider"]

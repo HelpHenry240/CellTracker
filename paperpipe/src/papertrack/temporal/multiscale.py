@@ -35,9 +35,9 @@ import numpy as np
 from celltracker.ot.fgw import structural_term        # 式(9) 结构项，复用
 from celltracker.ot.sinkhorn import sinkhorn_log      # 式(12)/(14) 求解器，复用
 
-from .config import CouplingConfig, MeasureConfig, MultiscaleConfig
-from .coupling import PairCoupling, solve_coupling, solve_jump_coupling
-from .measure import knn_structure, pairwise_distance
+from ..config import CouplingConfig, MeasureConfig, MultiscaleConfig
+from ..coupling.pairwise import PairCoupling, solve_coupling, solve_jump_coupling
+from ..representation.measure import knn_structure, pairwise_distance
 
 __all__ = ["MultiscaleResult", "refine_couplings", "pair_objective",
            "entropy", "kl_divergence", "time_expanded_edges"]

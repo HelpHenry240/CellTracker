@@ -16,9 +16,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "paperpipe" / "src"))
-sys.path.insert(0, str(ROOT / "src"))
 
-from papertrack.train import TrainConfig, train   # noqa: E402
+import papertrack  # noqa: E402,F401  —— 触发 _paths：把 vendor 的 celltracker 副本加入 sys.path
+
+from papertrack.gnn.train import TrainConfig, train   # noqa: E402
 
 
 def main() -> None:

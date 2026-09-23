@@ -31,8 +31,8 @@ import numpy as np
 from celltracker.ot.fgw import fused_gw, structural_term  # 式(9)：直接复用
 from celltracker.ot.sinkhorn import sinkhorn_log            # 式(10)-(14)：直接复用
 
-from .config import CouplingConfig, MeasureConfig
-from .measure import build_cost, knn_structure, masses
+from ..config import CouplingConfig, MeasureConfig
+from ..representation.measure import build_cost, knn_structure, masses
 
 __all__ = ["PairCoupling", "solve_coupling", "solve_jump_coupling",
            "save_coupling", "load_coupling", "eps_from"]
