@@ -240,7 +240,10 @@ def link_tracklets(dets: Detections, result: TrackResult, cfg: TrackletConfig,
 
     assignment, tracks, norm_info = normalize_tracks(
         new_assignment, new_tracks, hole_policy=cfg.hole_policy)
+    # 注意：这里必须**合并**上一阶段的 meta（决策阶段的桥接/分裂计数等诊断），
+    # 不能让二层 tracklet 的结果把它覆盖掉（曾经丢过 n_bridge_used 等统计）。
     out = TrackResult(assignment=assignment, tracks=tracks,
-                      meta={"tracklet": {**info, "n_links": links, **norm_info}})
+                      meta={**result.meta,
+                            "tracklet": {**info, "n_links": links, **norm_info}})
     return TrackletResult(result=out, table={"n_pieces": n}, coupling=coupling,
                           info={**info, "n_links": links, **norm_info})
