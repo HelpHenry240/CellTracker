@@ -151,24 +151,21 @@ def _graph_to_item(g: dict) -> dict:
 
 def reconstruct_tracks(dets: Detections, preds: dict[int, dict],
                        cfg: InferConfig | None = None) -> TrackResult:
-    """按 GNN 边分类结果重建轨迹。
+    """按 GNN 边分类结果重建轨迹（**默认走论文口径**）。
 
-    两种模式：
+    * **默认（论文口径，§2.0.1）**：OT 只负责筛候选边（式26）与提供边特征（式27），
+      决策直接用 GNN 的边分类概率（式33）配 `τ_move / τ_div` 阈值；
+      目标冲突按置信度优先；**分裂后父轨迹必须终止**、每源最多 `max_children` 个子。
+      这里的结构性约束就是论文 §2.0.1 所描述的"每个节点最多一个父、有限个子"。
 
-    * **残差校正模式**（§2.0.1，"OT 先验 + GNN 校正"）：把 OT 的行归一化传输质量
-      与 GNN 的类别概率线性融合（`λ` 控制残差强度），再统一决策：
+    * **消融项 `fusion=True`（自创公式，原文没有）**：
+      `e_link = (1-λ)·rnorm + λ·P_move`、`e_div = (1-λ)·rnorm + λ·P_div`，
+      把 OT 的行归一化质量与 GNN 概率线性融合。λ=1 时退化为纯 GNN。
+      仅用于对照，**不是主链路口径**。
 
-          e_link(i→j) = (1-λ)·rnorm_ij + λ·P_move(i→j)
-          e_div (i→j) = (1-λ)·rnorm_ij + λ·P_div(i→j)
-
-      其中 `rnorm` 是 OT 传输计划的行归一化质量（可解释的局部软匹配先验），
-      "两个目标的行归一化质量都显著" 正是 §1.6 中"一行对多个目标显著传输"
-      的分裂判据。**λ=0 时完全退化为纯 OT 规则**（λ=0 下 `e_link = e_div = rnorm`，
-      于是"有 ≥2 个目标质量超过阈值就分裂，否则连到 argmax"）。
-
-    * **纯 GNN 模式**（λ=1，用于对照）：只看 GNN 概率，用 τ_move/τ_div 阈值。
-
-    目标冲突时按置信度高者优先；未被占用的目标视为新生。
+    ⚠️ 已知缺口：论文还要求"用**入/出度统计**识别多源/多汇节点并标记不可靠区域、
+    再对其边重打分"，这一部分**未实现**（节点特征里没有任何度特征）。
+    详见 `docs/decisions/0004-undersegmentation-mechanism-gap.md`。
     """
     cfg = cfg or InferConfig()
     ts = dets.t_range

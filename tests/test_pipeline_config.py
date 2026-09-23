@@ -201,3 +201,20 @@ def test_multi_step_context_window_runs():
     # 上下文边被并入 edge_index（类型标志 2.0）；window=1 时节点覆盖 4 帧（t-1..t+2）
     assert np.unique(g["node_frame"]).size == 4
     assert g["edge_index"].shape[1] >= g["cand_edges"].shape[0]
+
+
+def test_node_feature_dim_matches_documented_constant():
+    """回归：节点特征实际维度必须与 `GraphConfig.node_feat_dim` 一致。
+
+    背景：该常量曾写 8，而实际产出 7 列（坐标 3 + log 体积 1 + 强度均值/方差 2 + 时间 1），
+    文档字符串也跟着写成 (n,8)。这类"文档与实现漂移"会让后续按列取特征时静默出错。
+    """
+    from celltracker.graph import GraphConfig
+    from celltracker.graph.build import _node_features
+
+    n = 5
+    xy = np.random.default_rng(0).random((n, 3)) * 10
+    vol = np.full(n, 100.0)
+    feats = _node_features(xy, vol, np.full(n, 50.0), np.full(n, 5.0),
+                           t=0, shape=np.array([4.0, 64.0, 64.0]), t_total=4)
+    assert feats.shape == (n, GraphConfig().node_feat_dim)

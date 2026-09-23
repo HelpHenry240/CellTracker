@@ -48,7 +48,10 @@ class GraphConfig:
     eps: float = 1.0
     eta: float = 0.0               # >0 时用 FGW（结构项进入 OT 特征）
     beta: float = 0.0
-    node_feat_dim: int = 8
+    # 节点特征维度（**信息性常量**，模型按数据推断维度）：
+    # 0-2 归一化坐标 (z,y,x)、3 log(1+体积)、4 强度均值、5 强度标准差、6 归一化时间。
+    # ⚠️ 这里**没有入/出度特征**——见 `_node_features` 的说明与 §2.0.1 度建模缺口。
+    node_feat_dim: int = 7
     edge_feat_dim: int = 10
     time_scale: float = 1.0
     # 代价与 R_max 的单位：给定 (z,y,x) µm 间距则按物理长度（r_max 单位随之变 µm）；
@@ -59,7 +62,20 @@ class GraphConfig:
 def _node_features(xy: np.ndarray, vol: np.ndarray, imean: np.ndarray,
                    istd: np.ndarray, t: int, shape: np.ndarray,
                    t_total: int) -> np.ndarray:
-    """节点特征：(n, 8)。坐标按体数据尺寸归一化，体积取 log。"""
+    """节点特征：(n, 7)。
+
+    列：0-2 归一化坐标(z,y,x)、3 `log1p(体积)`、4 强度均值、5 强度标准差、6 归一化时间。
+
+    **已知缺口（论文 §2.0.1 的欠分割处理未完整实现）**：论文称 GNN 通过
+    "**入/出度统计** + 邻域轨迹一致性"识别"多源/多汇"节点（欠分割），
+    并把这些节点标为不可靠区域后对其边重打分。当前实现里：
+      - ❌ 没有任何**显式度特征**（入度/出度/体积相对邻域中位数之比）；
+        模型只能通过消息传递隐式感知邻域，与论文描述不同；
+      - ❌ 没有"**标记不可靠区域**"的输出与相应重打分；
+      - ✅ 只有重建阶段的**结构性硬约束**（每节点 ≤1 父、≤2 子、分裂后父轨迹终止）生效。
+    该缺口的验证属于 C6（分割误差鲁棒性）范畴，见
+    `docs/decisions/0004-undersegmentation-mechanism-gap.md`。
+    """
     xy_n = xy / np.maximum(shape[None, :], 1.0)
     feats = [xy_n,
              np.log1p(vol)[:, None],
