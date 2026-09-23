@@ -147,6 +147,27 @@ def link_tracklets(dets: Detections, result: TrackResult, cfg: TrackletConfig,
             d1 = float(np.linalg.norm(B.start_xy - A.end_xy))
             if d1 > ccfg.r_max * gap:
                 continue
+            # 跨空洞串联的前置条件（同 §2.0.1 的桥接边）：**中间帧该节点确实缺失**。
+            # 否则"gap>1 的合并"会凭空造出空洞——实测在真实数据上产生 3487 个
+            # 假空洞（中间帧其实有检测），既不符合论文语义，也让 CTC 格式必须靠
+            # 补画兜底。判据：把 A→B 的预测位置线性插值到中间帧，若存在 r_max 内的
+            # 检测，则该节点没缺，只允许 gap==1 的合并。
+            if gap > 1:
+                missing = True
+                for f in range(A.end + 1, B.begin):
+                    frac = (f - A.end) / gap
+                    pred = A.end_xy + frac * (B.start_xy - A.end_xy)
+                    xy = dets.centroid(f)
+                    if xy.size == 0:
+                        continue
+                    diff = xy - pred[None, :]
+                    if spacing is not None:
+                        diff = diff * np.asarray(spacing, dtype=float)[None, :]
+                    if float(np.min(np.linalg.norm(diff, axis=1))) <= ccfg.r_max:
+                        missing = False
+                        break
+                if not missing:
+                    continue
             pred = A.end_xy + A.velocity * gap
             d2 = float(np.linalg.norm(B.start_xy - pred))
             cost[ai, bi] = ccfg.alpha * d1 ** 2 + ccfg.alpha_pred * d2 ** 2

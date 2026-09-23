@@ -1,0 +1,103 @@
+# paperpipe 端到端配置（Fluo-N3DH-CE，检测 = nnU-Net 预测实例）
+#
+# 与 configs/paper_default.yaml 的区别：**所有论文未给数值的参数都按真实数据标定过**，
+# 标定脚本与证据文件：
+#   paperpipe/scripts/calibrate_params.py     -> paperpipe/calib/ce01_predv2.json
+#   paperpipe/scripts/check_candidate_coverage.py -> paperpipe/calib/cand_coverage_ce01*.json
+#
+# 关键标定结论（CE-01 预测实例）：
+#   1) 相邻帧最近邻位移 p50=0.66 / p95=2.15 / p99.9=4.28 µm  -> r_max=4.3 µm
+#      （旧的 3.0 只覆盖到 p97 左右，真实位移超门限的配对会被置 +∞）
+#   2) 真实后继边的 Γ/a_i p5 = 0.009 -> theta_gamma_frac=0.01
+#   3) 候选覆盖率扫描（不可逆筛选，R5）：
+#        r_max=3.0, eps_rel=0.1 → 真实边召回 0.964 / **分裂双子都在候选集 0.308**
+#        r_max=4.3, eps_rel=1.0 → 真实边召回 0.995 / 分裂双子 0.808
+#      旧默认（eps_rel=0.1 + r_max=3）会让 ~69% 的真实分裂在候选阶段就永久丢失；
+#      ε=0.1×median(C) 在 µm² 量纲下使 Sinkhorn 退化成硬分配（这正是"较小子目标
+#      行内占比中位数 = 0"的直接原因）。ε 论文只写 "ε>0" -> 属 ENG_SUPP，按上述
+#      覆盖率为判据标定为 1.0×median(C)。
+#   4) η=0.3（FGW 结构项）会把分裂双子覆盖从 0.929 压到 0.643（结构项抵抗一分二），
+#      而原文明确允许 η=0（"退化为纯特征匹配的 W-type OT"）；本配置保留 η=0.3
+#      作为**论文口径**默认，同时提供 paper_e2e_ce_topk.yaml 作为对照。
+
+measure:                 # §1.2 式(1)-(7)
+  mass_mode: volume      # 式(1)：预测实例体积真实可变 -> 按原文"质量 ∝ 尺寸"
+  knn_k: 6
+  sigma_x: null          # null = 正距离中位数（实测 0.66 µm）
+  sigma_f: null
+  spacing_zyx: null      # 从 h5 attrs 解析：(1.0, 0.09, 0.09) µm
+
+coupling:                # §1.3 式(8)-(14)
+  alpha: 1.0
+  beta: 1.0              # 原文要求 α,β>0；σ_s = 体积中位数 5342 体素
+  sigma_s: null
+  r_max: 4.3             # CALIB：相邻帧最近邻位移 p99.9
+  eta: 0.3               # PAPER 式(9)：结构项开启
+  eps_rel: 1.0           # ENG 式(12)：ε = 1.0 × median(C) —— 由候选覆盖率标定
+  eps: null
+  tau_a: 1.0             # 式(14) 非平衡 OT（η_death/η_birth 的前提）
+  tau_b: 1.0
+  sinkhorn_iters: 1000
+  fgw_outer: 10
+
+motion:                  # §1.5 式(20)-(22)
+  enabled: true
+  alpha_pred: 1.0
+
+multiscale:              # §1.4/§1.5 式(17)-(19)
+  enabled: true
+  ks: [2, 3, 5]
+  lambda_temp: {2: 0.1, 3: 0.05, 5: 0.02}
+  n_rounds: 2
+  norm: cond
+  line_search: true
+  jump_r_max_scale: 1.0
+
+tracklet:                # §1.5 末段 / §1.6 第二层 OT
+  enabled: true
+  window: 5
+  theta_link: 0.5
+  tau: 0.5
+  max_gap: 3
+  velocity_weight: 1.0
+  merge_division_children: false
+  hole_policy: fill      # ENG：CTC 格式要求连续，论文要求不截断 -> 空洞帧补画
+
+graph:                   # §2.0.1 式(25)-(29)
+  theta_gamma_frac: 0.01 # CALIB 式(26)：θ_Γ(i) = 0.01 × a_i（真实边占比 p5）
+  theta_gamma: null
+  theta_c: null          # null -> R_max²
+  cand_topk: 0           # **0 = 原文口径**（不做 top-k 保底；对照见 paper_e2e_ce_topk.yaml）
+  ctx_window: 1
+  bridge: true           # §2.0.1 跨帧桥接边
+  bridge_gap: 2
+  bridge_scope: missing_only
+  intra_knn: 4
+  use_ot_candidates: true
+
+reconstruct:             # §1.6 式(23)-(24)
+  theta_gamma_frac: 0.01
+  theta_gamma: null
+  theta_c: null
+  eta_death: 0.69        # CALIB：有后继者行和占比 p5 与无后继者 p95 的中点
+  eta_birth: 0.5         # 论文未给数值（保留默认，无标定样本）
+  div_ratio: 0.05        # CALIB：分裂的**行内占比**阈值（= Γ_ij/Σ_j'Γ_ij），真实分裂较小子目标 p5
+  death_veto: false      # η_death/η_birth 只作诊断，不否决已接受的关联（R5：避免不可逆删边）
+  vol_tol: 1.35          # CALIB 式(1.6)：分裂体积守恒容差 p90（预测实例欠/过分割噪声大）
+  max_children: 2
+  tau_edge: 0.5
+  hole_policy: fill
+
+node:                    # 式(25)
+  f_source: intensity    # 工程近似（论文口径是 nnU-Net encoder 特征，接口已留）
+  encoder_feat_path: null
+
+gnn:                     # §2.0.1 式(30)-(35)
+  hidden: 64
+  layers: 3
+  dropout: 0.1
+  lambda_ot: 0.2         # 与 median(C)≈0.8 µm² 联调
+  class_weighted_ce: false
+
+seed: 20260923
+detection_source: nnunet_pred

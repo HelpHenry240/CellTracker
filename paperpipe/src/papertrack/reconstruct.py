@@ -122,8 +122,17 @@ def reconstruct_from_ot(dets: Detections, couplings: dict[int, PairCoupling],
                 g = plan[i]
                 if g.size < 2:
                     continue
-                thr_div = cfg.div_ratio * max(float(art.mass_a[i]), 1e-12)
-                sig = [int(j) for j in np.argsort(-g) if g[j] >= thr_div]
+                # 原文："存在 j1,j2 使 Γ^t_ij1, Γ^t_ij2 均超过**一定比例阈值**"。
+                # 这里的"比例"是**行内占比** Γ_ij / Σ_j' Γ_ij'（与决策 0001 记的
+                # "行内质量分配判据"一致），不是相对 a_i 的绝对量。
+                # 实测依据：在预测实例 + 非平衡 OT 下，用相对 a_i 的阈值会因整行质量
+                # 流失（分裂父的行和仅 ≈0.08 a_i）而**系统性漏掉全部分裂**（检出 0 个），
+                # 改成行内占比后分裂才能被检出，体积守恒项再对候选做二次筛。
+                row = float(g.sum())
+                if row <= 0:
+                    continue
+                rn = g / row
+                sig = [int(j) for j in np.argsort(-rn) if rn[j] >= cfg.div_ratio]
                 if len(sig) < 2:
                     continue
                 kids = sig[:cfg.max_children]

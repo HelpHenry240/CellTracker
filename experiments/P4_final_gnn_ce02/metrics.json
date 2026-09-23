@@ -1,0 +1,33 @@
+{
+  "gt_objects": 22418,
+  "res_objects": 24847,
+  "matched": 22217,
+  "fn": 201,
+  "fp": 4136,
+  "detection_recall": 0.9910339905433134,
+  "detection_precision": 0.8941522115345917,
+  "id_switches": 2460,
+  "fragmentation": 5250,
+  "gt_tracks": 724,
+  "frames_evaluated": 190,
+  "division_gt": 361,
+  "division_pred": 63,
+  "division_recall": 0.6509695290858726,
+  "division_precision": 0.1111111111111111,
+  "n_tracks_pred": 7796,
+  "hole_frames_filled": 310,
+  "hole_frames_overwritten": 0,
+  "hole_frames_unfilled": 0,
+  "hole_policy": "fill",
+  "seq": "02",
+  "local_SEG": 0.6908669455016625,
+  "format_validation": {
+    "ok": true,
+    "errors": [],
+    "n_errors": 0,
+    "n_tracks": 7796,
+    "n_frames": 190,
+    "n_ghost_tracks": 0,
+    "n_tracks_with_holes": 0
+  }
+}

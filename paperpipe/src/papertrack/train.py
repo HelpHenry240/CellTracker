@@ -12,6 +12,13 @@
 故本实现取**均值**：`L_edge = mean over candidates`、`L_OT-reg = mean over candidates`。
 因此 `lambda_ot` 的含义是"每条候选边的权重"，其量纲与 C（µm²）耦合——
 `scripts/calibrate_params.py` 会打印 `median(C)` 供标定。
+
+训练/验证切分（重要协议）
+------------------------
+原仓库复用的 `celltracker.gnn.data.PairDataset` 是**随机**切 train/val，
+相邻帧对会同时出现在训练与验证里（帧 t−1,t 与 t,t+1 共享节点）→ 验证 F1 虚高。
+本模块改用**按时间块切分**（默认前 80% 帧对训练、后 20% 验证），
+并把"跨序列留出"（在 seq01 上训练、在 seq02 上评测）作为真正的泛化证据。
 """
 
 from __future__ import annotations
@@ -26,7 +33,7 @@ import torch
 import torch.nn as nn
 
 # 复用：图批处理与磁盘图数据集（格式中立，与本包的 npz 键名对齐）
-from celltracker.gnn.data import PairDataset, collate
+from celltracker.gnn.data import collate
 
 from .model import EdgeGNN, ModelConfig
 
@@ -46,12 +53,59 @@ class TrainConfig:
     residual: bool = False        # False = 严格按式(30)(32)
     class_weighted_ce: bool = False   # ENG_SUPP（非原文口径）
     val_fraction: float = 0.2
+    # "block" = 按时间块切分（默认，避免相邻帧泄漏）；"random" = 原仓库口径（对照）
+    split_mode: str = "block"
     seed: int = 20260923
     device: str = "cpu"
     out_dir: str = "paperpipe/runs/gnn"
 
 
-def _pos_weight(ds: PairDataset, device) -> torch.Tensor | None:
+class GraphDataset:
+    """按**时间块**切分的图数据集（默认口径；`split_mode="random"` 可回到原仓库口径）。
+
+    样本按 `pair_%04d.npz` 里的帧号排序，前 `1-val_fraction` 的帧对作训练、
+    其余作验证 —— 时间上相邻的帧对不会被切成"一半训练一半验证"。
+    """
+
+    def __init__(self, root: str | Path, split: str = "train",
+                 val_fraction: float = 0.2, mode: str = "block", seed: int = 0):
+        self.root = Path(root)
+        self.files = sorted(self.root.glob("pair_*.npz"))
+        if not self.files:
+            raise FileNotFoundError(f"{self.root} 里没有 pair_*.npz")
+        n_val = max(1, int(len(self.files) * float(val_fraction)))
+        if mode == "random":
+            rng = np.random.default_rng(seed)
+            idx = rng.permutation(len(self.files))
+            val_idx = set(idx[:n_val].tolist())
+            self.sel = [f for i, f in enumerate(self.files)
+                        if (i in val_idx) == (split == "val")]
+        elif mode == "block":
+            cut = len(self.files) - n_val
+            self.sel = (self.files[:cut] if split == "train" else self.files[cut:])
+        else:
+            raise ValueError(f"未知 split_mode: {mode!r}")
+        self.meta = {}
+
+    def __len__(self) -> int:
+        return len(self.sel)
+
+    def __getitem__(self, i: int) -> dict:
+        d = np.load(self.sel[i])
+        return {
+            "node_feat": torch.from_numpy(d["node_feat"]),
+            "edge_index": torch.from_numpy(d["edge_index"].astype(np.int64)),
+            "edge_feat": torch.from_numpy(d["edge_feat"]),
+            "is_target": torch.from_numpy(d["is_target"]),
+            "label": torch.from_numpy(d["label"]),
+            "cand_feat": torch.from_numpy(d["cand_feat"]),
+            "cand_edges": torch.from_numpy(d["cand_edges"].astype(np.int64)),
+            "meta": {"t": int(d["t"]), "n_src": int(d["n_src"]),
+                     "n_dst": int(d["n_dst"])},
+        }
+
+
+def _pos_weight(ds, device) -> torch.Tensor | None:
     pos = neg = 0
     for f in ds.files:
         d = np.load(f)
@@ -63,7 +117,7 @@ def _pos_weight(ds: PairDataset, device) -> torch.Tensor | None:
 
 
 @torch.no_grad()
-def evaluate(model: EdgeGNN, ds: PairDataset, device: str,
+def evaluate(model: EdgeGNN, ds, device: str,
              batch_pairs: int = 8, tau: float = 0.5) -> dict:
     model.eval()
     tp = fp = fn = tn = 0
@@ -94,10 +148,9 @@ def train(graph_root: str | Path, cfg: TrainConfig | None = None) -> dict:
     out_dir = Path(cfg.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    train_ds = PairDataset(graph_root, split="train", val_fraction=cfg.val_fraction,
-                           seed=cfg.seed)
-    val_ds = PairDataset(graph_root, split="val", val_fraction=cfg.val_fraction,
-                         seed=cfg.seed)
+    ds_kw = dict(val_fraction=cfg.val_fraction, mode=cfg.split_mode, seed=cfg.seed)
+    train_ds = GraphDataset(graph_root, split="train", **ds_kw)
+    val_ds = GraphDataset(graph_root, split="val", **ds_kw)
     if len(train_ds) == 0:
         raise RuntimeError(f"{graph_root} 里没有 pair_*.npz 图数据集")
     device = torch.device(cfg.device)
@@ -149,4 +202,21 @@ def train(graph_root: str | Path, cfg: TrainConfig | None = None) -> dict:
                out_dir / "last.pt")
     (out_dir / "history.json").write_text(json.dumps(history, indent=2))
     return {"history": history, "out_dir": str(out_dir), "best_f1": best,
-            "node_dim": mcfg.node_dim, "edge_dim": mcfg.edge_dim}
+            "node_dim": mcfg.node_dim, "edge_dim": mcfg.edge_dim,
+            "split_mode": cfg.split_mode, "n_train": len(train_ds),
+            "n_val": len(val_ds)}
+
+
+@torch.no_grad()
+def evaluate_graphs(checkpoint: str | Path, graph_root: str | Path,
+                    device: str = "cpu", tau: float = 0.5,
+                    batch_pairs: int = 8) -> dict:
+    """在**另一个**图数据集上评测（跨序列留出用：seq01 训练 → seq02 评测）。"""
+    from .infer import load_model
+
+    model = load_model(checkpoint, device)
+    ds = GraphDataset(graph_root, split="train", val_fraction=0.0)
+    ds.sel = sorted(Path(graph_root).glob("pair_*.npz"))
+    out = evaluate(model, ds, device, batch_pairs, tau)
+    out["n_graphs"] = len(ds)
+    return out

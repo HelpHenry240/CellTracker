@@ -149,6 +149,10 @@ class ReconstructConfig:
     eta_birth: float = 0.5                 # CALIBRATED 式(24)：列和占 a_j 的比例下限
     div_ratio: float = 0.5                 # CALIBRATED 原文"显著质量（超过一定比例阈值）"
     vol_tol: float = 0.5                   # CALIBRATED 原文"体积守恒（给定容差内）"
+    # 论文原文把 η_death/η_birth 描述成"标记终止点/起点"的判据，字面上可以**否决**
+    # 式(24) 已接受的关联。但一个标定不准的 η 会不可逆地删掉正确边（R5），
+    # 故默认关闭（η 只做诊断计数）；打开即回到原文的字面读法。
+    death_veto: bool = False
     max_children: int = 2                  # PAPER_PARAM §2.0.1"有限个子节点"
     # GNN 路径的接受阈值（原文只给了 θ_Γ/θ_C，没有给 ŷ 的阈值）→ CALIBRATED
     tau_edge: float = 0.5

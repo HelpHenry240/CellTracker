@@ -1,0 +1,30 @@
+experiment_id: P4_final_gnn_ce01
+date: '2026-09-23'
+purpose: paperpipe 严格论文口径 pipeline
+params:
+  h5: data/interim/Fluo-N3DH-CE_01_e2e.h5
+  gt_h5: data/interim/Fluo-N3DH-CE_01.h5
+  seq: '01'
+  ckpt: paperpipe/runs/pg_gnn_01/best.pt
+  frames: null
+  overrides:
+  - reconstruct.tau_edge=0.35
+argv:
+- paperpipe/scripts/run_paper_pipeline.py
+- --h5
+- data/interim/Fluo-N3DH-CE_01_e2e.h5
+- --gt-h5
+- data/interim/Fluo-N3DH-CE_01.h5
+- --seq
+- '01'
+- --exp-id
+- P4_final_gnn_ce01
+- --config
+- paperpipe/configs/paper_e2e_ce.yaml
+- --set
+- reconstruct.tau_edge=0.35
+- --ckpt
+- paperpipe/runs/pg_gnn_01/best.pt
+seed: 20260915
+status: done
+summary: tracks=6408 decision=gnn holes=249

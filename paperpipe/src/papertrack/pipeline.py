@@ -21,6 +21,8 @@
 from __future__ import annotations
 
 import json
+import sys
+import time
 from dataclasses import dataclass, field, replace
 from pathlib import Path
 
@@ -106,13 +108,30 @@ def run_pipeline(h5_path: str | Path, cfg: PipelineConfig,
                  artifacts_dir: str | Path | None = None,
                  dump_graphs: str | Path | None = None,
                  device: str = "cpu",
-                 raw_image: str | Path | None = None) -> PipelineRun:
+                 raw_image: str | Path | None = None,
+                 verbose: bool = True) -> PipelineRun:
     """按论文顺序跑完整链路。
 
     决策路径：`ckpt` 给出时走 §2.0.1 的 GNN（式33）；否则走 §1.6 的 OT 规则
     （式23/24），后者可用于"未训练模型时的端到端冒烟"。
     """
     h5_path = Path(h5_path)
+    t_start = time.time()
+    stage_seconds: dict[str, float] = {}
+
+    def _say(msg: str, key: str | None = None) -> None:
+        """阶段进度（E11：长任务要能看到进度，长跑时每阶段一行）。"""
+        nonlocal t_start
+        now = time.time()
+        if key is not None:
+            stage_seconds[key] = round(now - t_start, 1)
+            t_start = now
+            if verbose:
+                print(f"[{time.strftime('%H:%M:%S')}] {key}: {msg} "
+                      f"({stage_seconds[key]:.1f}s)", flush=True)
+        elif verbose:
+            print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
+
     dets = load_detections(h5_path)
     if frames is not None:
         keep = set(frames)
@@ -121,6 +140,7 @@ def run_pipeline(h5_path: str | Path, cfg: PipelineConfig,
     ts = dets.t_range
     if len(ts) < 2:
         raise ValueError("至少需要 2 帧")
+    _say(f"载入检测：{len(ts)} 帧", "load")
 
     mcfg = cfg.measure
     # 式(22) 的 α′ 由 §1.5 的配置给出；它进入 C_feat，故覆盖到 coupling 配置
@@ -154,11 +174,13 @@ def run_pipeline(h5_path: str | Path, cfg: PipelineConfig,
         info["motion"] = {"pass1_tracks": result_coarse.n_tracks(),
                           "alpha_pred": cfg.motion.alpha_pred,
                           "velocity": velocity_report(dets)}
+        _say(f"第 1 遍（α′=0）估速完成：{result_coarse.n_tracks()} 条轨迹", "motion_pass1")
 
     # ---- §1.3 相邻帧 OT（式8-14）----
     couplings = _solve_all(dets, ccfg, mcfg, spacing, pred_xy=pred_xy)
     info["n_couplings"] = len(couplings)
     info["coupling_eps"] = sorted({round(c.eps_eff, 6) for c in couplings.values()})
+    _say(f"第 2 遍 OT 完成：{len(couplings)} 对，ε={info['coupling_eps'][:3]}", "couplings")
 
     # ---- §1.4 多尺度时间正则（式17-19）+ 跳帧耦合（式18/19 的 Γ^{t,t+k}_direct）----
     frame_xy = {t: dets.centroid(t) for t in ts}
@@ -184,6 +206,7 @@ def run_pipeline(h5_path: str | Path, cfg: PipelineConfig,
                         mcfg, frame_vol[t], frame_vol[ts[pos + need_gap]], spacing,
                         eps=couplings[pos].eps_eff)
     info["n_jump_couplings"] = len(jump)
+    _say(f"多尺度精炼完成：跳帧耦合 {len(jump)} 个", "multiscale")
 
     # ---- §2.0.1 决策 ----
     encoder_feats = _load_encoder_features(cfg, dets, info)
@@ -199,6 +222,7 @@ def run_pipeline(h5_path: str | Path, cfg: PipelineConfig,
     else:
         result = reconstruct_from_ot(dets, couplings, cfg.reconstruct, ccfg.r_max,
                                      jump=jump, bridge=cfg.graph.bridge)
+    _say(f"决策（{info['decision']}）完成：{result.n_tracks()} 条轨迹", "decision")
     info["tracks_after_decision"] = result.n_tracks()
 
     # ---- §1.5 末段 / §1.6 第二层 tracklet OT ----
@@ -231,7 +255,9 @@ def run_pipeline(h5_path: str | Path, cfg: PipelineConfig,
         info["graph_dataset"] = stats
         (Path(dump_graphs) / "run_info.json").write_text(
             json.dumps(info, ensure_ascii=False, indent=2, default=str))
+        _say(f"图数据集落盘：{stats['n_graphs']} 张", "dump_graphs")
 
+    info["stage_seconds"] = stage_seconds
     return PipelineRun(config=cfg, dets=dets, couplings=couplings, jump=jump,
                        result=result, spacing=spacing, holes=holes, info=info,
                        artifacts_dir=art_dir)

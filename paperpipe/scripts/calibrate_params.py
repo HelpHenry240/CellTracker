@@ -91,8 +91,8 @@ def main() -> None:
     idx = np.linspace(0, len(ts) - 2, min(args.pairs, max(len(ts) - 1, 1))).astype(int)
     C_all, eps_all = [], []
     true_frac, false_frac = [], []
-    row_true, row_false = [], []
-    div_ratios, vol_devs = [], []
+    row_true, row_false = [], []          # 行和/a_i：有真实后继 vs 无真实后继
+    div_rn, vol_devs, pos_frac = [], [], []   # 分裂行内占比 / 体积守恒偏差 / 正样本占比
     for pos in sorted(set(int(i) for i in idx)):
         t, tn = ts[pos], ts[pos + 1]
         if dets.n(t) == 0 or dets.n(tn) == 0:
@@ -107,21 +107,27 @@ def main() -> None:
             continue
         gl_s, gl_d = dets.gt_label(t), dets.gt_label(tn)
         frac = art.plan / np.maximum(art.mass_a[:, None], 1e-12)
+        row_ratio = art.row_sum / np.maximum(art.mass_a, 1e-12)
         for i in range(dets.n(t)):
-            s_i = float(dets.volume(t)[i])
-            kids = [j for j in range(dets.n(tn))
-                    if int(gl_d[j]) != 0 and int(gt_parent.get(int(gl_d[j]), 0)) == int(gl_s[i])]
-            if int(gl_s[i]) != 0 and kids:
-                sig = sorted((float(frac[i, j]) for j in kids), reverse=True)
-                div_ratios.append(sig[-1] if len(sig) >= 2 else sig[0])
-                if len(sig) >= 2:
-                    vol_devs.append(abs(sum(float(dets.volume(tn)[j]) for j in kids[:2])
-                                        - s_i) / max(s_i, 1e-9))
-                row_true.append(float(art.row_sum[i]) / max(float(art.mass_a[i]), 1e-12))
-            else:
-                row_false.append(float(art.row_sum[i]) / max(float(art.mass_a[i]), 1e-12))
-            if int(gl_s[i]) == 0:
+            if int(gl_s[i]) == 0:             # 假阳性源不参与阈值标定
                 continue
+            s_i = float(dets.volume(t)[i])
+            # "有真实后继" = 同一 GT 轨迹（移动）**或** 某个 GT 子轨迹（分裂）
+            succ = [j for j in range(dets.n(tn))
+                    if int(gl_d[j]) != 0
+                    and (int(gl_d[j]) == int(gl_s[i])
+                         or int(gt_parent.get(int(gl_d[j]), 0)) == int(gl_s[i]))]
+            (row_true if succ else row_false).append(float(row_ratio[i]))
+            for j in succ:                    # 式(24) 的接受判据用**原始 Γ**（÷a_i）
+                pos_frac.append(float(frac[i, j]))
+            kids = [j for j in succ if int(gl_d[j]) != int(gl_s[i])]
+            if len(kids) >= 2:                # 真实分裂：标定 div_ratio（行内占比口径）
+                row = float(art.plan[i].sum())
+                if row > 0:
+                    div_rn.append(float(min(art.plan[i, j] for j in kids[:2])) / row)
+                    vol_devs.append(
+                        abs(sum(float(dets.volume(tn)[j]) for j in kids[:2]) - s_i)
+                        / max(s_i, 1e-9))
             for j in range(dets.n(tn)):
                 same = (int(gl_d[j]) == int(gl_s[i]))
                 is_child = (int(gl_d[j]) != 0
@@ -140,13 +146,22 @@ def main() -> None:
         rep["suggest"]["theta_gamma_abs_note"] = (
             "绝对阈值 = frac × a_i（a_i 随帧内细胞数变化，故推荐用 frac 口径）")
     if row_true:
-        rep["row_sum_over_mass_true_link"] = pct(np.array(row_true))
+        rep["row_sum_over_mass_has_true_successor"] = pct(np.array(row_true))
     if row_false:
-        rep["row_sum_over_mass_no_true_link"] = pct(np.array(row_false))
-        rep["suggest"]["eta_death"] = float(np.percentile(np.array(row_false), 50))
-    if div_ratios:
-        rep["division_significant_fraction"] = pct(np.array(div_ratios))
-        rep["suggest"]["div_ratio"] = float(np.percentile(np.array(div_ratios), 10))
+        rep["row_sum_over_mass_no_true_successor"] = pct(np.array(row_false))
+    if row_true and row_false:
+        # η_death：把"确实没有后继"的源判为死亡，同时不误伤有后继的源。
+        # 取两类分布的分界（有后继者 p5 与无后继者 p95 的中点），夹在 [0.1, 0.9]。
+        lo = float(np.percentile(np.array(row_true), 5))
+        hi = float(np.percentile(np.array(row_false), 95))
+        rep["suggest"]["eta_death"] = float(min(max((lo + hi) / 2.0, 0.1), 0.9))
+        rep["suggest"]["eta_death_note"] = "有后继者行和占比 p5 与无后继者 p95 的中点（论文未给数值）"
+    if pos_frac:
+        rep["gamma_frac_true_successor_edges"] = pct(np.array(pos_frac))
+    if div_rn:
+        rep["division_row_normalized_fraction"] = pct(np.array(div_rn))
+        rep["suggest"]["div_ratio"] = float(max(np.percentile(np.array(div_rn), 5), 0.05))
+        rep["suggest"]["div_ratio_note"] = "真实分裂中较小子目标的**行内占比** p5"
     if vol_devs:
         rep["division_volume_deviation"] = pct(np.array(vol_devs))
         rep["suggest"]["vol_tol"] = float(np.percentile(np.array(vol_devs), 90))
