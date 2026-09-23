@@ -36,6 +36,10 @@ SERIES = [
      "experiments/C4O_official_gnn/metrics_official_01.json", PALETTE["green"]),
     ("nnU-Net preds, top-k=3 (A)", "experiments/C4A_official_gnn_topk3/metrics_official_01.json",
      PALETTE["blue"]),
+    ("+ oversized re-split (k=1.6)", "experiments/C5.0e_official_resplit/metrics_official_01.json",
+     PALETTE["purple"]),
+    ("+ isolated-track filter (L=2)", "experiments/C5.0e_official_dropiso/metrics_official_01.json",
+     PALETTE["red"]),
     ("nnU-Net preds, top-k=5 (B)", "experiments/C4B_official_gnn_topk5/metrics_official_01.json",
      PALETTE["orange"]),
 ]

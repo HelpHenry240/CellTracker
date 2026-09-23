@@ -1,0 +1,29 @@
+experiment_id: C5.0d_official_phys2
+date: '2026-09-23'
+purpose: pipeline 评测
+params:
+  h5: data/interim/Fluo-N3DH-CE_01_pred_v2.h5
+  ckpt: experiments/C5.0d_phys_units_train/artifacts/model/best.pt
+  ablate: ''
+  frames: null
+argv:
+- scripts/eval_pipeline.py
+- --h5
+- data/interim/Fluo-N3DH-CE_01_pred_v2.h5
+- --gt-h5
+- data/interim/Fluo-N3DH-CE_01.h5
+- --dataset
+- Fluo-N3DH-CE
+- --seq
+- '01'
+- --exp-id
+- C5.0d_official_phys2
+- --set
+- ot.spacing_zyx=1.0,0.09,0.09
+- ot.r_max=3.0
+- --ckpt
+- experiments/C5.0d_phys_units_train/artifacts/model/best.pt
+- --official
+seed: 20260915
+status: done
+summary: tracks=6556 decision=gnn
