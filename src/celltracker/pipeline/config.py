@@ -121,6 +121,10 @@ class ReconstructConfig:
     # 即判为分裂。**注意**：该阈值与 ε 强耦合（ε 越大计划越软，需要越高的 div_ratio），
     # 见 A2 记录。GNN 路径不使用本字段（分裂由 GNN 概率决定）。
     div_ratio: float = 0.2
+    # 工程补充（后处理规则）：删除"长度 ≤ N 帧且既无父也无子"的孤立轨迹。
+    # 0 = 关闭（默认）。论文 §2.0.1 声称假阳性节点会被孤立，本项把该断言变成
+    # 可评测的规则，用官方 FP/FN 变化裁决（见 experiments/C5.0e）。
+    drop_isolated_len: int = 0
 
 
 @dataclass

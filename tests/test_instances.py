@@ -181,3 +181,47 @@ def test_unseeded_component_policy_keep():
         min_volume=5, h_frac=0.35, unseeded_policy="keep_component"), seeds=seeds)
     assert len(np.unique(drop)) - 1 == 1
     assert len(np.unique(keep)) - 1 == 2
+
+
+def test_refine_oversized_splits_only_the_big_blob():
+    """回归：后处理再切只应作用于"体积异常大"的实例，其他实例原样保留。
+
+    参数只有一个相对量 k（相对同帧实例体积中位数），因此不依赖数据集尺度。
+    两种情形都要覆盖：
+      - 大实例内部有**两个峰**（两个粘连核）→ 应被切开；
+      - 大实例是**单一平滑团块**（无内部峰）→ 不应被硬切（避免制造过分割）。
+    """
+    from celltracker.detect.instances import refine_oversized_instances
+
+    z, y, x = np.ogrid[:40, :40, :40]
+    # 两个粘连的球，合成**同一个**实例（模拟 nnU-Net 把两个核粘成一个）
+    b1 = (z - 20) ** 2 + (y - 13) ** 2 + (x - 20) ** 2 <= 36
+    b2 = (z - 20) ** 2 + (y - 27) ** 2 + (x - 20) ** 2 <= 36
+    big = b1 | b2
+    lab = np.zeros((40, 40, 40), dtype=np.int32)
+    lab[big] = 1                       # 大实例（应被再切）
+    lab[2:4, 2:4, 2:4] = 2             # 小实例（保持不动）
+    out = refine_oversized_instances(big | (lab == 2), lab,
+                                     InstanceSplitConfig(min_volume=5, h_frac=0.35,
+                                                         spacing_zyx=(1.0, 1.0, 1.0)),
+                                     k=1.6)
+    small_id = int(out[3, 3, 3])
+    assert small_id > 0 and len(np.unique(out[lab == 2])) == 1     # 小实例仍是一个实例
+    assert len(np.unique(out[big])) > 1               # 大实例被切成 ≥2 份
+    assert set(np.unique(out)) - {0} == set(range(1, out.max() + 1))   # 编号连续
+
+
+def test_refine_oversized_does_not_split_single_peak_blob():
+    """回归：内部只有一个峰的平滑团块不得被硬切（避免制造过分割）。"""
+    from celltracker.detect.instances import refine_oversized_instances
+
+    z, y, x = np.ogrid[:40, :40, :40]
+    smooth = ((z - 20) / 6.0) ** 2 + ((y - 20) / 10.0) ** 2 + ((x - 20) / 4.0) ** 2 <= 1
+    lab = np.zeros((40, 40, 40), dtype=np.int32)
+    lab[smooth] = 1
+    lab[2:4, 2:4, 2:4] = 2
+    out = refine_oversized_instances(smooth | (lab == 2), lab,
+                                     InstanceSplitConfig(min_volume=5, h_frac=0.35,
+                                                         spacing_zyx=(1.0, 1.0, 1.0)),
+                                     k=1.6)
+    assert out[smooth].max() == 1 and out[smooth].min() == 1

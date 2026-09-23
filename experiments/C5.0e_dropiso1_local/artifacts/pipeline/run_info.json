@@ -1,0 +1,14 @@
+{
+  "n_frames": 195,
+  "ablated": [],
+  "n_couplings": 194,
+  "decision": "gnn",
+  "tracks_after_decision": 4864,
+  "tracks_final": 2445,
+  "drop_isolated": {
+    "max_len": 1,
+    "tracks_before": 4864,
+    "tracks_after": 2445,
+    "dropped": 2419
+  }
+}

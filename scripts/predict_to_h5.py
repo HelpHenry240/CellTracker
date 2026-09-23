@@ -60,6 +60,9 @@ def main() -> None:
     ap.add_argument("--unseeded-policy", default="drop",
                     choices=["drop", "keep_component"],
                     help="掩码内没有种子的连通域如何处理（oracle 模式下生效）")
+    ap.add_argument("--resplit-k", type=float, default=0.0,
+                    help="后处理规则：体积 > k × 同帧实例体积中位数的实例再切一次"
+                         "（0 = 关闭；k 是相对量，自动适配数据集尺度）")
     args = ap.parse_args()
 
     import SimpleITK as sitk
@@ -110,6 +113,7 @@ def main() -> None:
                        gaussian_sigma=args.gaussian_sigma,
                        oracle_markers=bool(args.oracle_markers),
                        unseeded_policy=args.unseeded_policy,
+                       resplit_k=args.resplit_k,
                        watershed=not args.no_watershed)
         f.create_dataset("seg_frames", data=np.array([], dtype=np.int32))
         gf = f.create_group("frames")
@@ -120,6 +124,9 @@ def main() -> None:
             # oracle 模式：用 GT 标记作种子（种子在掩码外的目标自然缺失，如实计入）
             seeds_vol = gt_markers(t) if args.oracle_markers else None
             labels = split_instances(sem, cfg, seeds=seeds_vol)
+            if args.resplit_k > 0:
+                from celltracker.detect.instances import refine_oversized_instances
+                labels = refine_oversized_instances(sem, labels, cfg, k=args.resplit_k)
             img = tifffile.imread(img_dir / f"t{t:03d}.tif")
             tab = object_table_from_labels(labels, image=img)
 

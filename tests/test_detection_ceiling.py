@@ -77,3 +77,26 @@ def test_merged_children_are_not_distinct_instances(tmp_path):
         "fraction_children_distinct"] == 0.0
     # 移动边仍完好（t=0,1 的实例映射未变）
     assert r["U2_move_edges_within_r_max"]["fraction_of_gt"] == 1.0
+
+
+def test_drop_isolated_short_tracks_keeps_linked_and_long_tracks():
+    """回归：孤立短轨迹过滤只删"短且无父无子"的轨迹。"""
+    import numpy as np
+
+    from celltracker.track.base import Track, TrackResult, drop_isolated_short_tracks
+
+    tracks = {
+        1: Track(1, 0, 4, 0),      # 长轨迹（保留）
+        2: Track(2, 1, 1, 0),      # 短且孤立 → 删
+        3: Track(3, 2, 3, 1),      # 短但有父 → 保留
+    }
+    result = TrackResult(assignment={0: np.array([1, 2]),
+                                     1: np.array([1, 2, 3]),
+                                     2: np.array([1, 2, 3]),
+                                     3: np.array([1, 3]),
+                                     4: np.array([1])},
+                         tracks=tracks)
+    out = drop_isolated_short_tracks(result, max_len=2)
+    assert 2 not in out.tracks and out.meta["isolated_short_dropped"] == 1
+    assert out.assignment[1][1] == 0        # 被删轨迹的赋值置 0
+    assert out.assignment[0][0] == 1        # 其他轨迹不受影响

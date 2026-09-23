@@ -220,6 +220,19 @@ def run_pipeline(h5_path: str | Path, cfg: PipelineConfig,
     else:
         info["tracks_final"] = track_result.n_tracks()
 
+    # ---- 工程补充：孤立短轨迹过滤（论文 §2.0.1 的假阳性抑制，可关闭）----
+    if cfg.reconstruct.drop_isolated_len > 0:
+        from ..track.base import drop_isolated_short_tracks
+
+        before = track_result.n_tracks()
+        track_result = drop_isolated_short_tracks(track_result,
+                                                 cfg.reconstruct.drop_isolated_len)
+        info["drop_isolated"] = {"max_len": cfg.reconstruct.drop_isolated_len,
+                                 "tracks_before": before,
+                                 "tracks_after": track_result.n_tracks(),
+                                 "dropped": track_result.meta.get("isolated_short_dropped", 0)}
+        info["tracks_final"] = track_result.n_tracks()
+
     if art_dir:
         (art_dir / "run_info.json").write_text(
             json.dumps(info, ensure_ascii=False, indent=2, default=str))

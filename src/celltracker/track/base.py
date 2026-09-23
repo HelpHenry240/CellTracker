@@ -323,3 +323,40 @@ def finalize_tracks(assignment: dict[int, np.ndarray],
     info = {"ghost_dropped": dropped, "segments_split": split,
             "parent_fixed": fixed_parent, "extra_children_removed": dropped_parent}
     return new_assignment, new_tracks, info
+
+
+def drop_isolated_short_tracks(result: TrackResult, max_len: int) -> TrackResult:
+    """删除"长度 ≤ max_len 且既无父也无子"的孤立轨迹（纯后处理规则）。
+
+    动机：官方 AOGM 里 FP（假阳性节点）2456，占约 9.5%；论文 §2.0.1 声称
+    "假阳性节点难以与前后帧形成平滑路径，会被孤立"。本函数把这个断言变成一条
+    **可评测的规则**：真正孤立的短轨迹若确实都是假阳性，删掉它们就能直接降低 FP；
+    若其中含真实目标，则 FN 会上升——由官方指标裁决。
+
+    参数只有一个：`max_len`（帧数，相对量，不依赖体素尺寸）。
+    被删轨迹在各帧的赋值置 0 → 这些检测不再进入提交（其掩码变背景）。
+    """
+    if max_len <= 0 or not result.tracks:
+        return result
+    has_children: set[int] = set()
+    for tr in result.tracks.values():
+        if tr.parent:
+            has_children.add(int(tr.parent))
+
+    drop = {tid for tid, tr in result.tracks.items()
+            if (tr.end - tr.begin + 1) <= max_len
+            and int(tr.parent) == 0 and tid not in has_children}
+    if not drop:
+        return result
+
+    new_assignment = {}
+    for t, arr in result.assignment.items():
+        keep = ~np.isin(arr, np.fromiter(drop, dtype=arr.dtype, count=len(drop)))
+        a = arr.copy()
+        a[~keep] = 0
+        new_assignment[t] = a
+    new_tracks = {tid: tr for tid, tr in result.tracks.items() if tid not in drop}
+    meta = dict(result.meta)
+    meta["isolated_short_dropped"] = len(drop)
+    meta["drop_isolated_max_len"] = max_len
+    return TrackResult(assignment=new_assignment, tracks=new_tracks, meta=meta)

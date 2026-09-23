@@ -125,6 +125,71 @@ def _filter_small(labels: np.ndarray, n: int, min_volume: int) -> np.ndarray:
     return remap[labels]
 
 
+def refine_oversized_instances(mask: np.ndarray, labels: np.ndarray,
+                               cfg: InstanceSplitConfig | None = None,
+                               k: float = 1.6,
+                               tight_factor: float = 0.5) -> np.ndarray:
+    """把**体积异常大**的实例用更严的种子阈值再切一次（纯后处理规则）。
+
+    动机：官方 AOGM 里 NS（多余分裂操作）= 10995 加权成本（占 43%），
+    即"一个实例覆盖了多个真实细胞"仍是最贵的单项。本函数只针对**明显偏大**的实例
+    做二次切分，不碰其余实例，因而引入的假设最少。
+
+    参数只有一个相对量：`k` —— 体积超过**同帧实例体积中位数** k 倍才触发
+    （中位数是逐帧统计，自动适配稀疏/密集帧与数据集尺度）；
+    二次切分用固定的 `tight_factor × h_frac`，不额外引入可调参数。
+
+    返回重编号后的实例标签图（保持 0 = 背景）。
+    """
+    cfg = cfg or InstanceSplitConfig()
+    labels = np.asarray(labels, dtype=np.int32)
+    if labels.max() == 0:
+        return labels
+    counts = np.bincount(labels.ravel(), minlength=int(labels.max()) + 1)
+    sizes = counts[1:]
+    med = float(np.median(sizes[sizes > 0])) if (sizes > 0).any() else 0.0
+    if med <= 0:
+        return labels
+
+    out = labels.copy()
+    next_id = int(labels.max())
+    sub_cfg = InstanceSplitConfig(**{**vars(cfg), "h_frac": cfg.h_frac * tight_factor})
+    for lid in np.where(counts > k * med)[0]:
+        if lid == 0:
+            continue
+        # **只在该实例的包围盒内做 EDT/分水岭**：整卷 EDT 在本数据上是
+        # 35×512×708 float64 ≈ 100MB/次，逐个实例做会慢一个量级且吃内存
+        # （实测整卷版 15 分钟只跑完 ~1/5 帧，且中途被杀）。
+        where = np.where(labels == lid)
+        if where[0].size == 0:
+            continue
+        pad = 2
+        win = tuple(slice(max(0, int(w.min()) - pad),
+                          min(labels.shape[d], int(w.max()) + 1 + pad))
+                    for d, w in enumerate(where))
+        region_local = labels[win] == lid
+        sub = split_instances(region_local, sub_cfg)   # 局部窗口内找种子 + 分水岭
+        n_sub = int(sub.max())
+        if n_sub <= 1:
+            continue                                 # 切不出更多，保持原样
+        out_win = out[win]                           # 基础切片 → 视图，可直接赋值
+        out_win[region_local] = sub[region_local] + next_id
+        next_id += n_sub
+    return _relabel_contiguous(out)
+
+
+def _relabel_contiguous(labels: np.ndarray) -> np.ndarray:
+    """把实例编号压成连续 1..n（再切分后原编号会留空洞，影响下游按 max 迭代）。"""
+    labels = np.asarray(labels, dtype=np.int32)
+    ids = np.unique(labels)
+    ids = ids[ids > 0]
+    if ids.size == 0:
+        return labels
+    remap = np.zeros(int(labels.max()) + 1, dtype=np.int32)
+    remap[ids] = np.arange(1, ids.size + 1, dtype=np.int32)
+    return remap[labels]
+
+
 def detection_recall_vs_markers(pred_labels: np.ndarray, gt_markers: np.ndarray,
                                 min_overlap: float = 0.5) -> dict:
     """用 GT 标记点评估实例拆分质量（检测层面）。
