@@ -14,8 +14,9 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "paperpipe" / "src"))
+PKG = Path(__file__).resolve().parents[1]
+ROOT = PKG.parent
+sys.path.insert(0, str(PKG / "src"))
 
 import papertrack  # noqa: E402,F401  —— 触发 _paths：把 vendor 的 celltracker 副本加入 sys.path
 

@@ -25,8 +25,11 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "paperpipe" / "src"))
+# PKG = paperpipe 包根（仓库内 `<repo>/paperpipe`，单独解包后 `<解包目录>/paperpipe_<日期>`）；
+# ROOT = 外层仓库根（用于定位 data/、experiments/）。
+PKG = Path(__file__).resolve().parents[1]
+ROOT = PKG.parent
+sys.path.insert(0, str(PKG / "src"))
 
 import papertrack  # noqa: E402,F401  —— 触发 _paths：把 vendor 里的 celltracker 副本加入 sys.path
 
@@ -43,8 +46,7 @@ def main() -> None:
     ap.add_argument("--seq", required=True)
     ap.add_argument("--dataset", default="Fluo-N3DH-CE")
     ap.add_argument("--exp-id", required=True)
-    ap.add_argument("--config", default=str(ROOT / "paperpipe" / "configs" /
-                                            "paper_default.yaml"))
+    ap.add_argument("--config", default=str(PKG / "configs" / "paper_default.yaml"))
     ap.add_argument("--set", nargs="*", default=[], help="覆盖配置：段.字段=值")
     ap.add_argument("--ckpt", default=None, help="GNN 权重；不给则走 §1.6 OT 规则")
     ap.add_argument("--frames", default=None, help="帧范围（冒烟用），如 120:190")

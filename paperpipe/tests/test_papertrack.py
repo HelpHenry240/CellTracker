@@ -17,8 +17,12 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "paperpipe" / "src"))
+# 包根 = 本文件所在目录的上一级（仓库内是 `<repo>/paperpipe/`，
+# 单独解包后是 `<解包目录>/paperpipe_<日期>/`）——两种布局都能跑。
+PKG = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PKG / "src"))
+
+import papertrack  # noqa: E402,F401  —— 触发 _paths：把 vendor 里的 celltracker 副本加入 sys.path
 
 from celltracker.track.base import Detections                       # noqa: E402  (vendor 副本)
 from papertrack.config import GraphConfig, MeasureConfig, PipelineConfig  # noqa: E402
@@ -92,7 +96,7 @@ def test_self_contained_vendor(tmp_path):
     import sys
 
     env = {k: v for k, v in os.environ.items() if k != "PYTHONPATH"}
-    env["PYTHONPATH"] = str(ROOT / "paperpipe" / "src")
+    env["PYTHONPATH"] = str(PKG / "src")
     code = ("import papertrack, celltracker;"
             "print(celltracker.__file__);"
             "from papertrack.runtime import run_pipeline;"
