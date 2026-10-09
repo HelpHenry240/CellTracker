@@ -32,9 +32,12 @@ __all__ = ["estimate_velocity", "attach_velocity", "velocity_feature_is_live",
            "run_two_pass"]
 
 
-def estimate_velocity(dets: Detections, result: TrackResult
+def estimate_velocity(dets: Detections, result: TrackResult, ignore_background: bool = True
                       ) -> tuple[dict[int, np.ndarray], dict[int, np.ndarray]]:
     """式(20)：用追踪结果里的硬关联估计每个检测的速度。
+
+    编号 0 表示被排除的检测，不构成式(20) 中的硬关联。ignore_background=False
+    仅用于复现旧 ideas-v2 实验的背景匹配错误，不能作为正常估速设置。
 
     返回 `(velocity, valid)`：
       - `velocity[t]` (n_t, d)：第 t 帧每个检测的速度；无前驱时为 0
@@ -50,8 +53,11 @@ def estimate_velocity(dets: Detections, result: TrackResult
         if pos > 0 and (t - 1) in result.assignment and t in result.assignment:
             prev_xy = dets.centroid(t - 1)
             prev_ids = result.assignment[t - 1]
-            lookup = {int(tid): prev_xy[k] for k, tid in enumerate(prev_ids)}
+            lookup = {int(tid): prev_xy[k] for k, tid in enumerate(prev_ids)
+                      if not ignore_background or int(tid) > 0}
             for k, tid in enumerate(result.assignment[t]):
+                if ignore_background and int(tid) <= 0:
+                    continue
                 p = lookup.get(int(tid))
                 if p is not None:
                     vel[k] = xy[k] - p

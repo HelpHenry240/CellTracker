@@ -109,10 +109,13 @@ def run_pipeline(h5_path, cfg, gt_h5=None, ckpt=None, frames=None, artifacts_dir
     if cfg.motion.enabled and cfg.motion.alpha_pred > 0:
         coarse = _solve_all(dets,replace(ccfg,alpha_pred=0.0),cfg.measure,spacing,cache=cache,phase='coarse')
         coarse_result = reconstruct_from_ot(dets,coarse,cfg.reconstruct,ccfg.r_max,bridge=False)
-        vel,valid = estimate_velocity(dets,coarse_result)
+        # v2 仅保留历史复现；v3 中被排除的检测不能借背景编号互相匹配。
+        legacy_background = cfg.schema_version == 'ideas-v2'
+        vel,valid = estimate_velocity(dets,coarse_result,ignore_background=not legacy_background)
         attach_velocity(dets,vel,valid)
         pred_xy = {t:dets.centroid(t)+vel[t] for t in ts}
         info['motion'] = {'enabled':True,'alpha_pred':cfg.motion.alpha_pred,
+                          'legacy_background_matching':legacy_background,
                           'pass1_tracks':coarse_result.n_tracks(),'velocity':velocity_report(dets,spacing)}
     else:
         info['motion'] = {'enabled':False}

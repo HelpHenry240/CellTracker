@@ -45,6 +45,16 @@ def test_estimate_velocity_matches_ground_truth():
     assert valid[1].tolist() == [True, True, False]
 
 
+def test_suppressed_detection_zero_is_not_a_motion_predecessor():
+    result=_result()
+    result.assignment={0:np.array([1,0]),1:np.array([1,0,0])}
+    velocity,valid=estimate_velocity(_moving_dets(),result)
+    assert valid[1].tolist()==[True,False,False]
+    np.testing.assert_array_equal(velocity[1][1:],0)
+    _,historical=estimate_velocity(_moving_dets(),result,ignore_background=False)
+    assert historical[1].tolist()==[True,True,True]
+
+
 def test_attach_velocity_makes_feature_live():
     """验收（AGENTS.md）：写回后速度特征必须非零，避免"死特征"。"""
     dets = _moving_dets()

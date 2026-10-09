@@ -1,0 +1,3 @@
+Full local suite: 145 passed.
+Regression: excluded detection ID 0 cannot create a motion predecessor; v2 archival reproduction is explicit.
+Current v2 screening results must not support final motion/FGW/multiscale conclusions.

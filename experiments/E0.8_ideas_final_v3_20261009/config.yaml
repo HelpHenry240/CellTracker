@@ -1,0 +1,10 @@
+phase: corrected_pipeline_v3
+schema: ideas-v3
+seeds: [20261008, 20261009]
+protocol: seq01_calibration_and_training_seq02_gnn_holdout
+profiles: [paper_all_k0, conservative_k0, conservative_k1.6]
+changes_to_conservative: [filter_isolated_false]
+loss_weight_candidate: 0.001
+loss_weight_units: inverse_cost_unit
+criterion: dual_sequence_official_metrics_and_current_setting_repeat
+status: preparation_pending
