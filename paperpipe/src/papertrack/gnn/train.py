@@ -51,7 +51,7 @@ class TrainConfig:
     hidden: int = 64
     layers: int = 3
     dropout: float = 0.1
-    lambda_ot: float = 0.2        # 式(35) 的权重（CALIBRATED）
+    lambda_ot: float = 0.2        # 式(35) 的候选权重；部署值须结合实际 C 分布验证
     residual: bool = False        # False = 严格按式(30)(32)
     class_weighted_ce: bool = False   # ENG_SUPP（非原文口径）
     val_fraction: float = 0.2

@@ -151,7 +151,7 @@ class PipelineConfig:
     gnn: GNNConfig = field(default_factory=GNNConfig)
     seed: int = 20261008
     detection_source: str = "nnunet_pred"
-    schema_version: str = "ideas-v2"
+    schema_version: str = "ideas-v3"
 
 
 def _to_plain(obj: Any) -> Any:
@@ -163,6 +163,8 @@ def _to_plain(obj: Any) -> Any:
 
 
 def validate_config(cfg: PipelineConfig) -> None:
+    if cfg.schema_version not in {'ideas-v2','ideas-v3'}:
+        raise ValueError('未知数据契约版本；应显式使用已支持的 ideas-v2/ideas-v3')
     if cfg.measure.mass_mode not in {"volume", "uniform"}:
         raise ValueError("measure.mass_mode 必须为 volume/uniform")
     if cfg.measure.structure_mode not in {"full", "knn"}:

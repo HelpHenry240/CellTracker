@@ -264,6 +264,27 @@ def test_contract_is_sequence_path_independent_and_configuration_strict():
         check_contract(first,pipeline_contract(override(cfg,['graph.bridge=false']),{},encoder))
 
 
+def test_frontend_contract_rejects_resplit_and_seed_recipe_mismatch():
+    cfg=config();cfg.detection_source='nnunet_pred'
+    meta={'spacing_zyx':(1,.09,.09),'h_frac':np.float64(.1),'min_volume':np.int64(300),
+          'gaussian_sigma':0.,'watershed':True,'oracle_markers':False,'resplit_k':0.,'min_distance':3}
+    original=pipeline_contract(cfg,meta)
+    check_contract(original,pipeline_contract(cfg,{**meta,'seq':'02','min_distance':8}))
+    # h-maxima 不使用 min_distance；改变再切规则却必须拒绝旧权重。
+    with pytest.raises(ValueError):check_contract(original,pipeline_contract(cfg,{**meta,'resplit_k':1.6}))
+    with pytest.raises(ValueError,match='前端来源参数'):pipeline_contract(cfg,{'spacing_zyx':(1,.09,.09)})
+
+
+def test_detection_loader_keeps_frontend_provenance(tmp_path):
+    path=write_h5(tmp_path/'detections.h5',detections(3))
+    with h5py.File(path,'r+') as f:
+        f.attrs.update(h_frac=.1,min_volume=300,gaussian_sigma=0.,watershed=True,
+                       oracle_markers=False,resplit_k=1.6,resplit_version='background_zero_v2')
+    dets=Detections.from_h5(path)
+    assert dets.meta['resplit_k']==1.6 and dets.meta['min_volume']==300
+    assert dets.meta['resplit_version']=='background_zero_v2'
+
+
 def test_ablation_defaults_flip_and_ot_consumers_are_removed():
     cfg=config(); cfg.node.f_source='encoder_npz'
     for name in module_names():
@@ -312,6 +333,15 @@ def test_all_modules_train_infer_export_and_resume(tmp_path):
         run_pipeline(h5,override(cfg,['coupling.beta=0']),cache_dir=tmp_path/'cache',verbose=False)
     with pytest.raises(ValueError,match='图配置不一致'):
         run_pipeline(h5,override(cfg,['graph.intra_enabled=false']),ckpt=tmp_path/'model/best.pt',verbose=False)
+    # GT 身份只用于监督与诊断，推理不能因改写 GT 身份而改变预测。
+    with h5py.File(h5,'r+') as f:
+        for group in f['frames'].values():
+            group['gt_label'][:]=0
+            group['gt_ids'][:]=0
+    without_truth=run_pipeline(h5,cfg,ckpt=tmp_path/'model/best.pt',verbose=False)
+    for t in d.t_range:
+        np.testing.assert_array_equal(predicted.result.assignment[t],without_truth.result.assignment[t])
+    assert predicted.result.tracks==without_truth.result.tracks
 
 
 def test_encoder_coordinate_mapping_and_tiled_sampling():

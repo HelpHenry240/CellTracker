@@ -368,6 +368,7 @@ def test_end_to_end_synthetic(tmp_path):
                  cents=[[[4, 5, 5]], [], [[4, 9, 9]]])
     h5 = _write_h5(tmp_path / "seq.h5", dets)
     cfg = PC()
+    cfg.detection_source = "synthetic"
     cfg.measure = _mcfg()
     cfg.coupling = _ccfg(r_max=6.0)
     cfg.multiscale.enabled = False

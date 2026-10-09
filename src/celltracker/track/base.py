@@ -61,7 +61,10 @@ class Detections:
                 meta["shape"] = np.asarray([int(x) for x in f.attrs["shape"]], dtype=float)
             meta["name"] = str(f.attrs.get("name", ""))
             meta["seq"] = str(f.attrs.get("seq", ""))
-            for name in ("spacing_zyx", "detection_source", "label_mapping"):
+            for name in ("spacing_zyx", "detection_source", "label_mapping", "h_frac",
+                         "min_volume", "min_distance", "gaussian_sigma", "watershed",
+                         "oracle_markers", "unseeded_policy", "resplit_k", "resplit_version",
+                         "foreground_source"):
                 if name in f.attrs:
                     meta[name] = f.attrs[name]
             keys = sorted(f["frames"].keys())

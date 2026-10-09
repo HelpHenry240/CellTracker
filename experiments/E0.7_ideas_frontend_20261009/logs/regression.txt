@@ -2,3 +2,4 @@ Background label offset regression passed.
 Disabled-resplit streaming path preserves labels and source file; raw intensity features are recomputed.
 Full suite before TIFF scalar-stack patch: 142 passed.
 After explicit TIFF photometric guard: full suite 142 passed, no warnings.
+Frontend provenance contract plus GT-independent inference regression: 144 tests passed.

@@ -97,4 +97,4 @@ gnn:
   residual: false
 seed: 20261008
 detection_source: nnunet_pred
-schema_version: ideas-v2
+schema_version: ideas-v3
