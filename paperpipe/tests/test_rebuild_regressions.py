@@ -417,6 +417,35 @@ def test_calibration_reports_raw_mass_and_candidate_loss(tmp_path):
     assert report['physical_volume_um3']['p50']==8
 
 
+def test_calibration_does_not_hide_missing_division_under_high_total_recall():
+    from papertrack.runtime.calibration import calibrate_run
+    from papertrack.runtime.pipeline import PipelineRun
+    # 100条移动边和2条分裂边。代价高分位仅排掉1条分裂边：总体仍>99%，分裂仅50%。
+    frames = {0: {'label':np.arange(1,102),'centroid':np.zeros((101,3)),'volume':np.ones(101)},
+              1: {'label':np.r_[np.arange(1,101),102,103],'centroid':np.zeros((102,3)),
+                  'volume':np.ones(102)}}
+    dets = Detections(frames)
+    plan = np.zeros((101,102)); cost = np.full(plan.shape,10.)
+    plan[np.arange(100),np.arange(100)] = .01
+    cost[np.arange(100),np.arange(100)] = 1.
+    plan[100,100:] = .01; cost[100,100:] = [2.,3.]
+    coupling = PairCoupling(plan,cost,np.ones(101)/101,np.ones(102)/102,
+                            np.zeros(plan.shape),.1,{})
+    cfg = config(); cfg.graph.cand_topk=0
+    run = PipelineRun(cfg,dets,{0:coupling},{},TrackResult(),spacing=(1.,1.,1.),
+                      info={'input_sha256':'synthetic','input_contract':{}})
+    parent = {int(label):0 for label in range(1,102)}; parent.update({102:101,103:101})
+    _,report = calibrate_run(run,parent)
+    assert report['after_calibration']['candidate_true_recall']>.99
+    assert report['after_calibration']['division_pair_recall']==.5
+    assert report['candidate_warning_modes']==['division_edges']
+    # 已有top-k保底恢复两个子目标，警告随实际保留率消失。
+    cfg.graph.cand_topk=2
+    _,protected = calibrate_run(run,parent)
+    assert protected['after_calibration']['division_pair_recall']==1.
+    assert 'candidate_warning' not in protected
+
+
 def test_official_adapter_rejects_missing_metric_and_preserves_logs(tmp_path,monkeypatch):
     from papertrack.runtime.official import evaluate_official
     import subprocess

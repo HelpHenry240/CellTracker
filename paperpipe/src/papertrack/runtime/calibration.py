@@ -86,6 +86,16 @@ def calibrate_run(run,parent):
     report['cost_C']=distribution(np.concatenate([c.cost[np.isfinite(c.cost)] for c in run.couplings.values()]))
     report['source_sha256']=run.info['input_sha256']
     report['input_contract']=run.info['input_contract']
-    if report['after_calibration']['candidate_true_recall']<.99:
-        report['candidate_warning']='真实边覆盖不足 99%；须扫描 R_max/epsilon/保底并记录分裂损失，不能直接冻结此配置'
+    # ideas.pdf 式(26) 的筛选会永久丢掉训练正边。分裂是少数类，总体召回不能替代
+    # 分裂召回；分别审计两个分母，避免大量移动边掩盖整组子目标的丢失。
+    counts = report['after_calibration']
+    missing = []
+    if counts['candidate_true_recall'] < .99:
+        missing.append('all_true_edges')
+    if counts['division_pairs'] and counts['division_pair_recall'] < .99:
+        missing.append('division_edges')
+    if missing:
+        report['candidate_warning_modes'] = missing
+        report['candidate_warning'] = ('真实关联或分裂边覆盖不足99%；先量化对应分母的损失，'
+            '检查已有top-k保底或参数标定，再决定是否冻结配置')
     return cfg,report

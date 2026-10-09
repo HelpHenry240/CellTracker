@@ -74,3 +74,4 @@
 | E0.8-repo | 2026-10-09 | 重建文档归档与冻结对照权重入库 | 补入 5 份文档、前端标定配置与冻结对照契约；8 份小型推理权重（443KB/份，带 md5/sha256）纳入版本控制；本地 150 项测试通过 | — | 数值与云端正式发布一致；权重是离线复现的固定种子入口 | `experiments/E0.8_ideas_final_v3_20261009/artifacts/models/manifest.json` |
 | E0.8-final | 2026-10-09 | ideas-v3双序列正式终验 | 四档×双种子；8训练+20官方评测；推荐TRA均值0.9325185/0.9308145；本地150通过，干净导出云端148通过/2跳过 | 当前设置重复输出一致；前端增益+0.0233165/+0.0182925，SEG下降 | 25项模块消融开关；八份推理权重；未重训nnU-Net；GPU已空闲 | `experiments/E0.8_ideas_final_v3_20261009/metrics_final.json`；`docs/reports/ideas_pipeline_rebuild_20261009.md` |
 | E0.9-start | 2026-10-09 | GT marker Oracle + frozen encoder | 双序列、双种子、独立GNN重训及seq02重复；准备中 | — | 未重训nnU-Net，不加入手工特征对照 | `experiments/E0.9_gt_oracle_encoder_20261009/` |
+| E0.9-candidates | 2026-10-09 | Oracle候选安全审计 | 初版分裂候选679/716；已有top-k=3恢复716/716，23797/23798关联 | 初版取消留痕，新配置独立重训 | 新增少数类审计回归，本地151项通过 | `experiments/E0.9_gt_oracle_encoder_20261009/pipeline_conservative.yaml` |
