@@ -417,6 +417,12 @@ def test_matrix_recalibrates_on_training_sequence_and_selects_test_encoder(tmp_p
     assert build['depends']==[calibration[0]['id']]
     eval02=next(job for job in plan['jobs'] if job['id'].endswith('eval02'))
     assert 'node.encoder_feat_path=encoder02.npz' in eval02['command']
+    # 基准也走相同标定步骤，避免把“重新标定”的收益归到被关闭的模块。
+    args.out=str(tmp_path/'with_baseline'); args.skip_baseline=False
+    controlled=module.make_plan(args)
+    calibration=[job for job in controlled['jobs'] if job['kind']=='calibrate']
+    assert len(calibration)==2
+    assert any(job['id']=='smoke_baseline_calibration01' for job in calibration)
 
 
 def test_compressed_ctc_export_is_pixel_identical(tmp_path):

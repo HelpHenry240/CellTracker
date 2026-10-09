@@ -43,7 +43,7 @@ def make_plan(args):
             seq_config[seq]=config_dir/f'{name}_{seq}.yaml'
             save_config(sequence,seq_config[seq])
         calibration_id=None
-        if name!='baseline' and getattr(args,'recalibrate',False) and cfg.coupling.enabled:
+        if getattr(args,'recalibrate',False) and cfg.coupling.enabled:
             calibration_id=f'{args.exp_prefix}_{name}_calibration01'
             calibrated=config_dir/f'{name}_calibrated.yaml'
             report=output/'calibration'/f'{name}.json'
