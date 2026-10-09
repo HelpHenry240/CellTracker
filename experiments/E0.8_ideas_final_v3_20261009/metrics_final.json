@@ -1,0 +1,684 @@
+{
+  "profiles": {
+    "paper_all_k0": {
+      "matrix_jobs_complete": 9,
+      "runs": [
+        {
+          "id": "P7_ideas_v3_paper_all_k0_baseline_seed20261008_eval01",
+          "seq": "01",
+          "seed": 20261008,
+          "repeat": false,
+          "DET": 0.926389,
+          "SEG": 0.667441,
+          "TRA": 0.89784,
+          "AOGM": {
+            "NS": 2198,
+            "FN": 602,
+            "FP": 511,
+            "ED": 114,
+            "EA": 6718,
+            "EC": 251
+          }
+        },
+        {
+          "id": "P7_ideas_v3_paper_all_k0_baseline_seed20261008_eval02",
+          "seq": "02",
+          "seed": 20261008,
+          "repeat": false,
+          "DET": 0.928151,
+          "SEG": 0.690867,
+          "TRA": 0.902519,
+          "AOGM": {
+            "NS": 1497,
+            "FN": 761,
+            "FP": 1012,
+            "ED": 83,
+            "EA": 5654,
+            "EC": 460
+          }
+        },
+        {
+          "id": "P7_ideas_v3_paper_all_k0_baseline_seed20261009_eval01",
+          "seq": "01",
+          "seed": 20261009,
+          "repeat": false,
+          "DET": 0.924334,
+          "SEG": 0.667441,
+          "TRA": 0.895995,
+          "AOGM": {
+            "NS": 2195,
+            "FN": 656,
+            "FP": 475,
+            "ED": 99,
+            "EA": 6760,
+            "EC": 219
+          }
+        },
+        {
+          "id": "P7_ideas_v3_paper_all_k0_baseline_seed20261009_eval02",
+          "seq": "02",
+          "seed": 20261009,
+          "repeat": false,
+          "DET": 0.927554,
+          "SEG": 0.690867,
+          "TRA": 0.901763,
+          "AOGM": {
+            "NS": 1498,
+            "FN": 769,
+            "FP": 1061,
+            "ED": 82,
+            "EA": 5684,
+            "EC": 477
+          }
+        },
+        {
+          "id": "P7_ideas_v3_paper_all_k0_baseline_seed20261008_eval02_repeat",
+          "seq": "02",
+          "seed": 20261008,
+          "repeat": true,
+          "DET": 0.928151,
+          "SEG": 0.690867,
+          "TRA": 0.902519,
+          "AOGM": {
+            "NS": 1497,
+            "FN": 761,
+            "FP": 1012,
+            "ED": 83,
+            "EA": 5654,
+            "EC": 460
+          }
+        }
+      ],
+      "summary": {
+        "01": {
+          "DET": {
+            "mean": 0.9253615,
+            "min": 0.924334,
+            "max": 0.926389,
+            "seed_spread": 0.002055000000000029
+          },
+          "SEG": {
+            "mean": 0.667441,
+            "min": 0.667441,
+            "max": 0.667441,
+            "seed_spread": 0.0
+          },
+          "TRA": {
+            "mean": 0.8969175,
+            "min": 0.895995,
+            "max": 0.89784,
+            "seed_spread": 0.0018449999999999855
+          }
+        },
+        "02": {
+          "DET": {
+            "mean": 0.9278525,
+            "min": 0.927554,
+            "max": 0.928151,
+            "seed_spread": 0.0005969999999999587
+          },
+          "SEG": {
+            "mean": 0.690867,
+            "min": 0.690867,
+            "max": 0.690867,
+            "seed_spread": 0.0
+          },
+          "TRA": {
+            "mean": 0.902141,
+            "min": 0.901763,
+            "max": 0.902519,
+            "seed_spread": 0.0007559999999999789
+          }
+        }
+      },
+      "repeat_absolute_difference": {
+        "DET": 0.0,
+        "SEG": 0.0,
+        "TRA": 0.0
+      },
+      "comparison_resolution_TRA": 0.0018449999999999855
+    },
+    "conservative_k0": {
+      "matrix_jobs_complete": 9,
+      "runs": [
+        {
+          "id": "P7_ideas_v3_conservative_k0_baseline_seed20261008_eval01",
+          "seq": "01",
+          "seed": 20261008,
+          "repeat": false,
+          "DET": 0.939875,
+          "SEG": 0.673196,
+          "TRA": 0.909151,
+          "AOGM": {
+            "NS": 2199,
+            "FN": 86,
+            "FP": 2456,
+            "ED": 179,
+            "EA": 6742,
+            "EC": 264
+          }
+        },
+        {
+          "id": "P7_ideas_v3_conservative_k0_baseline_seed20261008_eval02",
+          "seq": "02",
+          "seed": 20261008,
+          "repeat": false,
+          "DET": 0.940053,
+          "SEG": 0.690867,
+          "TRA": 0.912521,
+          "AOGM": {
+            "NS": 1506,
+            "FN": 207,
+            "FP": 3839,
+            "ED": 145,
+            "EA": 5667,
+            "EC": 468
+          }
+        },
+        {
+          "id": "P7_ideas_v3_conservative_k0_baseline_seed20261009_eval01",
+          "seq": "01",
+          "seed": 20261009,
+          "repeat": false,
+          "DET": 0.939875,
+          "SEG": 0.673196,
+          "TRA": 0.909253,
+          "AOGM": {
+            "NS": 2199,
+            "FN": 86,
+            "FP": 2456,
+            "ED": 168,
+            "EA": 6756,
+            "EC": 226
+          }
+        },
+        {
+          "id": "P7_ideas_v3_conservative_k0_baseline_seed20261009_eval02",
+          "seq": "02",
+          "seed": 20261009,
+          "repeat": false,
+          "DET": 0.940057,
+          "SEG": 0.690867,
+          "TRA": 0.912523,
+          "AOGM": {
+            "NS": 1506,
+            "FN": 207,
+            "FP": 3838,
+            "ED": 129,
+            "EA": 5668,
+            "EC": 483
+          }
+        },
+        {
+          "id": "P7_ideas_v3_conservative_k0_baseline_seed20261008_eval02_repeat",
+          "seq": "02",
+          "seed": 20261008,
+          "repeat": true,
+          "DET": 0.940053,
+          "SEG": 0.690867,
+          "TRA": 0.912521,
+          "AOGM": {
+            "NS": 1506,
+            "FN": 207,
+            "FP": 3839,
+            "ED": 145,
+            "EA": 5667,
+            "EC": 468
+          }
+        }
+      ],
+      "summary": {
+        "01": {
+          "DET": {
+            "mean": 0.939875,
+            "min": 0.939875,
+            "max": 0.939875,
+            "seed_spread": 0.0
+          },
+          "SEG": {
+            "mean": 0.673196,
+            "min": 0.673196,
+            "max": 0.673196,
+            "seed_spread": 0.0
+          },
+          "TRA": {
+            "mean": 0.9092020000000001,
+            "min": 0.909151,
+            "max": 0.909253,
+            "seed_spread": 0.00010199999999993548
+          }
+        },
+        "02": {
+          "DET": {
+            "mean": 0.9400550000000001,
+            "min": 0.940053,
+            "max": 0.940057,
+            "seed_spread": 4.000000000004e-06
+          },
+          "SEG": {
+            "mean": 0.690867,
+            "min": 0.690867,
+            "max": 0.690867,
+            "seed_spread": 0.0
+          },
+          "TRA": {
+            "mean": 0.912522,
+            "min": 0.912521,
+            "max": 0.912523,
+            "seed_spread": 1.999999999946489e-06
+          }
+        }
+      },
+      "repeat_absolute_difference": {
+        "DET": 0.0,
+        "SEG": 0.0,
+        "TRA": 0.0
+      },
+      "comparison_resolution_TRA": 0.001
+    },
+    "paper_all_k16": {
+      "matrix_jobs_complete": 9,
+      "runs": [
+        {
+          "id": "P7_ideas_v3_paper_all_k16_baseline_seed20261008_eval01",
+          "seq": "01",
+          "seed": 20261008,
+          "repeat": false,
+          "DET": 0.938593,
+          "SEG": 0.657844,
+          "TRA": 0.91768,
+          "AOGM": {
+            "NS": 1262,
+            "FN": 763,
+            "FP": 676,
+            "ED": 102,
+            "EA": 5019,
+            "EC": 286
+          }
+        },
+        {
+          "id": "P7_ideas_v3_paper_all_k16_baseline_seed20261008_eval02",
+          "seq": "02",
+          "seed": 20261008,
+          "repeat": false,
+          "DET": 0.938844,
+          "SEG": 0.667235,
+          "TRA": 0.920015,
+          "AOGM": {
+            "NS": 757,
+            "FN": 866,
+            "FP": 1265,
+            "ED": 103,
+            "EA": 4199,
+            "EC": 509
+          }
+        },
+        {
+          "id": "P7_ideas_v3_paper_all_k16_baseline_seed20261009_eval01",
+          "seq": "01",
+          "seed": 20261009,
+          "repeat": false,
+          "DET": 0.936371,
+          "SEG": 0.663599,
+          "TRA": 0.915741,
+          "AOGM": {
+            "NS": 1259,
+            "FN": 827,
+            "FP": 580,
+            "ED": 107,
+            "EA": 5064,
+            "EC": 215
+          }
+        },
+        {
+          "id": "P7_ideas_v3_paper_all_k16_baseline_seed20261009_eval02",
+          "seq": "02",
+          "seed": 20261009,
+          "repeat": false,
+          "DET": 0.936538,
+          "SEG": 0.661663,
+          "TRA": 0.917538,
+          "AOGM": {
+            "NS": 756,
+            "FN": 913,
+            "FP": 1317,
+            "ED": 106,
+            "EA": 4266,
+            "EC": 527
+          }
+        },
+        {
+          "id": "P7_ideas_v3_paper_all_k16_baseline_seed20261008_eval02_repeat",
+          "seq": "02",
+          "seed": 20261008,
+          "repeat": true,
+          "DET": 0.938844,
+          "SEG": 0.667235,
+          "TRA": 0.920015,
+          "AOGM": {
+            "NS": 757,
+            "FN": 866,
+            "FP": 1265,
+            "ED": 103,
+            "EA": 4199,
+            "EC": 509
+          }
+        }
+      ],
+      "summary": {
+        "01": {
+          "DET": {
+            "mean": 0.9374819999999999,
+            "min": 0.936371,
+            "max": 0.938593,
+            "seed_spread": 0.0022220000000000573
+          },
+          "SEG": {
+            "mean": 0.6607215,
+            "min": 0.657844,
+            "max": 0.663599,
+            "seed_spread": 0.005755000000000066
+          },
+          "TRA": {
+            "mean": 0.9167105,
+            "min": 0.915741,
+            "max": 0.91768,
+            "seed_spread": 0.001939000000000024
+          }
+        },
+        "02": {
+          "DET": {
+            "mean": 0.937691,
+            "min": 0.936538,
+            "max": 0.938844,
+            "seed_spread": 0.0023060000000000302
+          },
+          "SEG": {
+            "mean": 0.6644490000000001,
+            "min": 0.661663,
+            "max": 0.667235,
+            "seed_spread": 0.005572000000000021
+          },
+          "TRA": {
+            "mean": 0.9187765,
+            "min": 0.917538,
+            "max": 0.920015,
+            "seed_spread": 0.0024770000000000625
+          }
+        }
+      },
+      "repeat_absolute_difference": {
+        "DET": 0.0,
+        "SEG": 0.0,
+        "TRA": 0.0
+      },
+      "comparison_resolution_TRA": 0.0024770000000000625
+    },
+    "conservative_k16": {
+      "matrix_jobs_complete": 9,
+      "runs": [
+        {
+          "id": "P7_ideas_v3_conservative_k16_baseline_seed20261008_eval01",
+          "seq": "01",
+          "seed": 20261008,
+          "repeat": false,
+          "DET": 0.955785,
+          "SEG": 0.663599,
+          "TRA": 0.932366,
+          "AOGM": {
+            "NS": 1265,
+            "FN": 113,
+            "FP": 3069,
+            "ED": 165,
+            "EA": 5017,
+            "EC": 298
+          }
+        },
+        {
+          "id": "P7_ideas_v3_conservative_k16_baseline_seed20261008_eval02",
+          "seq": "02",
+          "seed": 20261008,
+          "repeat": false,
+          "DET": 0.95161,
+          "SEG": 0.667235,
+          "TRA": 0.93068,
+          "AOGM": {
+            "NS": 759,
+            "FN": 237,
+            "FP": 4683,
+            "ED": 158,
+            "EA": 4228,
+            "EC": 523
+          }
+        },
+        {
+          "id": "P7_ideas_v3_conservative_k16_baseline_seed20261009_eval01",
+          "seq": "01",
+          "seed": 20261009,
+          "repeat": false,
+          "DET": 0.955785,
+          "SEG": 0.663599,
+          "TRA": 0.932671,
+          "AOGM": {
+            "NS": 1265,
+            "FN": 113,
+            "FP": 3069,
+            "ED": 164,
+            "EA": 5008,
+            "EC": 229
+          }
+        },
+        {
+          "id": "P7_ideas_v3_conservative_k16_baseline_seed20261009_eval02",
+          "seq": "02",
+          "seed": 20261009,
+          "repeat": false,
+          "DET": 0.951606,
+          "SEG": 0.667235,
+          "TRA": 0.930949,
+          "AOGM": {
+            "NS": 759,
+            "FN": 237,
+            "FP": 4684,
+            "ED": 146,
+            "EA": 4175,
+            "EC": 544
+          }
+        },
+        {
+          "id": "P7_ideas_v3_conservative_k16_baseline_seed20261008_eval02_repeat",
+          "seq": "02",
+          "seed": 20261008,
+          "repeat": true,
+          "DET": 0.95161,
+          "SEG": 0.667235,
+          "TRA": 0.93068,
+          "AOGM": {
+            "NS": 759,
+            "FN": 237,
+            "FP": 4683,
+            "ED": 158,
+            "EA": 4228,
+            "EC": 523
+          }
+        }
+      ],
+      "summary": {
+        "01": {
+          "DET": {
+            "mean": 0.955785,
+            "min": 0.955785,
+            "max": 0.955785,
+            "seed_spread": 0.0
+          },
+          "SEG": {
+            "mean": 0.663599,
+            "min": 0.663599,
+            "max": 0.663599,
+            "seed_spread": 0.0
+          },
+          "TRA": {
+            "mean": 0.9325185,
+            "min": 0.932366,
+            "max": 0.932671,
+            "seed_spread": 0.0003049999999999997
+          }
+        },
+        "02": {
+          "DET": {
+            "mean": 0.951608,
+            "min": 0.951606,
+            "max": 0.95161,
+            "seed_spread": 4.000000000004e-06
+          },
+          "SEG": {
+            "mean": 0.667235,
+            "min": 0.667235,
+            "max": 0.667235,
+            "seed_spread": 0.0
+          },
+          "TRA": {
+            "mean": 0.9308145,
+            "min": 0.93068,
+            "max": 0.930949,
+            "seed_spread": 0.00026900000000007473
+          }
+        }
+      },
+      "repeat_absolute_difference": {
+        "DET": 0.0,
+        "SEG": 0.0,
+        "TRA": 0.0
+      },
+      "comparison_resolution_TRA": 0.001
+    }
+  },
+  "definition": {
+    "seeds": [
+      20261008,
+      20261009
+    ],
+    "training": "seq01 only",
+    "repeat": "same seed20261008 checkpoint, complete seq02 inference/export/official evaluation",
+    "minimum_claim_threshold_TRA": 0.001,
+    "seed_spread": "two-seed max minus min; not a confidence interval"
+  },
+  "comparisons": {
+    "paper_all_k0 -> conservative_k0": {
+      "resolution_TRA": 0.0018449999999999855,
+      "sequences": {
+        "01": {
+          "paired_seed_deltas_TRA": [
+            0.011311000000000071,
+            0.013257999999999992
+          ],
+          "mean_delta_TRA": 0.012284500000000032,
+          "above_resolution_both_seeds": true
+        },
+        "02": {
+          "paired_seed_deltas_TRA": [
+            0.010002000000000066,
+            0.010759999999999992
+          ],
+          "mean_delta_TRA": 0.010381000000000029,
+          "above_resolution_both_seeds": true
+        }
+      }
+    },
+    "paper_all_k16 -> conservative_k16": {
+      "resolution_TRA": 0.0024770000000000625,
+      "sequences": {
+        "01": {
+          "paired_seed_deltas_TRA": [
+            0.014685999999999977,
+            0.01693
+          ],
+          "mean_delta_TRA": 0.01580799999999999,
+          "above_resolution_both_seeds": true
+        },
+        "02": {
+          "paired_seed_deltas_TRA": [
+            0.010664999999999925,
+            0.013411000000000062
+          ],
+          "mean_delta_TRA": 0.012037999999999993,
+          "above_resolution_both_seeds": true
+        }
+      }
+    },
+    "paper_all_k0 -> paper_all_k16": {
+      "resolution_TRA": 0.0024770000000000625,
+      "sequences": {
+        "01": {
+          "paired_seed_deltas_TRA": [
+            0.01984000000000008,
+            0.01974600000000004
+          ],
+          "mean_delta_TRA": 0.01979300000000006,
+          "above_resolution_both_seeds": true
+        },
+        "02": {
+          "paired_seed_deltas_TRA": [
+            0.017496000000000067,
+            0.015774999999999983
+          ],
+          "mean_delta_TRA": 0.016635500000000025,
+          "above_resolution_both_seeds": true
+        }
+      }
+    },
+    "conservative_k0 -> conservative_k16": {
+      "resolution_TRA": 0.001,
+      "sequences": {
+        "01": {
+          "paired_seed_deltas_TRA": [
+            0.023214999999999986,
+            0.02341800000000005
+          ],
+          "mean_delta_TRA": 0.023316500000000018,
+          "above_resolution_both_seeds": true
+        },
+        "02": {
+          "paired_seed_deltas_TRA": [
+            0.018158999999999925,
+            0.018426000000000053
+          ],
+          "mean_delta_TRA": 0.01829249999999999,
+          "above_resolution_both_seeds": true
+        }
+      }
+    }
+  },
+  "source": {
+    "official_numerical_git_commit": "88bf5cae8f41d9e13134d6aed007392fc085ae43",
+    "source_sha256": "e0d336343b8a662caa8bab5e3db06fd519e52613351eec429f3e5f825bffc04d",
+    "post_release_fixes": "kNN identity edge cases; hard/empty marginal validation; Git source-package tracking; equivalence proof and test logs included"
+  },
+  "selection": {
+    "profile": "conservative_k16",
+    "reproduction_seed": 20261008,
+    "reason": "largest mean TRA on both sequences, paired gains above comparison resolution for both seeds",
+    "unet_retrained": false,
+    "semantic_segmentation_reused": true,
+    "encoder_exported_fresh": true,
+    "config": "paperpipe/configs/ce_calibrated_20261009.yaml"
+  },
+  "verification": {
+    "local_tests": {
+      "passed": 150
+    },
+    "cloud_clean_git_export_tests": {
+      "passed": 148,
+      "skipped": 2,
+      "skip_reasons": [
+        "POT optional reference unavailable",
+        "Git index test is not applicable in source tar archive"
+      ]
+    },
+    "gpu_jobs_finished": true,
+    "model_tensor_identity_verified": 8,
+    "official_evaluations": 20,
+    "independent_training_runs": 8,
+    "complete_matrix_jobs": 36
+  }
+}

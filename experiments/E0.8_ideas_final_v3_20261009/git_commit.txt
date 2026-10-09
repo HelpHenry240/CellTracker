@@ -1,1 +1,5 @@
 8c622fb750a7576fb74ca98e54c0689f33c73f1b
+official_numerical_release: 88bf5cae8f41d9e13134d6aed007392fc085ae43
+knn_boundary_fix: b83ef30
+hard_marginal_boundary_fix: 68c0a57
+source_package_export_fix: 366bc2c

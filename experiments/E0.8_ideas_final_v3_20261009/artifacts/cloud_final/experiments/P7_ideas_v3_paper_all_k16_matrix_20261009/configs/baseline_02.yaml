@@ -1,0 +1,97 @@
+measure:
+  mass_mode: volume
+  knn_k: 6
+  sigma_x: null
+  sigma_f: null
+  spacing_zyx: null
+  structure_mode: full
+coupling:
+  enabled: true
+  alpha: 1.0
+  alpha_pred: 0.0
+  beta: 1.0
+  sigma_s: null
+  r_max: 6.4
+  eta: 0.3
+  eps_rel: 1.0
+  eps: null
+  tau_a: 1.0
+  tau_b: 1.0
+  sinkhorn_iters: 1000
+  fgw_outer: 10
+motion:
+  enabled: true
+  alpha_pred: 1.0
+multiscale:
+  enabled: true
+  ks:
+  - 2
+  - 3
+  - 5
+  lambda_temp:
+    2: 0.1
+    3: 0.05
+    5: 0.02
+  n_rounds: 2
+  norm: raw
+  line_search: true
+  jump_r_max_scale: 1.0
+tracklet:
+  enabled: true
+  window: 5
+  theta_link: 0.5
+  local_confidence: 0.8
+  tau: 0.5
+  max_gap: 3
+  velocity_weight: 1.0
+  size_weight: 1.0
+  merge_division_children: false
+  hole_policy: fill
+graph:
+  theta_gamma_frac: null
+  theta_gamma: 1.1077402637741964e-16
+  theta_c: 725.1141667060132
+  cand_topk: 0
+  ctx_window: 2
+  bridge: true
+  bridge_gap: 2
+  bridge_scope: missing_only
+  intra_knn: 4
+  intra_enabled: true
+  context_enabled: true
+  use_ot_candidates: true
+  use_ot_features: true
+  use_intra_similarity: true
+reconstruct:
+  theta_gamma_frac: null
+  theta_gamma: 1.1077402637741964e-16
+  theta_c: 725.1141667060132
+  eta_death: 0.01703500808826654
+  eta_birth: 0.01840185258378078
+  mass_threshold_mode: absolute
+  birth_death_enabled: true
+  death_veto: true
+  birth_veto: true
+  division_enabled: true
+  volume_conservation: true
+  div_ratio: 0.05
+  vol_tol: 0.5
+  max_children: 2
+  tau_edge: 0.5
+  hole_policy: fill
+  filter_isolated: true
+  mark_uncertainty: true
+node:
+  f_source: encoder_npz
+  encoder_feat_path: data/interim/encoder_02_resplit_v2.npz
+gnn:
+  enabled: true
+  hidden: 64
+  layers: 3
+  dropout: 0.1
+  lambda_ot: 0.001
+  class_weighted_ce: false
+  residual: false
+seed: 20261008
+detection_source: nnunet_pred
+schema_version: ideas-v3

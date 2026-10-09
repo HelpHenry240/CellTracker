@@ -1,0 +1,3 @@
+[14:29:05] experiment P7_ideas_v3_paper_all_k0_baseline_seed20261008_train start: ideas GNN 独立训练
+[14:29:43] metrics -> /root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_v3_paper_all_k0_baseline_seed20261008_train/metrics.json
+[14:29:43] experiment P7_ideas_v3_paper_all_k0_baseline_seed20261008_train finished: done

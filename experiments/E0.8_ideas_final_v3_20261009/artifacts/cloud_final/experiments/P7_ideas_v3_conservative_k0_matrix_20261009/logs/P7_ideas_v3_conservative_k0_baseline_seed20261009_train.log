@@ -1,0 +1,82 @@
+[14:55:55] experiment P7_ideas_v3_conservative_k0_baseline_seed20261009_train start: ideas GNN 独立训练
+[epoch   1] P=0.8242 R=0.8382 F1=0.8311
+[epoch   2] P=0.8295 R=0.8360 F1=0.8327
+[epoch   3] P=0.8595 R=0.8018 F1=0.8296
+[epoch   4] P=0.9021 R=0.7496 F1=0.8188
+[epoch   5] P=0.8473 R=0.9132 F1=0.8790
+[epoch   6] P=0.9566 R=0.7390 F1=0.8339
+[epoch   7] P=0.9618 R=0.7739 F1=0.8577
+[epoch   8] P=0.9539 R=0.8280 F1=0.8865
+[epoch   9] P=0.9479 R=0.8570 F1=0.9002
+[epoch  10] P=0.9455 R=0.8676 F1=0.9049
+[epoch  11] P=0.9665 R=0.8198 F1=0.8871
+[epoch  12] P=0.9631 R=0.8409 F1=0.8979
+[epoch  13] P=0.9513 R=0.8472 F1=0.8962
+[epoch  14] P=0.9617 R=0.8418 F1=0.8977
+[epoch  15] P=0.9546 R=0.8544 F1=0.9017
+[epoch  16] P=0.9610 R=0.8515 F1=0.9029
+[epoch  17] P=0.9430 R=0.8884 F1=0.9149
+[epoch  18] P=0.9343 R=0.8687 F1=0.9003
+[epoch  19] P=0.9698 R=0.8339 F1=0.8967
+[epoch  20] P=0.9040 R=0.9208 F1=0.9123
+[epoch  21] P=0.9527 R=0.8660 F1=0.9073
+[epoch  22] P=0.9638 R=0.8494 F1=0.9030
+[epoch  23] P=0.9549 R=0.8747 F1=0.9131
+[epoch  24] P=0.9524 R=0.8723 F1=0.9106
+[epoch  25] P=0.9578 R=0.8509 F1=0.9012
+[epoch  26] P=0.9449 R=0.8816 F1=0.9122
+[epoch  27] P=0.9632 R=0.8526 F1=0.9045
+[epoch  28] P=0.9613 R=0.8408 F1=0.8970
+[epoch  29] P=0.9421 R=0.8904 F1=0.9155
+[epoch  30] P=0.9693 R=0.8230 F1=0.8902
+[epoch  31] P=0.9240 R=0.9072 F1=0.9155
+[epoch  32] P=0.9655 R=0.8429 F1=0.9000
+[epoch  33] P=0.9266 R=0.9096 F1=0.9180
+[epoch  34] P=0.9617 R=0.8266 F1=0.8891
+[epoch  35] P=0.9581 R=0.8637 F1=0.9085
+[epoch  36] P=0.9361 R=0.8958 F1=0.9155
+[epoch  37] P=0.9495 R=0.8834 F1=0.9152
+[epoch  38] P=0.9527 R=0.8774 F1=0.9135
+[epoch  39] P=0.9497 R=0.8726 F1=0.9095
+[epoch  40] P=0.9596 R=0.8311 F1=0.8908
+[epoch  41] P=0.9486 R=0.8796 F1=0.9128
+[epoch  42] P=0.9538 R=0.8418 F1=0.8943
+[epoch  43] P=0.9461 R=0.8764 F1=0.9099
+[epoch  44] P=0.9398 R=0.9000 F1=0.9195
+[epoch  45] P=0.9244 R=0.8874 F1=0.9055
+[epoch  46] P=0.9264 R=0.8951 F1=0.9105
+[epoch  47] P=0.9415 R=0.8911 F1=0.9156
+[epoch  48] P=0.9541 R=0.8355 F1=0.8909
+[epoch  49] P=0.9296 R=0.9090 F1=0.9192
+[epoch  50] P=0.9466 R=0.8929 F1=0.9190
+[epoch  51] P=0.9490 R=0.8609 F1=0.9028
+[epoch  52] P=0.9344 R=0.8993 F1=0.9165
+[epoch  53] P=0.9528 R=0.8709 F1=0.9100
+[epoch  54] P=0.9389 R=0.8940 F1=0.9159
+[epoch  55] P=0.9502 R=0.8723 F1=0.9096
+[epoch  56] P=0.9536 R=0.8613 F1=0.9051
+[epoch  57] P=0.9465 R=0.8679 F1=0.9055
+[epoch  58] P=0.9495 R=0.8627 F1=0.9040
+[epoch  59] P=0.9448 R=0.8821 F1=0.9124
+[epoch  60] P=0.9326 R=0.8922 F1=0.9120
+[14:56:37] metrics -> /root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_v3_conservative_k0_baseline_seed20261009_train/metrics.json
+[14:56:37] experiment P7_ideas_v3_conservative_k0_baseline_seed20261009_train finished: done
+{
+  "out_dir": "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_v3_conservative_k0_matrix_20261009/models/baseline/seed20261009",
+  "best_f1": 0.9195023960501476,
+  "node_dim": 133,
+  "edge_dim": 10,
+  "split_mode": "block",
+  "n_train": 152,
+  "n_val": 38,
+  "checkpoints": {
+    "best.pt": {
+      "bytes": 1174238,
+      "sha256": "10ff59417abff0ca8cc03bbc0ca07306b8500057812f96ef63826e3edb561c79"
+    },
+    "last.pt": {
+      "bytes": 1185790,
+      "sha256": "3aac06f60cb30754d1fcd54b12ce091dea8d736cbcc41dc23cca9f17a12e51fa"
+    }
+  }
+}

@@ -1,0 +1,260 @@
+[load] 195 帧；检测=nnunet_pred；外观=encoder_npz (0.4s)
+[motion] 运动先验初始化完成 (19.7s)
+[couplings] 194 对相邻帧耦合 (16.0s)
+[multiscale] 多尺度=True；桥接耦合=193 (52.1s)
+[decision] 5517 条轨迹 (3.1s)
+[tracklet] 二层 OT=True；最终 5234 条轨迹 (1.8s)
+{
+  "counts": {
+    "true_detection_pairs": 23006,
+    "within_physical_gate": 22995,
+    "after_candidates": 22995,
+    "all_candidate_pairs": 218137,
+    "division_pairs": 685,
+    "division_candidates": 681,
+    "candidate_true_recall": 0.9995218638616014,
+    "division_pair_recall": 0.9941605839416059
+  },
+  "distributions": {
+    "true_gamma": {
+      "n": 23006,
+      "min": 0.0,
+      "max": 0.7837089519072378,
+      "p0.1": 3.4001383785074326e-05,
+      "p1": 0.004048064721092588,
+      "p5": 0.05798518630568552,
+      "p50": 0.47999910400735146,
+      "p95": 0.6857682551151247,
+      "p99": 0.7291047282420874,
+      "p99.9": 0.7589654891582572
+    },
+    "true_cost": {
+      "n": 22995,
+      "min": 0.0032386124647614846,
+      "max": 102.3846475786512,
+      "p0.1": 0.04167733613254662,
+      "p1": 0.11070935025790184,
+      "p5": 0.23367495793998966,
+      "p50": 1.2967029139134014,
+      "p95": 13.94583879647661,
+      "p99": 30.73145954091792,
+      "p99.9": 57.72828135403646
+    },
+    "true_displacement_um": {
+      "n": 23006,
+      "min": 0.015784099506951605,
+      "max": 8.429850632287375,
+      "p0.1": 0.06407070728307683,
+      "p1": 0.1258453185802361,
+      "p5": 0.21759729325078286,
+      "p50": 0.6503050295147706,
+      "p95": 2.3977743896308765,
+      "p99": 3.6556603667344674,
+      "p99.9": 5.397865830396348
+    },
+    "live_out_mass": {
+      "n": 22023,
+      "min": 4.895096620383406e-05,
+      "max": 1.771192270771756,
+      "p0.1": 0.005072515323290089,
+      "p1": 0.04082251358678885,
+      "p5": 0.10277107601926902,
+      "p50": 0.5283707360728729,
+      "p95": 0.7808775511136282,
+      "p99": 1.0549959511250184,
+      "p99.9": 1.2790946656265951
+    },
+    "no_successor_out_mass": {
+      "n": 78,
+      "min": 4.510109696672413e-09,
+      "max": 1.800411114936188,
+      "p0.1": 9.83480169174077e-06,
+      "p1": 9.830742593013766e-05,
+      "p5": 0.0030189699936582315,
+      "p50": 0.8009485331988733,
+      "p95": 1.2891345717601437,
+      "p99": 1.5901010414336656,
+      "p99.9": 1.7793801075859363
+    },
+    "live_in_mass": {
+      "n": 22333,
+      "min": 6.04180158726613e-08,
+      "max": 1.8425246835155453,
+      "p0.1": 0.0012581945292798088,
+      "p1": 0.02579907763872847,
+      "p5": 0.09347856526486997,
+      "p50": 0.524472992037268,
+      "p95": 0.7733339729616061,
+      "p99": 1.050399907866803,
+      "p99.9": 1.3141479311712543
+    },
+    "no_predecessor_in_mass": {
+      "n": 3153,
+      "min": 0.0,
+      "max": 1.8704054110168158,
+      "p0.1": 0.0,
+      "p1": 0.002449097039108642,
+      "p5": 0.027201454538637322,
+      "p50": 0.3542572370856298,
+      "p95": 0.6929316120307683,
+      "p99": 0.9818826357885052,
+      "p99.9": 1.2587524480268422
+    }
+  },
+  "suggestions": {
+    "theta_gamma": 3.4001383785074326e-05,
+    "theta_c": 57.72828135403646,
+    "eta_death": 0.04082251358678885,
+    "eta_birth": 0.02579907763872847,
+    "r_max_required_p999_um": 5.397865830396348
+  },
+  "after_calibration": {
+    "true_detection_pairs": 23006,
+    "within_physical_gate": 22995,
+    "after_candidates": 22960,
+    "all_candidate_pairs": 90249,
+    "division_pairs": 685,
+    "division_candidates": 667,
+    "candidate_true_recall": 0.9980005216030601,
+    "division_pair_recall": 0.9737226277372263
+  },
+  "protocol": "真实边 p0.1 传输质量、p99.9 完整特征代价、生死 p1；部署值需双序列官方验证",
+  "physical_volume_um3": {
+    "n": 25491,
+    "min": 2.430000193119053,
+    "max": 446.2857354676015,
+    "p0.1": 2.7783002207994505,
+    "p1": 4.7943903810238915,
+    "p5": 10.82565086034538,
+    "p50": 40.086903185820645,
+    "p95": 107.98110858156699,
+    "p99": 164.55475307763564,
+    "p99.9": 290.1608150599089
+  },
+  "cost_C": {
+    "n": 219461,
+    "min": 0.0032386124647614846,
+    "max": 134.0013781012913,
+    "p0.1": 0.10715224795319862,
+    "p1": 0.3314245586582008,
+    "p5": 1.1443013919278677,
+    "p50": 49.813353914245624,
+    "p95": 80.45356872510438,
+    "p99": 87.19790511848831,
+    "p99.9": 100.08465024307033
+  },
+  "source_sha256": "9fd49114e96a50b72008a2cd7b19ea2020beddeee489c97233423602c171a603",
+  "input_contract": {
+    "signature": "beac526b0746105ed750a56adac2562defb178befd00f4a08f3ceb4c120590fc",
+    "definition": {
+      "measure": {
+        "mass_mode": "volume",
+        "knn_k": 6,
+        "sigma_x": null,
+        "sigma_f": null,
+        "spacing_zyx": [
+          1.0,
+          0.09,
+          0.09
+        ],
+        "structure_mode": "full"
+      },
+      "coupling": {
+        "enabled": true,
+        "alpha": 1.0,
+        "alpha_pred": 0.0,
+        "beta": 1.0,
+        "sigma_s": null,
+        "r_max": 6.4,
+        "eta": 0.3,
+        "eps_rel": 1.0,
+        "eps": null,
+        "tau_a": 1.0,
+        "tau_b": 1.0,
+        "sinkhorn_iters": 1000,
+        "fgw_outer": 10
+      },
+      "motion": {
+        "enabled": true,
+        "alpha_pred": 1.0
+      },
+      "multiscale": {
+        "enabled": true,
+        "ks": [
+          2,
+          3,
+          5
+        ],
+        "lambda_temp": {
+          "2": 0.1,
+          "3": 0.05,
+          "5": 0.02
+        },
+        "n_rounds": 2,
+        "norm": "raw",
+        "line_search": true,
+        "jump_r_max_scale": 1.0
+      },
+      "graph": {
+        "theta_gamma_frac": null,
+        "theta_gamma": 1.1077402637741964e-16,
+        "theta_c": 725.1141667060132,
+        "cand_topk": 0,
+        "ctx_window": 2,
+        "bridge": true,
+        "bridge_gap": 2,
+        "bridge_scope": "missing_only",
+        "intra_knn": 4,
+        "intra_enabled": true,
+        "context_enabled": true,
+        "use_ot_candidates": true,
+        "use_ot_features": true,
+        "use_intra_similarity": true
+      },
+      "node": {
+        "f_source": "encoder_npz"
+      },
+      "motion_initialization": {
+        "theta_gamma_frac": null,
+        "theta_gamma": 1.1077402637741964e-16,
+        "theta_c": 725.1141667060132,
+        "eta_death": 0.01703500808826654,
+        "eta_birth": 0.01840185258378078,
+        "mass_threshold_mode": "absolute",
+        "birth_death_enabled": true,
+        "death_veto": true,
+        "birth_veto": true,
+        "division_enabled": true,
+        "volume_conservation": true,
+        "div_ratio": 0.05,
+        "vol_tol": 0.5,
+        "max_children": 2,
+        "tau_edge": 0.5,
+        "hole_policy": "fill",
+        "filter_isolated": true,
+        "mark_uncertainty": true
+      },
+      "schema": "ideas-v3",
+      "detection_source": "nnunet_pred",
+      "label_mapping": "ctc_full_marker_majority_v2",
+      "frontend": {
+        "h_frac": 0.1,
+        "min_volume": 300,
+        "gaussian_sigma": 0.0,
+        "watershed": true,
+        "oracle_markers": false,
+        "resplit_k": 1.6,
+        "unseeded_policy": "drop",
+        "foreground_source": "existing_prediction_instances",
+        "resplit_version": "background_zero_v2"
+      },
+      "encoder": {
+        "schema": "encoder_centroid_v1",
+        "model_sha256": "f5388fb1eb4159b26f6976882f2204072378e7c15938a6a68f00aa0d95defdfd",
+        "stage": 2,
+        "feature_dim": 128,
+        "aggregation": "mean_of_overlapping_tile_centroid_samples"
+      }
+    }
+  }
+}

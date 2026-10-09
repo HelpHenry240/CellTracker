@@ -1,0 +1,21 @@
+{
+  "seq": "02",
+  "evaluator": "CTC official EvaluationSoftware",
+  "format_validation": {
+    "ok": true,
+    "errors": [],
+    "n_errors": 0,
+    "n_tracks": 3505,
+    "n_frames": 190,
+    "n_ghost_tracks": 0,
+    "n_tracks_with_holes": 0
+  },
+  "binary_sha256": {
+    "DET": "5da0acc1f5df0e3ee33fb9a9771f727c9bbc1d7a5a052ef313970cce13b07827",
+    "SEG": "4274f153bc39a6e53926129d97cc80e410d315bdc08a7a563ef4aa898e3dda73",
+    "TRA": "35638ba307eaeb5f73bb2541db390b4635549868801f618ceabc68f7254f0040"
+  },
+  "DET": 0.940053,
+  "SEG": 0.690867,
+  "TRA": 0.912521
+}

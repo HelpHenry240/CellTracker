@@ -1,0 +1,39 @@
+experiment_id: P7_ideas_v3_paper_all_k16_baseline_seed20261008_train
+date: '2026-10-09'
+purpose: ideas GNN 独立训练
+params:
+  graphs: /root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_v3_paper_all_k16_matrix_20261009/graphs/baseline
+  out: /root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_v3_paper_all_k16_matrix_20261009/models/baseline/seed20261008
+  config: /root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_v3_paper_all_k16_matrix_20261009/configs/baseline_calibrated.yaml
+  epochs: 60
+  batch_pairs: 8
+  hidden: null
+  layers: null
+  lr: 0.001
+  lambda_ot: null
+  residual: null
+  class_weighted: null
+  seed: 20261008
+  device: cuda
+  val_fraction: 0.2
+  resume: false
+  exp_id: P7_ideas_v3_paper_all_k16_baseline_seed20261008_train
+argv:
+- /root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/train_paper_gnn.py
+- --graphs
+- /root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_v3_paper_all_k16_matrix_20261009/graphs/baseline
+- --out
+- /root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_v3_paper_all_k16_matrix_20261009/models/baseline/seed20261008
+- --config
+- /root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_v3_paper_all_k16_matrix_20261009/configs/baseline_calibrated.yaml
+- --epochs
+- '60'
+- --seed
+- '20261008'
+- --device
+- cuda
+- --exp-id
+- P7_ideas_v3_paper_all_k16_baseline_seed20261008_train
+seed: 20261008
+status: done
+summary: best_f1=0.90793

@@ -1,0 +1,41 @@
+{
+  "P7_ideas_v3_conservative_k0_matrix_20261009": {
+    "adjacent_candidates": 139249,
+    "adjacent_positive": 22359,
+    "division_positive": 658,
+    "bridge_candidates": 0,
+    "bridge_positive": 0,
+    "graphs": 194,
+    "positive_C_percentiles": {
+      "p50": 1.3289347887039185,
+      "p95": 17.83039398193359,
+      "p99": 37.49427268981929,
+      "p99.9": 61.30572438049739,
+      "max": 70.75275421142578
+    }
+  },
+  "P7_ideas_v3_conservative_k16_matrix_20261009": {
+    "adjacent_candidates": 0,
+    "adjacent_positive": 0,
+    "division_positive": 0,
+    "bridge_candidates": 0,
+    "bridge_positive": 0,
+    "graphs": 0,
+    "positive_C_percentiles": null
+  },
+  "P7_ideas_v3_paper_all_k0_matrix_20261009": {
+    "adjacent_candidates": 139249,
+    "adjacent_positive": 22359,
+    "division_positive": 658,
+    "bridge_candidates": 0,
+    "bridge_positive": 0,
+    "graphs": 194,
+    "positive_C_percentiles": {
+      "p50": 1.3289347887039185,
+      "p95": 17.83039398193359,
+      "p99": 37.49427268981929,
+      "p99.9": 61.30572438049739,
+      "max": 70.75275421142578
+    }
+  }
+}

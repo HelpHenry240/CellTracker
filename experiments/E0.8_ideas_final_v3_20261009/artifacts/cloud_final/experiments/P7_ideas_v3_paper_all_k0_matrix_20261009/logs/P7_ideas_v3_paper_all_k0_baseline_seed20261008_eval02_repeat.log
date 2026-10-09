@@ -1,0 +1,9 @@
+[14:44:31] experiment P7_ideas_v3_paper_all_k0_baseline_seed20261008_eval02_repeat start: ideas pipeline 重建链路
+[load] 190 帧；检测=nnunet_pred；外观=encoder_npz (0.4s)
+[motion] 运动先验初始化完成 (3.4s)
+[couplings] 189 对相邻帧耦合 (0.6s)
+[multiscale] 多尺度=True；桥接耦合=188 (49.6s)
+[decision] 2366 条轨迹 (7.6s)
+[tracklet] 二层 OT=True；最终 2042 条轨迹 (1.4s)
+[14:46:40] metrics -> /root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_v3_paper_all_k0_baseline_seed20261008_eval02_repeat/metrics.json
+[14:47:45] experiment P7_ideas_v3_paper_all_k0_baseline_seed20261008_eval02_repeat finished: done

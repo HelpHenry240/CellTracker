@@ -1,0 +1,19 @@
+{
+  "out_dir": "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_v3_conservative_k16_matrix_20261009/models/baseline/seed20261008",
+  "best_f1": 0.9079300453409826,
+  "node_dim": 133,
+  "edge_dim": 10,
+  "split_mode": "block",
+  "n_train": 152,
+  "n_val": 38,
+  "checkpoints": {
+    "best.pt": {
+      "bytes": 1173854,
+      "sha256": "e3567e890747a9c984850be197815045d52b20629b552b455d05c78805e2303e"
+    },
+    "last.pt": {
+      "bytes": 1185662,
+      "sha256": "9b9bfc6354d135ad71d14d08cb656dad2ad205c344f71a70755f9037ba00db63"
+    }
+  }
+}

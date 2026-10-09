@@ -1,0 +1,195 @@
+..........FF................................................s........... [ 50%]
+........................................................................ [100%]
+=================================== FAILURES ===================================
+___________________ test_perfect_detections_reach_all_levels ___________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_perfect_detections_reach_0')
+
+    def test_perfect_detections_reach_all_levels(tmp_path):
+        gt = tmp_path / "gt.h5"
+        pred = tmp_path / "pred.h5"
+        _write_gt(gt)
+        _write_pred(pred, frame2_gt=[3, 4])
+>       r = _run(tmp_path, pred, gt)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_detection_ceiling.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_detection_ceiling.py:42: in _run
+    subprocess.run([sys.executable, str(SCRIPT), "--pred-h5", str(pred),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = True, timeout = None, check = True
+popenargs = (['/root/autodl-tmp/nnunet/venv/bin/python', '/root/autodl-tmp/CellTracker_rebuild_20261008/scripts/detection_ceiling....ct_detections_reach_0/pred.h5', '--gt-h5', '/tmp/pytest-of-root/pytest-0/test_perfect_detections_reach_0/gt.h5', ...],)
+kwargs = {'text': True, 'stdout': -1, 'stderr': -1}
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/root/autodl-tmp/nnunet/venv/bin/python', '/root/autodl-tmp/CellTracker_rebuild_20261008/scripts/detection_ceiling.py', '--pred-h5', '/tmp/pytest-of-root/pytest-0/test_perfect_detections_reach_0/pred.h5', '--gt-h5', '/tmp/pytest-of-root/pytest-0/test_perfect_detections_reach_0/gt.h5', '--out', '/tmp/pytest-of-root/pytest-0/test_perfect_detections_reach_0/ceiling.json']' returned non-zero exit status 2.
+
+/root/miniconda3/lib/python3.12/subprocess.py:571: CalledProcessError
+_______________ test_merged_children_are_not_distinct_instances ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_merged_children_are_not_d0')
+
+    def test_merged_children_are_not_distinct_instances(tmp_path):
+        """两个子目标被同一实例吞掉 → 分裂在检测层不可见。
+    
+        一个实例只能继承一个 GT id（重叠最大者胜），因此这种情况表现为
+        "另一个子标记没有对应实例"：父+两子全被检出的比例直接掉到 0。
+        """
+        gt = tmp_path / "gt.h5"
+        pred = tmp_path / "pred.h5"
+        _write_gt(gt)
+        _write_pred(pred, frame2_gt=[3, 3])      # 实例 1→gt3；gt4 无实例
+>       r = _run(tmp_path, pred, gt)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_detection_ceiling.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_detection_ceiling.py:42: in _run
+    subprocess.run([sys.executable, str(SCRIPT), "--pred-h5", str(pred),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = True, timeout = None, check = True
+popenargs = (['/root/autodl-tmp/nnunet/venv/bin/python', '/root/autodl-tmp/CellTracker_rebuild_20261008/scripts/detection_ceiling....d_children_are_not_d0/pred.h5', '--gt-h5', '/tmp/pytest-of-root/pytest-0/test_merged_children_are_not_d0/gt.h5', ...],)
+kwargs = {'text': True, 'stdout': -1, 'stderr': -1}
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/root/autodl-tmp/nnunet/venv/bin/python', '/root/autodl-tmp/CellTracker_rebuild_20261008/scripts/detection_ceiling.py', '--pred-h5', '/tmp/pytest-of-root/pytest-0/test_merged_children_are_not_d0/pred.h5', '--gt-h5', '/tmp/pytest-of-root/pytest-0/test_merged_children_are_not_d0/gt.h5', '--out', '/tmp/pytest-of-root/pytest-0/test_merged_children_are_not_d0/ceiling.json']' returned non-zero exit status 2.
+
+/root/miniconda3/lib/python3.12/subprocess.py:571: CalledProcessError
+=========================== short test summary info ============================
+FAILED tests/test_detection_ceiling.py::test_perfect_detections_reach_all_levels
+FAILED tests/test_detection_ceiling.py::test_merged_children_are_not_distinct_instances

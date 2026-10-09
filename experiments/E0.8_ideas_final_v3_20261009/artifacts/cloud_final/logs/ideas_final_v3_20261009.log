@@ -1,0 +1,22 @@
+[P7_ideas_v3_paper_all_k0_baseline_calibration01] start
+[P7_ideas_v3_paper_all_k0_baseline_calibration01] complete
+[P7_ideas_v3_paper_all_k0_baseline_build01] start
+[P7_ideas_v3_paper_all_k0_baseline_build01] complete
+{"profile": "paper_all_k0", "lambda_times_true_cost_p999": 0.0713267558306415}
+[P7_ideas_v3_conservative_k0_baseline_calibration01] start
+[P7_ideas_v3_conservative_k0_baseline_calibration01] complete
+[P7_ideas_v3_conservative_k0_baseline_build01] start
+[P7_ideas_v3_conservative_k0_baseline_build01] complete
+{"profile": "conservative_k0", "lambda_times_true_cost_p999": 0.0713267558306415}
+CPU preparation complete; waiting for encoder queue
+Traceback (most recent call last):
+  File "/root/autodl-tmp/CellTracker_rebuild_20261008/run_final_v3_20261009.py", line 47, in <module>
+    os.kill(pid,0)
+ProcessLookupError: [Errno 3] No such process
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/autodl-tmp/CellTracker_rebuild_20261008/run_final_v3_20261009.py", line 49, in <module>
+    raise RuntimeError('前端准备队列中断；检查其日志后恢复')
+RuntimeError: 前端准备队列中断；检查其日志后恢复

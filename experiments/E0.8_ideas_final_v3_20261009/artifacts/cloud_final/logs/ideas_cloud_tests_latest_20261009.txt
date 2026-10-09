@@ -1,0 +1,224 @@
+
+==================================== ERRORS ====================================
+______________________ ERROR collecting tests/test_ctc.py ______________________
+ImportError while importing test module '/root/ideas_compatibility_b83cc57/tests/test_ctc.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../miniconda3/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_ctc.py:9: in <module>
+    from celltracker.data.ctc import (
+E   ModuleNotFoundError: No module named 'celltracker.data'
+_____________ ERROR collecting tests/test_decision_and_ablation.py _____________
+ImportError while importing test module '/root/ideas_compatibility_b83cc57/tests/test_decision_and_ablation.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../miniconda3/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_decision_and_ablation.py:7: in <module>
+    from celltracker.gnn.infer import InferConfig, reconstruct_tracks
+src/celltracker/gnn/__init__.py:2: in <module>
+    from .adapter import make_gnn_runner, graph_cfg_from_pipeline
+src/celltracker/gnn/adapter.py:18: in <module>
+    from ..graph.build import GraphConfig
+src/celltracker/graph/__init__.py:1: in <module>
+    from .build import GraphConfig, build_pair_graph, build_dataset
+src/celltracker/graph/build.py:24: in <module>
+    from ..track.base import Detections
+src/celltracker/track/__init__.py:1: in <module>
+    from .base import (Detections, LinkerConfig, TrackResult, finalize_tracks,
+src/celltracker/track/base.py:9: in <module>
+    from ..data.ctc import Track
+E   ModuleNotFoundError: No module named 'celltracker.data'
+____________________ ERROR collecting tests/test_fusion.py _____________________
+ImportError while importing test module '/root/ideas_compatibility_b83cc57/tests/test_fusion.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../miniconda3/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_fusion.py:7: in <module>
+    from celltracker.gnn.fusion import conditional_division_prob, fused_existence
+src/celltracker/gnn/__init__.py:2: in <module>
+    from .adapter import make_gnn_runner, graph_cfg_from_pipeline
+src/celltracker/gnn/adapter.py:18: in <module>
+    from ..graph.build import GraphConfig
+src/celltracker/graph/__init__.py:1: in <module>
+    from .build import GraphConfig, build_pair_graph, build_dataset
+src/celltracker/graph/build.py:24: in <module>
+    from ..track.base import Detections
+src/celltracker/track/__init__.py:1: in <module>
+    from .base import (Detections, LinkerConfig, TrackResult, finalize_tracks,
+src/celltracker/track/base.py:9: in <module>
+    from ..data.ctc import Track
+E   ModuleNotFoundError: No module named 'celltracker.data'
+__________________ ERROR collecting tests/test_gnn_adapter.py __________________
+ImportError while importing test module '/root/ideas_compatibility_b83cc57/tests/test_gnn_adapter.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../miniconda3/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_gnn_adapter.py:9: in <module>
+    from celltracker.gnn.adapter import graph_cfg_from_pipeline, make_gnn_runner
+src/celltracker/gnn/__init__.py:2: in <module>
+    from .adapter import make_gnn_runner, graph_cfg_from_pipeline
+src/celltracker/gnn/adapter.py:18: in <module>
+    from ..graph.build import GraphConfig
+src/celltracker/graph/__init__.py:1: in <module>
+    from .build import GraphConfig, build_pair_graph, build_dataset
+src/celltracker/graph/build.py:24: in <module>
+    from ..track.base import Detections
+src/celltracker/track/__init__.py:1: in <module>
+    from .base import (Detections, LinkerConfig, TrackResult, finalize_tracks,
+src/celltracker/track/base.py:9: in <module>
+    from ..data.ctc import Track
+E   ModuleNotFoundError: No module named 'celltracker.data'
+___________ ERROR collecting tests/test_local_metrics_regression.py ____________
+ImportError while importing test module '/root/ideas_compatibility_b83cc57/tests/test_local_metrics_regression.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../miniconda3/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_local_metrics_regression.py:4: in <module>
+    from celltracker.eval.local_metrics import StreamingDiagnostics,tracking_diagnostics
+src/celltracker/eval/__init__.py:1: in <module>
+    from .ctc_io import read_result, write_result
+src/celltracker/eval/ctc_io.py:20: in <module>
+    from ..data.ctc import Track
+E   ModuleNotFoundError: No module named 'celltracker.data'
+____________________ ERROR collecting tests/test_motion.py _____________________
+ImportError while importing test module '/root/ideas_compatibility_b83cc57/tests/test_motion.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../miniconda3/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_motion.py:8: in <module>
+    from celltracker.data.ctc import Track
+E   ModuleNotFoundError: No module named 'celltracker.data'
+_______________ ERROR collecting tests/test_multiscale_stage.py ________________
+ImportError while importing test module '/root/ideas_compatibility_b83cc57/tests/test_multiscale_stage.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../miniconda3/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_multiscale_stage.py:7: in <module>
+    from celltracker.pipeline.config import MeasureConfig, MultiscaleConfig, OTConfig
+src/celltracker/pipeline/__init__.py:4: in <module>
+    from .multiscale_stage import MultiscaleResult, refine_couplings
+src/celltracker/pipeline/multiscale_stage.py:30: in <module>
+    from ..track.base import Detections
+src/celltracker/track/__init__.py:1: in <module>
+    from .base import (Detections, LinkerConfig, TrackResult, finalize_tracks,
+src/celltracker/track/base.py:9: in <module>
+    from ..data.ctc import Track
+E   ModuleNotFoundError: No module named 'celltracker.data'
+________________ ERROR collecting tests/test_pipeline_config.py ________________
+ImportError while importing test module '/root/ideas_compatibility_b83cc57/tests/test_pipeline_config.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../miniconda3/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_pipeline_config.py:8: in <module>
+    from celltracker.pipeline import (ABLATIONS, PipelineConfig, apply_ablation,
+src/celltracker/pipeline/__init__.py:4: in <module>
+    from .multiscale_stage import MultiscaleResult, refine_couplings
+src/celltracker/pipeline/multiscale_stage.py:30: in <module>
+    from ..track.base import Detections
+src/celltracker/track/__init__.py:1: in <module>
+    from .base import (Detections, LinkerConfig, TrackResult, finalize_tracks,
+src/celltracker/track/base.py:9: in <module>
+    from ..data.ctc import Track
+E   ModuleNotFoundError: No module named 'celltracker.data'
+________________ ERROR collecting tests/test_pipeline_runner.py ________________
+ImportError while importing test module '/root/ideas_compatibility_b83cc57/tests/test_pipeline_runner.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../miniconda3/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_pipeline_runner.py:8: in <module>
+    from celltracker.pipeline import apply_ablation, run_pipeline
+src/celltracker/pipeline/__init__.py:4: in <module>
+    from .multiscale_stage import MultiscaleResult, refine_couplings
+src/celltracker/pipeline/multiscale_stage.py:30: in <module>
+    from ..track.base import Detections
+src/celltracker/track/__init__.py:1: in <module>
+    from .base import (Detections, LinkerConfig, TrackResult, finalize_tracks,
+src/celltracker/track/base.py:9: in <module>
+    from ..data.ctc import Track
+E   ModuleNotFoundError: No module named 'celltracker.data'
+_____________ ERROR collecting tests/test_tracking_consistency.py ______________
+ImportError while importing test module '/root/ideas_compatibility_b83cc57/tests/test_tracking_consistency.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../miniconda3/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_tracking_consistency.py:7: in <module>
+    from celltracker.data.ctc import Track
+E   ModuleNotFoundError: No module named 'celltracker.data'
+________________ ERROR collecting tests/test_tracklet_stage.py _________________
+ImportError while importing test module '/root/ideas_compatibility_b83cc57/tests/test_tracklet_stage.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../miniconda3/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_tracklet_stage.py:7: in <module>
+    from celltracker.data.ctc import Track
+E   ModuleNotFoundError: No module named 'celltracker.data'
+_____________ ERROR collecting paperpipe/tests/test_papertrack.py ______________
+ImportError while importing test module '/root/ideas_compatibility_b83cc57/paperpipe/tests/test_papertrack.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../miniconda3/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+paperpipe/tests/test_papertrack.py:27: in <module>
+    from celltracker.track.base import Detections                       # noqa: E402  (vendor 副本)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/celltracker/track/__init__.py:1: in <module>
+    from .base import (Detections, LinkerConfig, TrackResult, finalize_tracks,
+src/celltracker/track/base.py:9: in <module>
+    from ..data.ctc import Track
+E   ModuleNotFoundError: No module named 'celltracker.data'
+_________ ERROR collecting paperpipe/tests/test_rebuild_regressions.py _________
+ImportError while importing test module '/root/ideas_compatibility_b83cc57/paperpipe/tests/test_rebuild_regressions.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../miniconda3/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+paperpipe/tests/test_rebuild_regressions.py:14: in <module>
+    from papertrack.graph.build import build_graph,load_encoder_features,_candidates
+paperpipe/src/papertrack/graph/__init__.py:9: in <module>
+    from .build import (EDGE_COLS, EDGE_DIM, NODE_COLS, PairGraph, build_dataset,
+paperpipe/src/papertrack/graph/build.py:16: in <module>
+    from celltracker.track.base import Detections
+src/celltracker/track/__init__.py:1: in <module>
+    from .base import (Detections, LinkerConfig, TrackResult, finalize_tracks,
+src/celltracker/track/base.py:9: in <module>
+    from ..data.ctc import Track
+E   ModuleNotFoundError: No module named 'celltracker.data'
+=========================== short test summary info ============================
+ERROR tests/test_ctc.py
+ERROR tests/test_decision_and_ablation.py
+ERROR tests/test_fusion.py
+ERROR tests/test_gnn_adapter.py
+ERROR tests/test_local_metrics_regression.py
+ERROR tests/test_motion.py
+ERROR tests/test_multiscale_stage.py
+ERROR tests/test_pipeline_config.py
+ERROR tests/test_pipeline_runner.py
+ERROR tests/test_tracking_consistency.py
+ERROR tests/test_tracklet_stage.py
+ERROR paperpipe/tests/test_papertrack.py
+ERROR paperpipe/tests/test_rebuild_regressions.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 13 errors during collection !!!!!!!!!!!!!!!!!!!
