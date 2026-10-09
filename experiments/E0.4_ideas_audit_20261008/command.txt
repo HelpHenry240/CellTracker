@@ -1,5 +1,0 @@
-# Run from /home/henry/ot_idea/CellTracker; probes write only temporary fixtures and chosen output.
-# Choose a fresh --out path; do not overwrite saved experiment evidence.
-PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /home/henry/miniconda3/envs/celltracker/bin/python experiments/E0.4_ideas_audit_20261008/artifacts/probe_pipeline.py --repo /home/henry/ot_idea/CellTracker --out /tmp/ideas_audit_recheck.json
-PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /home/henry/miniconda3/envs/celltracker/bin/python -m pytest -q -p no:cacheprovider tests
-PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /home/henry/miniconda3/envs/celltracker/bin/python -m pytest -q -p no:cacheprovider paperpipe/tests

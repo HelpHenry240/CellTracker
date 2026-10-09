@@ -1,5 +1,0 @@
-----------Splitting Operations (Penalty=5)----------
-----------False Negative Vertices (Penalty=10)----------
-----------False Positive Vertices (Penalty=1)----------
-========================================================
-DET measure: 1.000000

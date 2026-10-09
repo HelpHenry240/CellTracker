@@ -1,6 +1,0 @@
-{
-  "path": "experiments/C5.0c_topk5_train/artifacts/model/best.pt",
-  "md5": "6d9e31c70124887e931b7d865b2464ba",
-  "size_bytes": 423053,
-  "belongs_to_experiment": "C5.0c_topk5_train"
-}

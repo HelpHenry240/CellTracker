@@ -1,0 +1,7 @@
+Archive verified: 00_source_and_documents.tar.gz
+Archive verified: 01_foundations.tar.gz
+Archive verified: 02_historical_tracking.tar.gz
+Archive verified: 03_historical_frontend.tar.gz
+Archive verified: 04_rebuild_audit_and_failed_runs.tar.gz
+Archive verified: 05_formal_evidence_complete.tar.gz
+Passed: 6 archives, 64 unchanged algorithm files, 12 weights

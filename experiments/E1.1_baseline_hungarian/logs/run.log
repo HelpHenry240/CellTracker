@@ -1,0 +1,6 @@
+[22:59:34] experiment E1.1_baseline_hungarian start: 经典基线 hungarian
+[22:59:34] frames=92 mean objects/frame=9.8 cfg={'method': 'hungarian', 'max_dist': 30.0, 'use_velocity': False, 'velocity_weight': 1.0, 'size_weight': 0.0, 'size_sigma': 1.0, 'detect_division': True, 'division_max_dist': 45.0}
+[22:59:34] predicted tracks=27
+[22:59:36] metrics -> /home/henry/ot_idea/CellTracker/experiments/E1.1_baseline_hungarian/metrics.json
+[22:59:36] SEG=0.0000 matched=905 FN=0 FP=0 IDsw=0 frag=0 detR=1.000 detP=1.000
+[22:59:43] experiment E1.1_baseline_hungarian finished: done

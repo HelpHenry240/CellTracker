@@ -5,7 +5,8 @@
 set -euo pipefail
 
 STAGE="${1:-all}"
-BASE=/root/autodl-tmp/nnunet
+BASE="${BASE:-/root/autodl-tmp/nnunet}"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 VENV="$BASE/venv"
 DATASET=501
 DS_NAME="Dataset${DATASET}_CellTrackerCE"
@@ -27,7 +28,7 @@ if [[ "$STAGE" == "all" || "$STAGE" == "data" ]]; then
   fi
   if [[ ! -f "$nnUNet_raw/$DS_NAME/dataset.json" ]]; then
     echo "转换为 nnU-Net 格式 ..."
-    "$VENV/bin/python" "$BASE/build_dataset.py" --src "$SRC" \
+    "$VENV/bin/python" "$REPO_ROOT/scripts/nnunet/build_dataset.py" --src "$SRC" \
         --out "$nnUNet_raw/$DS_NAME"
   fi
 fi

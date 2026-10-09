@@ -1,3 +1,0 @@
-训练检测与推理来源必须同分布，权重保存输入契约。
-训练图：/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/graphs/baseline；模型：/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/models/baseline/seed20261009；种子：20261009。
-验证 F1 仅用于选择检查点，方法性能需双序列官方指标。

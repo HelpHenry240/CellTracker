@@ -74,3 +74,5 @@ ratios = [ (vol[by[c1][0]].get(c1,0)+vol[by[c1][0]].get(c2,0)) / vol[by[c1][0]-1
 print('mean ratio', np.mean(ratios), 'n =', len(ratios))
 "
 ```
+
+当前适用范围：本决定只适用于 GT marker 检测档；nnU-Net 真实实例与掩码 Oracle 使用体积质量，不能把 marker 决定推广到真实细胞区域。

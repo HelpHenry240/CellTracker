@@ -1,0 +1,36 @@
+{
+  "moves": {
+    "paperpipe/src/papertrack": "src/papertrack",
+    "paperpipe/scripts/run_paper_pipeline.py": "scripts/run_pipeline.py",
+    "paperpipe/scripts/run_ablation_matrix.py": "scripts/run_ablation_matrix.py",
+    "paperpipe/scripts/train_paper_gnn.py": "scripts/train_gnn.py",
+    "paperpipe/scripts/calibrate_params.py": "scripts/calibrate_params.py",
+    "paperpipe/scripts/cloud_nnunet_infer.sh": "scripts/nnunet/cloud_infer.sh",
+    "paperpipe/configs/paper_default.yaml": "configs/paper_default.yaml",
+    "paperpipe/configs/ce_calibrated_20261009.yaml": "configs/ce_calibrated_20261009.yaml",
+    "paperpipe/tests/test_papertrack.py": "tests/test_papertrack.py",
+    "paperpipe/tests/test_rebuild_regressions.py": "tests/test_rebuild_regressions.py",
+    "scripts/detection_ceiling.py": "scripts/diagnostics/detection_ceiling.py"
+  },
+  "obsolete_scripts_removed": [
+    "scripts/ablate_ot_prior.py",
+    "scripts/check_candidate_recall.py",
+    "scripts/eval_pipeline.py",
+    "scripts/make_comparison.py",
+    "scripts/pipeline_funnel.py",
+    "scripts/plot_c1c2_evidence.py",
+    "scripts/plot_official_tiers.py",
+    "scripts/plot_resplit_sweep.py",
+    "scripts/run_gnn.py",
+    "scripts/run_ot.py",
+    "scripts/run_phase12_suite.sh",
+    "scripts/run_sweep.py",
+    "scripts/sweep_gnn_thresholds.py",
+    "scripts/run_ideas_pipeline.py",
+    "paperpipe/scripts/check_candidate_coverage.py",
+    "paperpipe/scripts/make_package.sh"
+  ],
+  "duplicate_source_removed": "paperpipe/src/vendor/celltracker",
+  "restore_archive": "experiments/archives/00_source_and_documents.tar.gz",
+  "reason_candidate_coverage": "独立帧对、相对阈值旧扫描不代表当前完整上游的绝对阈值部署图；使用 calibrate_params.py 与正式图审计。"
+}

@@ -1,0 +1,73 @@
+{
+  "status": "complete",
+  "task": "repository_consolidation",
+  "source_commit_before": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+  "experiment_directories_before": 165,
+  "experiment_directories_after": 14,
+  "inventory_before": {
+    "src": {
+      "files": 85,
+      "bytes": 567308
+    },
+    "paperpipe": {
+      "files": 126,
+      "bytes": 1763691
+    },
+    "scripts": {
+      "files": 44,
+      "bytes": 277427
+    },
+    "docs": {
+      "files": 20,
+      "bytes": 368782
+    },
+    "experiments": {
+      "files": 13917,
+      "bytes": 902401816
+    }
+  },
+  "inventory_after_excluding_archives": {
+    "src": {
+      "files": 71,
+      "bytes": 386717
+    },
+    "scripts": {
+      "files": 25,
+      "bytes": 116815
+    },
+    "docs": {
+      "files": 17,
+      "bytes": 139548
+    },
+    "experiments": {
+      "files": 1105,
+      "bytes": 32663546
+    }
+  },
+  "archive_count": 6,
+  "archive_bytes": 176181770,
+  "archived_files": 14227,
+  "retained_byte_identical_files": 1070,
+  "removed_obsolete_scripts": 16,
+  "algorithm_files_byte_identical": 64,
+  "formal_inference_weights": 12,
+  "tests": {
+    "local": {
+      "passed": 172,
+      "skipped": 0
+    },
+    "clean_git_archive": {
+      "passed": 169,
+      "skipped": 3,
+      "skip_reason": "Git-index checks do not run inside a source archive"
+    }
+  },
+  "archive_integrity": "passed",
+  "source_restore": "passed",
+  "document_links": "passed",
+  "retained_files_in_git": "passed",
+  "canonical_cli": "passed",
+  "unet_training": false,
+  "cloud_jobs": false,
+  "new_official_evaluations": 0
+}

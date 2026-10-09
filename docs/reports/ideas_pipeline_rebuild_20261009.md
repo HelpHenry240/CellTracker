@@ -1,8 +1,8 @@
 # ideas pipeline 重建与端到端验收
 
 本轮从 `ideas.pdf` 原文重新核对主链路，修复共用求解器和数据接口，再在备用 3
-运行完整双序列。主入口为 `scripts/run_ideas_pipeline.py`，方法实现为 `paperpipe/`；
-外层旧追踪入口保留为历史基线。公式逐项对应见 `paperpipe/FORMULA_MAP.md`。
+运行完整双序列。主入口为 `scripts/run_pipeline.py`，方法实现为 `src/papertrack/`；
+公共组件集中于 `src/celltracker/`，历史对照 API 保留供回归。公式逐项对应见 `docs/architecture/formula_map.md`。
 
 ## 数据流和实现
 
@@ -155,11 +155,11 @@ CPU 标定/图、取消原因和恢复日志保留；正式证据均来自独立
 冻结 encoder 的模型 SHA256 为
 `f5388fb1eb4159b26f6976882f2204072378e7c15938a6a68f00aa0d95defdfd`。
 
-推荐配置为 `paperpipe/configs/ce_calibrated_20261009.yaml`，对应再切分k=1.6、
+推荐配置为 `configs/ce_calibrated_20261009.yaml`，对应再切分k=1.6、
 保留孤立实例、λ_OT=0.001，其余 FGW/运动/多尺度/tracklet 保留。它与两种子的
 GNN契约一致。固定seed20261008用于复现，不依据seq02分数重新挑种子。八份约434KB
 推理权重位于本轮实验 `artifacts/models/`，各有MD5/SHA256，并逐张量等同原完整断点；
-训练恢复使用云端原始断点，不能用小型推理权重恢复优化器。运行命令见 `paperpipe/README.md`。
+训练恢复使用云端原始断点，不能用小型推理权重恢复优化器。运行命令见 `docs/guides/running.md`。
 
 推荐档seed20261008在seq01/seq02由tracklet产生2/6个一帧空洞，CTC导出补画后
 两序列均无空洞或幽灵轨迹。这证明格式和补画接口在真实全量运行中生效，
@@ -169,3 +169,5 @@ GNN契约一致。固定seed20261008用于复现，不依据seq02分数重新挑
 不能用本轮主表声称实际遮挡恢复有效。合成分割退化、关键扩展的修复版完整
 消融终表、更多数据集/种子，以及实例感知分割目标属于后续论文级验证。
 距离/边界训练目标需要重新训练 nnU-Net，启动前仍须用户确认。
+
+整理说明（2026-10-09）：入口与目录链接已更新；实验数值和当时的测试计数保持原样。完整原件见 [归档目录](../../experiments/archives/README.md)，保留文件的逐项校验见 [清单](../../experiments/retention_manifest.json)。

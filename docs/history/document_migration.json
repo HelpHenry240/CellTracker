@@ -1,0 +1,102 @@
+[
+  {
+    "original": "docs/00_实验计划_v1.md",
+    "current": null,
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/decisions/0001-mass-uniform-vs-size.md",
+    "current": "docs/decisions/0001-mass-uniform-vs-size.md",
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/decisions/0003-seq02-eval-protocol.md",
+    "current": null,
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/decisions/0004-ideas-pipeline-rebuild.md",
+    "current": "docs/decisions/0002-ideas-pipeline-rebuild.md",
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/decisions/0004-undersegmentation-mechanism-gap.md",
+    "current": null,
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/pipeline_code_map.md",
+    "current": null,
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/reports/code_audit_vs_paper.md",
+    "current": null,
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/reports/dataset_survey_nuclei_seg_tracking.md",
+    "current": "docs/references/dataset_survey.md",
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/reports/day1_summary.md",
+    "current": null,
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/reports/day2_summary.md",
+    "current": null,
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/reports/day3_summary.md",
+    "current": null,
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/reports/gt_oracle_encoder_20261009.md",
+    "current": "docs/reports/gt_oracle_encoder_20261009.md",
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/reports/ideas_pipeline_audit_20261008.md",
+    "current": null,
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/reports/ideas_pipeline_rebuild_20261009.md",
+    "current": "docs/reports/ideas_pipeline_rebuild_20261009.md",
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/reports/nnunet_oracle_encoder_20261009.md",
+    "current": "docs/reports/nnunet_oracle_encoder_20261009.md",
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/reports/phase1-2_CE_report.md",
+    "current": null,
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/reports/project_experiment_record.md",
+    "current": null,
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/reports/sota_3d_cell_tracking_survey_20261009.md",
+    "current": "docs/references/tracking_survey_20261009.md",
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/测试流程_本地与CTC官方.md",
+    "current": null,
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  },
+  {
+    "original": "docs/论文对齐核对.md",
+    "current": null,
+    "original_archive": "experiments/archives/00_source_and_documents.tar.gz"
+  }
+]

@@ -1,9 +1,0 @@
-[13:13:55] experiment P7_ideas_ablate_fgw_seed20261009_eval01 start: ideas pipeline 重建链路
-[load] 195 帧；检测=nnunet_pred；外观=encoder_npz (0.4s)
-[motion] 运动先验初始化完成 (3.1s)
-[couplings] 194 对相邻帧耦合 (0.5s)
-[multiscale] 多尺度=True；桥接耦合=193 (27.9s)
-[decision] 1860 条轨迹 (7.0s)
-[tracklet] 二层 OT=True；最终 1025 条轨迹 (2.2s)
-[13:15:53] metrics -> /root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_fgw_seed20261009_eval01/metrics.json
-[13:17:10] experiment P7_ideas_ablate_fgw_seed20261009_eval01 finished: done

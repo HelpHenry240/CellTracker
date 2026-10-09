@@ -1,9 +1,0 @@
-[14:14:12] experiment P7_ideas_ablate_ot_loss_seed20261008_eval02 start: ideas pipeline 重建链路
-[load] 190 帧；检测=nnunet_pred；外观=encoder_npz (0.4s)
-[motion] 运动先验初始化完成 (17.2s)
-[couplings] 189 对相邻帧耦合 (14.1s)
-[multiscale] 多尺度=True；桥接耦合=188 (33.3s)
-[decision] 2502 条轨迹 (7.8s)
-[tracklet] 二层 OT=True；最终 2178 条轨迹 (1.9s)
-[14:16:37] metrics -> /root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_ot_loss_seed20261008_eval02/metrics.json
-[14:17:45] experiment P7_ideas_ablate_ot_loss_seed20261008_eval02 finished: done

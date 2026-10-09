@@ -53,3 +53,7 @@ scratch/
 /tmp/
 .cache/
 *.tmp
+
+# 完整历史压缩包保留在本地；目录与逐包 SHA256 清单入库。
+/experiments/archives/*.tar.gz
+/experiments/archives/*.part

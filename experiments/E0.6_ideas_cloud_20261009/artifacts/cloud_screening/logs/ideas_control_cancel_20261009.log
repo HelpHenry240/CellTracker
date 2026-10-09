@@ -1,2 +1,0 @@
-{"pid_terminated": 35983, "reason": "ideas-v2 background-id motion defect confirmed; superseded by independently retrained ideas-v3 profiles", "completed_CPU_outputs_preserved": true, "official_v2_result_conclusion": "screening only", "replacement": "P7_ideas_v3_*_matrix_20261009", "GPU_release_gate": "wait for ideas_next_20261009.complete; marker signals queue termination, not completed experiment jobs"}
-Superseded queue ended; GPU gate released to frozen encoder extraction.

@@ -95,7 +95,7 @@ NN语义预测与encoder使用既有模型，其训练见过150/190个seq02帧�
 两份推理小权重与原断点逐张量一致，保留MD5/SHA256及源码/输入契约。
 
 - [正式指标](../../experiments/E1.0_nnunet_oracle_encoder_20261009/metrics_final.json)
-- [正式证据](../../experiments/E1.0_nnunet_oracle_encoder_20261009/artifacts/evidence_formal/archive_manifest.json)
+- [正式证据](../../experiments/E1.0_nnunet_oracle_encoder_20261009/../archives/catalog.json)
 - [权重指纹](../../experiments/E1.0_nnunet_oracle_encoder_20261009/artifacts/models/manifest.json)
 
 ![官方指标](../../experiments/E1.0_nnunet_oracle_encoder_20261009/figures/official_metrics.png)
@@ -105,3 +105,5 @@ NN语义预测与encoder使用既有模型，其训练见过150/190个seq02帧�
 ![实例身份覆盖](../../experiments/E1.0_nnunet_oracle_encoder_20261009/figures/oracle_identity_coverage.png)
 
 显式后续待办：其他外部标签转换继续核验身份守恒；候选分裂/移动分母及桥接正边继续分列报告。
+
+整理说明（2026-10-09）：入口与目录链接已更新；实验数值和当时的测试计数保持原样。完整原件见 [归档目录](../../experiments/archives/README.md)，保留文件的逐项校验见 [清单](../../experiments/retention_manifest.json)。

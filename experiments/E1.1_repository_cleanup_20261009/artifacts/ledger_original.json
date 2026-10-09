@@ -1,0 +1,1322 @@
+[
+  {
+    "original_path": "experiments/E1.1_baseline_hungarian/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "59a42781aeed17d7c8f529b31b23561b7c0a2bf8db0a873495898feaca6ad0d9",
+    "archive": "01_foundations.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.998555
+    }
+  },
+  {
+    "original_path": "experiments/E1.2_baseline_greedy/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "461cb23cf4e6ca01f8b568d679b3b650fffa3818422b1aa2d8e9e69aea6dd96d",
+    "archive": "01_foundations.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.998555
+    }
+  },
+  {
+    "original_path": "experiments/E1.2_baseline_hungarian_vel/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "8ee3fed54d445c81cfb4aaa27a6e400709778f3a8fa8efc73602477e68252d57",
+    "archive": "01_foundations.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.998555
+    }
+  },
+  {
+    "original_path": "experiments/E1.3_CE01_hungarian/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "74c9f875876a8b634ff26228f391ef1ce58a0ace2129d3108ce84d490989a0bc",
+    "archive": "01_foundations.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.995594
+    }
+  },
+  {
+    "original_path": "experiments/E1.4_CE02_hungarian/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "529e8a5d9c00d6f3aa908f9571549fe4d8735e7d9a6f0e503cdf3f1524031630",
+    "archive": "01_foundations.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.995052
+    }
+  },
+  {
+    "original_path": "experiments/B1_eval_ce01_gnn/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "a1bb2c99dfa792fbd14e973936797280bdc803ac396409c27f59fd4e27c0c7ee",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.996513
+    }
+  },
+  {
+    "original_path": "experiments/B2_gnn_tracklet/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "430cd6619f280ad8f364ba1807db480c7790a23c73e3b3e658f45792829c990d",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.996622
+    }
+  },
+  {
+    "original_path": "experiments/B2_ot_cand_eval/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "217519c125fe8b1a682a6ebf32da1f277f407419219e541d87927868fd3c20e8",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.995358
+    }
+  },
+  {
+    "original_path": "experiments/B2_otrule_best/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "e8a282184c674e1643e66aaf466e47dbddc0aa5c341c9bd688dec85f24d27402",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.993135
+    }
+  },
+  {
+    "original_path": "experiments/B2_otrule_ce01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "5337b925a699fde8503cc1baa9e9b13cc909b9a1105f30d6bb19c2b7cf2d4249",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.979362
+    }
+  },
+  {
+    "original_path": "experiments/B2b_cand_topk_eval/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "5415e3fa52772a8b8bdd20244258a5286b15bccfcbddb99cc6ce6023971e680f",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.995406
+    }
+  },
+  {
+    "original_path": "experiments/B2b_fgw_eval/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "6470ee4da1c6f8016718e63ab45bd1f946c119b2cd8f8eb5ab6dd979a1e79292",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.995815
+    }
+  },
+  {
+    "original_path": "experiments/B2c_fgw_eval/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "ba4b8166b87fc46c449e6d0e3c9b33bdd59a47bd10d074f771071f6b9a0b36df",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.995574
+    }
+  },
+  {
+    "original_path": "experiments/B2c_motion_eval/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "ddcc26647fe0f09a31fa0dcef314fb3ba53f86ec4cee23bbbdccffb81b9266dd",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.995587
+    }
+  },
+  {
+    "original_path": "experiments/B2c_unbalanced_eval/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "c1ba0ccb674744f3dcb71d08b26b7887ddbc0e0321d93f3090508301c4618c5b",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.994229
+    }
+  },
+  {
+    "original_path": "experiments/B2d_fgw_mild_eval/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "946b7559ebf524c9ccb9c8f9b37ae0bee1326da84e53f46c1ee20398c68bfa9b",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.995715
+    }
+  },
+  {
+    "original_path": "experiments/B2d_unbalanced_mid_eval/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "2e5a15473eee1b9b9773ee761e8f802e342fd431434583828c42bae666ce1efa",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.994843
+    }
+  },
+  {
+    "original_path": "experiments/B2e_motion_mild_eval/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "edea64e103fce9a6702264370a16af67898a49afd1490014564cfd09a45fa68e",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.995066
+    }
+  },
+  {
+    "original_path": "experiments/B2e_unbalanced_weak_eval/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "3dde99dc43d39f74c044263ec048991f2275c7e4a7b6e1f46dd0ebfd024414ce",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.99513
+    }
+  },
+  {
+    "original_path": "experiments/B3_seq02_eval/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "fde21e80cac096208f55e3ac1867f4e016bdcc17bed28fe520df17904b67beac",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.996369
+    }
+  },
+  {
+    "original_path": "experiments/E2.1_CE01_ot_pure/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "451ba9d39afed7aa56f9c9a8daef2dfc91f578e37e02b3be5c9f72ca93322140",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.994361
+    }
+  },
+  {
+    "original_path": "experiments/E2.1_ot_pure/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "853e54fa83c07e3ce46a26671f0d0badcd08afe6fbe3d7678178fb9640310c74",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.998555
+    }
+  },
+  {
+    "original_path": "experiments/E2.3a_fgw_eta0.3/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "26c1c4eec372bfc37c9e1de89944cc9c9535349c3d338da5c26ed7105a6829ef",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.998555
+    }
+  },
+  {
+    "original_path": "experiments/E2.5_CE01_ot_div0.3/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "e2e538a716caeac7eeb5d63a3e64923116560d90377285e1560c167267c25f9d",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.994604
+    }
+  },
+  {
+    "original_path": "experiments/E2.5c_CE01_ot_eps0.3/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "29bda477c66afd3125c725bcd4b42e44779cc141f6a835a8496d8dde17b0e8ad",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.994617
+    }
+  },
+  {
+    "original_path": "experiments/E4.2d_gnn_ce01_official/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "425f351f4d6c22fbaac78270a829e0e6683ef1fc921401098cdba2fb5b899d3c",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.996089
+    }
+  },
+  {
+    "original_path": "experiments/E4.3b_gnn_tm0.5_td0.9/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "63d34c17b8ce38bc727fc0abd073fa4caca6109974e6069d4d9e5704b6c392e3",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.995576
+    }
+  },
+  {
+    "original_path": "experiments/E4.3c_gnn_tm0.3_td0.9/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "a57c74933d19ed95850e387fa80bbb6abb5d3153dbdecb3957ff0ecfa0fe1dbd",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.996021
+    }
+  },
+  {
+    "original_path": "experiments/E4.4b_gnn_ctx1_official/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "413e1c8369c592fced0945819c11ef4eac671f90c8fc3c35e58444fca3ff5a80",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.996023
+    }
+  },
+  {
+    "original_path": "experiments/E4.5_gnn_crossseq_ce02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "10e9f265c0a734e55c2b5f7326eddaa433d8b7375beb7d8a1b82b10daab7627e",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.992958
+    }
+  },
+  {
+    "original_path": "experiments/E4.6b_gnn_ce02_official/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "b6e9b22e755d16e42c463f7a12d32e5409f82ac305bcb9ede464dcb38b7707b3",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.992653
+    }
+  },
+  {
+    "original_path": "experiments/P1b_e2e_otrule_ce01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "91d97dcc569ae27d31d90c19ca05383079c377c6edccddcef1cc67b95f01dacb",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.936732,
+      "SEG": 0.673196,
+      "TRA": 0.871725
+    }
+  },
+  {
+    "original_path": "experiments/P2b_e2e_gnn_ce01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "8509d97472fcd5403a5de858009728869e7f8a04e546e756644138a78ef14311",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.938921,
+      "SEG": 0.673196,
+      "TRA": 0.897222
+    }
+  },
+  {
+    "original_path": "experiments/P3_tau020_ce01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "0cc888075ff39544d5e496d7cd43b482869e228f768218c97d637b5e7b0be14b",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.938837,
+      "SEG": 0.673196,
+      "TRA": 0.898192
+    }
+  },
+  {
+    "original_path": "experiments/P3_tau035_ce01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "20f7912cd734e436d27b601f9adde19849e43cbaa5a4d26777f46ad7b355db3d",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.938833,
+      "SEG": 0.673196,
+      "TRA": 0.898249
+    }
+  },
+  {
+    "original_path": "experiments/P4_final_gnn_ce01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "94114c388a1234f8b8d5da7ea64604bbb9f21664c48911a7fb23db101f3ace9f",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.938833,
+      "SEG": 0.673196,
+      "TRA": 0.898249
+    }
+  },
+  {
+    "original_path": "experiments/P4_final_gnn_ce02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "d57c9d93c75e83bda8b633b1ff9f60719a511527577a56e0251eb46cd333441e",
+    "archive": "02_historical_tracking.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.938995,
+      "SEG": 0.690867,
+      "TRA": 0.899119
+    }
+  },
+  {
+    "original_path": "experiments/C4A_official_gnn_topk3/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "b27099818e4e7b2413525a20cd2d52e3e41131914ecfae12e24a3e4496973ebc",
+    "archive": "03_historical_frontend.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.939833,
+      "SEG": 0.673196,
+      "TRA": 0.905706
+    }
+  },
+  {
+    "original_path": "experiments/C4B_official_gnn_topk5/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "8715db6befc860a625e5ce0511854307b0e19ba427d1edd75d634f540f1d57d9",
+    "archive": "03_historical_frontend.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.939833,
+      "SEG": 0.673196,
+      "TRA": 0.906542
+    }
+  },
+  {
+    "original_path": "experiments/C4O_official_gnn/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "c167e8b4e850451f5bc46d4a81157bd454692d70ceea8aad30b376d2b64521d7",
+    "archive": "03_historical_frontend.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.991581,
+      "SEG": 0.68872,
+      "TRA": 0.984784
+    }
+  },
+  {
+    "original_path": "experiments/C5.0d_official_phys2/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "e80df6804d056132d6f03ef791530e77673ef0999561e290eebb5aed18d7c60c",
+    "archive": "03_historical_frontend.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.939833,
+      "SEG": 0.673196,
+      "TRA": 0.904473
+    }
+  },
+  {
+    "original_path": "experiments/C5.0e_official_dropiso/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "b9719444d7ccd141d6680b5f53c85da0f210f059f9d94a343b94db7a2b3ebb7c",
+    "archive": "03_historical_frontend.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.879976,
+      "SEG": 0.648965,
+      "TRA": 0.852466
+    }
+  },
+  {
+    "original_path": "experiments/C5.0e_official_resplit/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "da1384c56c8533d65e520529a3561d28d59e2835e2ad3caa8c4d2a69f35e3931",
+    "archive": "03_historical_frontend.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.955794,
+      "SEG": 0.663599,
+      "TRA": 0.92689
+    }
+  },
+  {
+    "original_path": "experiments/C5.0f_k13_official/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "5ebdab77c93a2e2a34525ee664341dca16f2da3bbf4804edf69261d02112b33d",
+    "archive": "03_historical_frontend.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.955722,
+      "SEG": 0.661378,
+      "TRA": 0.927615
+    }
+  },
+  {
+    "original_path": "experiments/C5.0f_k20_official/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "9bc3724655ff93c9ca16aadb7818121072fa7aa4f79bd7cf83f531e44ccc5cdf",
+    "archive": "03_historical_frontend.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.950618,
+      "SEG": 0.666419,
+      "TRA": 0.918808
+    }
+  },
+  {
+    "original_path": "experiments/C5.0f_seq02_base_official/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "1ae1019edc3d44486bc8d4207d5359e513a56c432334b5bba7f740d299b24e51",
+    "archive": "03_historical_frontend.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.940035,
+      "SEG": 0.690867,
+      "TRA": 0.90934
+    }
+  },
+  {
+    "original_path": "experiments/C5.0f_seq02_rs_official/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "7f8cf667662f07fa337b47224f7d398dfc63daea2a276505247670c09d89a0bd",
+    "archive": "03_historical_frontend.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.951584,
+      "SEG": 0.667235,
+      "TRA": 0.92632
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_fgw_seed20261008_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "9519dd073dfe1af9b3c4d5b680e208e91760658c75f58707549a67b402bc4f74",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.896677,
+      "SEG": 0.638861,
+      "TRA": 0.868686
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_fgw_seed20261008_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "ed2b9b618204da525dc42faf6702e62722a72e4f514165730283899dcb91ceaf",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.901887,
+      "SEG": 0.679263,
+      "TRA": 0.877172
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_fgw_seed20261009_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "afe885eedb1460b431862eeb4514b474be773ee08f6f7aebe09dea01608f6f9a",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.890715,
+      "SEG": 0.638861,
+      "TRA": 0.862698
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_fgw_seed20261009_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "682ebdafa1cdd7a9a2389fc31eafdd608bf75e7e8dc02f5e3723eacc8de661b2",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.898171,
+      "SEG": 0.66973,
+      "TRA": 0.873303
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_isolated_seed20261008_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "d8b74f57952b648027775a870d6732ce780f6aaef2f2c065736f85df1b22219f",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.939871,
+      "SEG": 0.673196,
+      "TRA": 0.907766
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_isolated_seed20261008_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "f478ed4562ff766afc7a8dcb181b3b276fd596c54e672c50f7cde856130c505a",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.940062,
+      "SEG": 0.690867,
+      "TRA": 0.911237
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_isolated_seed20261009_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "74c9866b51940658b7f12020d43e2c53658599e4fbe2987724aaf7cf7a79ed70",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.939875,
+      "SEG": 0.673196,
+      "TRA": 0.90813
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_isolated_seed20261009_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "8afd6b2c9c4e8f962cb71a46978731b603d9f4002ae88cb9e3871177b88c5307",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.940062,
+      "SEG": 0.690867,
+      "TRA": 0.911689
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_motion_seed20261008_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "240ee2e161d1147da7cf14c6c89d3fd065e9899b996e50bc6359c9fbaa854c22",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.920956,
+      "SEG": 0.666767,
+      "TRA": 0.892566
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_motion_seed20261008_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "458c0a0ac272c1d5d02e1587953a604411f7789fd596204f4eb7da7a846337c1",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.923798,
+      "SEG": 0.690867,
+      "TRA": 0.897928
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_motion_seed20261009_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "be312fe05173b5e565e57023846310974f0762aacceb81952f49c6f097210a55",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.919708,
+      "SEG": 0.661012,
+      "TRA": 0.891466
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_motion_seed20261009_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "e123534b200e397ca62d771c299b81ddff46e811b296713d2b005c35a87bf8a3",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.923695,
+      "SEG": 0.690867,
+      "TRA": 0.89806
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_multiscale_seed20261008_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "0d6dd305a96363c9fce4e69937fe20b428803c442024cb9f053b7852adb56ab3",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.898945,
+      "SEG": 0.654856,
+      "TRA": 0.871429
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_multiscale_seed20261008_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "d1f3e71047f09b0197ae5a6151733884f2cd3c851069db3b9611d457ae56604e",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.898002,
+      "SEG": 0.670727,
+      "TRA": 0.873569
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_multiscale_seed20261009_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "f272a08dee869e84debf31ab16d8bae2045a1d91e07c7def0b45988bb05005ed",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.911113,
+      "SEG": 0.666767,
+      "TRA": 0.882614
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_multiscale_seed20261009_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "09f05ee62e48c6dc603869721778789e2cde11ec34e15d1f527e04bd6bb8b419",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.914966,
+      "SEG": 0.685296,
+      "TRA": 0.889416
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_ot_loss_seed20261008_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "e4fdeeb3dada92bbcc1a4553dcdbb6cdb848a4d35242869b5b54d11152f927e4",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.9263,
+      "SEG": 0.667441,
+      "TRA": 0.897694
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_ot_loss_seed20261008_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "16a63b0e0d0da53c26275f29b120b08eaff2c88877b492304a2ca1b73705e873",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.928107,
+      "SEG": 0.690867,
+      "TRA": 0.90223
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_ot_loss_seed20261009_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "90e61d1181d4a74fe4da0694d44edfcc5d4ca9671ac80d116b2320b1614820fa",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.926359,
+      "SEG": 0.673196,
+      "TRA": 0.897705
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_ot_loss_seed20261009_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "a17c742e193e5be9dbaba46f4a99656aa80549efe6d36e8cc817cf0dd7852405",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.930877,
+      "SEG": 0.690867,
+      "TRA": 0.904889
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_tracklet_seed20261008_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "93a30742968fcb5d53963e6fbe8e0096739d7607d3761ca53518406bf5cb312e",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.907083,
+      "SEG": 0.661012,
+      "TRA": 0.879313
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_tracklet_seed20261008_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "ec2dae4051d883c6d9613573f66905384ed8dd6ee8a1b35f81a5d77681ac7c3e",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.906361,
+      "SEG": 0.67676,
+      "TRA": 0.881109
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_tracklet_seed20261009_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "cdc6e569e48111c2afea65657f5b812669829505f00ebd8cdf3f2f2a5b0821c9",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.912381,
+      "SEG": 0.661012,
+      "TRA": 0.884255
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_ablate_tracklet_seed20261009_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "ebab28ae5c20a3db3651862b58d21f3124568814d3dcbd6f7a46d56c242b1f37",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.912044,
+      "SEG": 0.668171,
+      "TRA": 0.88652
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_full_baseline_seed20261008_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "363b75fdc79cd94f14f0f25ce20c506b0ab0be4f3506531adf0a45e4fe133f67",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.901479,
+      "SEG": 0.661012,
+      "TRA": 0.873252
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_full_baseline_seed20261008_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "2cd52e2da3b1c788f201455ec5979812b758b1d96599797b57b0dd11473f0454",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.907146,
+      "SEG": 0.685296,
+      "TRA": 0.881877
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_full_baseline_seed20261009_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "54d93863009bbfc0d2d6824e7414f4600043bf169c18f976b27113d51534921a",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.899676,
+      "SEG": 0.661012,
+      "TRA": 0.871804
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/cloud_screening/experiments/P7_ideas_full_baseline_seed20261009_eval02_retry1/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "93764768474961966c512cd2ad00b57944ab3bc52b598ee965e7bafb08c1fd6c",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.900754,
+      "SEG": 0.67676,
+      "TRA": 0.876232
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/progress_snapshot/experiments/P7_ideas_full_baseline_seed20261008_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "363b75fdc79cd94f14f0f25ce20c506b0ab0be4f3506531adf0a45e4fe133f67",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.901479,
+      "SEG": 0.661012,
+      "TRA": 0.873252
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/progress_snapshot/experiments/P7_ideas_full_baseline_seed20261008_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "2cd52e2da3b1c788f201455ec5979812b758b1d96599797b57b0dd11473f0454",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.907146,
+      "SEG": 0.685296,
+      "TRA": 0.881877
+    }
+  },
+  {
+    "original_path": "experiments/E0.6_ideas_cloud_20261009/artifacts/progress_snapshot/experiments/P7_ideas_full_baseline_seed20261009_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "54d93863009bbfc0d2d6824e7414f4600043bf169c18f976b27113d51534921a",
+    "archive": "04_rebuild_audit_and_failed_runs.tar.gz",
+    "category": "historical",
+    "metrics": {
+      "DET": 0.899676,
+      "SEG": 0.661012,
+      "TRA": 0.871804
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_conservative_k0_baseline_seed20261008_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "cd66b0c4a7e5a2cd4dc9d91f67e5b772d1728d19e1e699af632000e7a76dde5a",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.939875,
+      "SEG": 0.673196,
+      "TRA": 0.909151
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_conservative_k0_baseline_seed20261008_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "4d3460070a114b73a1da2ec621cf1f7dff90d1e825322e4bed8099cc50637c03",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.940053,
+      "SEG": 0.690867,
+      "TRA": 0.912521
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_conservative_k0_baseline_seed20261008_eval02_repeat/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "4d3460070a114b73a1da2ec621cf1f7dff90d1e825322e4bed8099cc50637c03",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.940053,
+      "SEG": 0.690867,
+      "TRA": 0.912521
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_conservative_k0_baseline_seed20261009_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "c9490008141b53e7bbb514eb450c68a2ce0c921cd6f1b391e8a2fee7aeb42226",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.939875,
+      "SEG": 0.673196,
+      "TRA": 0.909253
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_conservative_k0_baseline_seed20261009_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "c3101a714aba9469a8604df7fabab29cafe829be17b5b73ba5bd4e0d2670d0b9",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.940057,
+      "SEG": 0.690867,
+      "TRA": 0.912523
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_conservative_k16_baseline_seed20261008_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "ea2181e16866e27337da213fa0588cddb9bca2bc4e22ccdd46efd006b56a6f4c",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.955785,
+      "SEG": 0.663599,
+      "TRA": 0.932366
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_conservative_k16_baseline_seed20261008_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "8956567a547afd42155325de6dded7fb4323a381bc76b316b933df26631e7345",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.95161,
+      "SEG": 0.667235,
+      "TRA": 0.93068
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_conservative_k16_baseline_seed20261008_eval02_repeat/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "8956567a547afd42155325de6dded7fb4323a381bc76b316b933df26631e7345",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.95161,
+      "SEG": 0.667235,
+      "TRA": 0.93068
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_conservative_k16_baseline_seed20261009_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "0dc2e0ee11b00322fbce9ce9e7cb927cbd187db9792ced125b5dbf1a0f73a4c3",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.955785,
+      "SEG": 0.663599,
+      "TRA": 0.932671
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_conservative_k16_baseline_seed20261009_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "5fd680670eb2b5d31a7114096993e2a2d40a5bd7890b95accd0274ee37b6a2a1",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.951606,
+      "SEG": 0.667235,
+      "TRA": 0.930949
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_paper_all_k0_baseline_seed20261008_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "7ce668a81ec654dcf96bbdf70d38800cf6276dd2d3e79b3895d6285621b83428",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.926389,
+      "SEG": 0.667441,
+      "TRA": 0.89784
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_paper_all_k0_baseline_seed20261008_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "b81f982f9cbcddc3f3e58895e34eca99fbee9193707ad52a2f6904669a98ac3b",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.928151,
+      "SEG": 0.690867,
+      "TRA": 0.902519
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_paper_all_k0_baseline_seed20261008_eval02_repeat/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "b81f982f9cbcddc3f3e58895e34eca99fbee9193707ad52a2f6904669a98ac3b",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.928151,
+      "SEG": 0.690867,
+      "TRA": 0.902519
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_paper_all_k0_baseline_seed20261009_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "6d32f020cd56bae77bd59a265af24edb6ea3c3f88bc27e6eb8330d445c81f918",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.924334,
+      "SEG": 0.667441,
+      "TRA": 0.895995
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_paper_all_k0_baseline_seed20261009_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "0b8e6693ace8155c39f8cc7f38bdc95989b4a4f848b4099a96e387c932f56f28",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.927554,
+      "SEG": 0.690867,
+      "TRA": 0.901763
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_paper_all_k16_baseline_seed20261008_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "11c20a2404375221065d0af728d6cb67d6cfcd647e537f8ccc03f8305538e8ed",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.938593,
+      "SEG": 0.657844,
+      "TRA": 0.91768
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_paper_all_k16_baseline_seed20261008_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "292de813af6810a8fd773c18ac4d0d2424c5ec6ce115f611bf7c27fe10c295bd",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.938844,
+      "SEG": 0.667235,
+      "TRA": 0.920015
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_paper_all_k16_baseline_seed20261008_eval02_repeat/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "292de813af6810a8fd773c18ac4d0d2424c5ec6ce115f611bf7c27fe10c295bd",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.938844,
+      "SEG": 0.667235,
+      "TRA": 0.920015
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_paper_all_k16_baseline_seed20261009_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "e5440d10ed18209a962e59019a10d8ff3466a2ead66529c7aed68b1d56fd7863",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.936371,
+      "SEG": 0.663599,
+      "TRA": 0.915741
+    }
+  },
+  {
+    "original_path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/cloud_final/experiments/P7_ideas_v3_paper_all_k16_baseline_seed20261009_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "570a75fc16ddef8198fa879194c731236ab75cd7f8b69904c88bec38495cd0a4",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.936538,
+      "SEG": 0.661663,
+      "TRA": 0.917538
+    }
+  },
+  {
+    "original_path": "experiments/E0.9_gt_oracle_encoder_20261009/artifacts/evidence_formal/experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "3a120ccd6d1dfe779bd5e6aa9ad835bd0a98abafc65d3d7b939407c7adf0a26c",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.997947
+    }
+  },
+  {
+    "original_path": "experiments/E0.9_gt_oracle_encoder_20261009/artifacts/evidence_formal/experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "0a6c7ab542c0d698837c957f194392ae41edf40ae32f7748f3b0b9dc85fe3320",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.997599
+    }
+  },
+  {
+    "original_path": "experiments/E0.9_gt_oracle_encoder_20261009/artifacts/evidence_formal/experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "0a6c7ab542c0d698837c957f194392ae41edf40ae32f7748f3b0b9dc85fe3320",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.997599
+    }
+  },
+  {
+    "original_path": "experiments/E0.9_gt_oracle_encoder_20261009/artifacts/evidence_formal/experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "ccacbc1bc24fdcd133c7c0f7283fda373c40d12355d227c2d1aa1ed013e433a3",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.998007
+    }
+  },
+  {
+    "original_path": "experiments/E0.9_gt_oracle_encoder_20261009/artifacts/evidence_formal/experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "151e038b40068ac0b54be6a2a14e05ab028ac96a30d06797122843e90513f9e1",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.997605
+    }
+  },
+  {
+    "original_path": "experiments/E0.9_gt_oracle_encoder_20261009/artifacts/evidence_initial/experiments/P8_gt_marker_encoder_baseline_seed20261008_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "f10343c78bb1521398a92c0c076678b7c36e4a03e5b1e7687c01c021053aaf30",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.997956
+    }
+  },
+  {
+    "original_path": "experiments/E0.9_gt_oracle_encoder_20261009/artifacts/evidence_initial/experiments/P8_gt_marker_encoder_baseline_seed20261008_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "af4dbb304ddaeda80c1de80dd4671a1fcb6e205ebf88695f617acd5d2afad2e9",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 1.0,
+      "SEG": 0.0,
+      "TRA": 0.997622
+    }
+  },
+  {
+    "original_path": "experiments/E1.0_nnunet_oracle_encoder_20261009/artifacts/evidence_formal/experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "96665f57ad496435a7b0611645732aeb4c1314c349c0cacfabff6d97ef9ecc55",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.998328,
+      "SEG": 0.683938,
+      "TRA": 0.996049
+    }
+  },
+  {
+    "original_path": "experiments/E1.0_nnunet_oracle_encoder_20261009/artifacts/evidence_formal/experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "9d825b33c29e572a1a0845a6dda6d52e8de7dee60eabe10662d2266bbee0b155",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.993644,
+      "SEG": 0.698012,
+      "TRA": 0.990815
+    }
+  },
+  {
+    "original_path": "experiments/E1.0_nnunet_oracle_encoder_20261009/artifacts/evidence_formal/experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "9d825b33c29e572a1a0845a6dda6d52e8de7dee60eabe10662d2266bbee0b155",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.993644,
+      "SEG": 0.698012,
+      "TRA": 0.990815
+    }
+  },
+  {
+    "original_path": "experiments/E1.0_nnunet_oracle_encoder_20261009/artifacts/evidence_formal/experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/metrics_official_01.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "8696b57fc74d6a9feb5c9e53efdf06a513f2fdf51667874557bc3659b834a438",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.998328,
+      "SEG": 0.683938,
+      "TRA": 0.996043
+    }
+  },
+  {
+    "original_path": "experiments/E1.0_nnunet_oracle_encoder_20261009/artifacts/evidence_formal/experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/metrics_official_02.json",
+    "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+    "sha256": "12554cb6dc5cde6718b2a45071ce03edcc030979e7b027eee1226f2d80e13d0e",
+    "archive": "05_formal_evidence_complete.tar.gz",
+    "category": "current",
+    "metrics": {
+      "DET": 0.993644,
+      "SEG": 0.698012,
+      "TRA": 0.990702
+    }
+  }
+]

@@ -1,0 +1,8 @@
+{
+  "staging": "/tmp/celltracker_cleanup_retained_ttib4wgo",
+  "source_commit": "426e41b3cf1fda7d2eaae664b9251edcec0df1e5",
+  "instruction": "迁移已完成；临时保留目录已清理。需要历史原件时使用完整归档恢复到新目录。",
+  "status": "complete",
+  "staging_removed": true,
+  "restore_from": "experiments/archives/catalog.json"
+}

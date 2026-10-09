@@ -1,3 +1,0 @@
-[13:28:28] experiment P7_ideas_ablate_multiscale_seed20261009_train start: ideas GNN 独立训练
-[13:29:09] metrics -> /root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_multiscale_seed20261009_train/metrics.json
-[13:29:09] experiment P7_ideas_ablate_multiscale_seed20261009_train finished: done

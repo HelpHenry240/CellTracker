@@ -1,0 +1,188 @@
+{
+  "archives": [
+    {
+      "archive": "experiments/archives/00_source_and_documents.tar.gz",
+      "verified_files": 322,
+      "sha256": "fdfe88acc6728ad479cc351a61f05d1d514a3be1477d85c1f8d582068e6a43c7"
+    },
+    {
+      "archive": "experiments/archives/01_foundations.tar.gz",
+      "verified_files": 114,
+      "sha256": "a0f8b228bdca219fd2625dfc054937e2a98e796ac51bb0d03c48a00ccc7e74f6"
+    },
+    {
+      "archive": "experiments/archives/02_historical_tracking.tar.gz",
+      "verified_files": 1069,
+      "sha256": "6d4fa22aa2ca6e3b6f75b78bfbe552f988784a1fc72831109647374a769c477e"
+    },
+    {
+      "archive": "experiments/archives/03_historical_frontend.tar.gz",
+      "verified_files": 570,
+      "sha256": "1ff130cad513c6ea4d7913df6f5f63f897d4f23c1fa4e991ac080c602087b8f6"
+    },
+    {
+      "archive": "experiments/archives/04_rebuild_audit_and_failed_runs.tar.gz",
+      "verified_files": 10645,
+      "sha256": "3ff92f99a8a47188add3a6d413a7d923981c54b51f8a4fa1ef9fe0260b4b0ff5"
+    },
+    {
+      "archive": "experiments/archives/05_formal_evidence_complete.tar.gz",
+      "verified_files": 1507,
+      "sha256": "f31597ee7ed0f7d167390d62b48b571072205667a7900c3b978dce226c797651"
+    }
+  ],
+  "source_restore": "passed",
+  "algorithm_files_byte_identical": [
+    "src/celltracker/__init__.py",
+    "src/celltracker/track/tracklets.py",
+    "src/celltracker/track/base.py",
+    "src/celltracker/track/__init__.py",
+    "src/celltracker/track/ot_tracker.py",
+    "src/celltracker/cost/features.py",
+    "src/celltracker/cost/__init__.py",
+    "src/celltracker/data/build_dataset.py",
+    "src/celltracker/data/summarize.py",
+    "src/celltracker/data/__init__.py",
+    "src/celltracker/data/ctc.py",
+    "src/celltracker/ot/multiscale.py",
+    "src/celltracker/ot/fgw.py",
+    "src/celltracker/ot/__init__.py",
+    "src/celltracker/ot/sinkhorn.py",
+    "src/celltracker/experiment/runner.py",
+    "src/celltracker/experiment/__init__.py",
+    "src/celltracker/detect/labels.py",
+    "src/celltracker/detect/__init__.py",
+    "src/celltracker/detect/instances.py",
+    "src/celltracker/eval/ctc_io.py",
+    "src/celltracker/eval/local_metrics.py",
+    "src/celltracker/eval/__init__.py",
+    "src/celltracker/gnn/infer.py",
+    "src/celltracker/gnn/model.py",
+    "src/celltracker/gnn/fusion.py",
+    "src/celltracker/gnn/data.py",
+    "src/celltracker/gnn/train.py",
+    "src/celltracker/gnn/adapter.py",
+    "src/celltracker/pipeline/tracklet_stage.py",
+    "src/celltracker/pipeline/runner.py",
+    "src/celltracker/pipeline/motion.py",
+    "src/celltracker/pipeline/config.py",
+    "src/celltracker/pipeline/multiscale_stage.py",
+    "src/celltracker/pipeline/ot_stage.py",
+    "src/celltracker/graph/build.py",
+    "src/celltracker/graph/__init__.py",
+    "src/celltracker/viz/style.py",
+    "src/celltracker/viz/__init__.py",
+    "src/celltracker/viz/ot_plots.py",
+    "src/papertrack/config.py",
+    "src/papertrack/representation/measure.py",
+    "src/papertrack/reconstruction/rules.py",
+    "src/papertrack/reconstruction/exporter.py",
+    "src/papertrack/reconstruction/__init__.py",
+    "src/papertrack/reconstruction/tracks.py",
+    "src/papertrack/temporal/multiscale.py",
+    "src/papertrack/temporal/__init__.py",
+    "src/papertrack/coupling/pairwise.py",
+    "src/papertrack/coupling/__init__.py",
+    "src/papertrack/longrange/tracklet.py",
+    "src/papertrack/longrange/motion.py",
+    "src/papertrack/runtime/contracts.py",
+    "src/papertrack/runtime/pipeline.py",
+    "src/papertrack/runtime/calibration.py",
+    "src/papertrack/runtime/__init__.py",
+    "src/papertrack/runtime/ablation.py",
+    "src/papertrack/runtime/official.py",
+    "src/papertrack/runtime/validate.py",
+    "src/papertrack/gnn/infer.py",
+    "src/papertrack/gnn/model.py",
+    "src/papertrack/gnn/__init__.py",
+    "src/papertrack/graph/build.py",
+    "src/papertrack/graph/__init__.py"
+  ],
+  "layout_only_source_edits": [
+    "src/celltracker/gnn/__init__.py",
+    "src/celltracker/pipeline/__init__.py",
+    "paperpipe/src/papertrack/_paths.py",
+    "paperpipe/src/papertrack/__init__.py",
+    "paperpipe/src/papertrack/representation/__init__.py",
+    "paperpipe/src/papertrack/longrange/__init__.py",
+    "paperpipe/src/papertrack/gnn/train.py"
+  ],
+  "current_weights": [
+    {
+      "path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/models/paper_all_k0/seed20261008_inference.pt",
+      "sha256": "44cba3673847d3b007f5738e2e9c995471d77ef7d6603933f8ccdfe7d2f978b3",
+      "cpu_load": "passed",
+      "parameters": 101185
+    },
+    {
+      "path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/models/paper_all_k0/seed20261009_inference.pt",
+      "sha256": "1e12225f6d69be179aa7f8bbfd3f1807b66931514e373b4681ae08d32881bd54",
+      "cpu_load": "passed",
+      "parameters": 101185
+    },
+    {
+      "path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/models/conservative_k0/seed20261008_inference.pt",
+      "sha256": "147cb7b8a20dbe863ff596d837b2ca6c44be961480d022a20667cb91a4a6a33c",
+      "cpu_load": "passed",
+      "parameters": 101185
+    },
+    {
+      "path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/models/conservative_k0/seed20261009_inference.pt",
+      "sha256": "f3b56fde97146f7974ef444fa29e0b43216fd4b153f041355876ea2b61c4749f",
+      "cpu_load": "passed",
+      "parameters": 101185
+    },
+    {
+      "path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/models/paper_all_k16/seed20261008_inference.pt",
+      "sha256": "f985e878790f0763411f99105f64b55c44b45b1780cb5712c65d23dae16db0e2",
+      "cpu_load": "passed",
+      "parameters": 101185
+    },
+    {
+      "path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/models/paper_all_k16/seed20261009_inference.pt",
+      "sha256": "2cc9822f78ec24ff585ef8ba7faf8cda2e153b319c7b4d56dec34f99afeaef27",
+      "cpu_load": "passed",
+      "parameters": 101185
+    },
+    {
+      "path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/models/conservative_k16/seed20261008_inference.pt",
+      "sha256": "3ecc00f3b3e1726266a8c8747269e573ea5a180adc1834f3ef56fec9bdc7952b",
+      "cpu_load": "passed",
+      "parameters": 101185
+    },
+    {
+      "path": "experiments/E0.8_ideas_final_v3_20261009/artifacts/models/conservative_k16/seed20261009_inference.pt",
+      "sha256": "01b45f16f19ffe0190c123d70f99dfbce9b956e82b12050ca393bc391a267c3f",
+      "cpu_load": "passed",
+      "parameters": 101185
+    },
+    {
+      "path": "experiments/E0.9_gt_oracle_encoder_20261009/artifacts/models/gt_marker_encoder_conservative/seed20261008_inference.pt",
+      "sha256": "1462a15ba04da0c190e978f1681518b630c42dae457be3d31b341765fae2af6b",
+      "cpu_load": "passed",
+      "parameters": 101185
+    },
+    {
+      "path": "experiments/E0.9_gt_oracle_encoder_20261009/artifacts/models/gt_marker_encoder_conservative/seed20261009_inference.pt",
+      "sha256": "eb22c4f16594f0db36ccb286c0612369b20569fce68d760681c3f809ae6a832a",
+      "cpu_load": "passed",
+      "parameters": 101185
+    },
+    {
+      "path": "experiments/E1.0_nnunet_oracle_encoder_20261009/artifacts/models/nnunet_oracle_encoder/seed20261008_inference.pt",
+      "sha256": "570e5e0373ff4a6a1cf6f5171353f4b443c71dfb319d7463b82e8b550721466f",
+      "cpu_load": "passed",
+      "parameters": 101185
+    },
+    {
+      "path": "experiments/E1.0_nnunet_oracle_encoder_20261009/artifacts/models/nnunet_oracle_encoder/seed20261009_inference.pt",
+      "sha256": "b5321bf1bcb58ae724985b48f9a799e4a9f4011dc39ea547487d1dc7f145e64a",
+      "cpu_load": "passed",
+      "parameters": 101185
+    }
+  ],
+  "shell_syntax": "passed",
+  "canonical_cli_help": "passed",
+  "unet_training": false,
+  "new_official_evaluations": 0
+}

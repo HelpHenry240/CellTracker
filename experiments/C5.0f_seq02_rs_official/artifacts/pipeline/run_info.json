@@ -1,8 +1,0 @@
-{
-  "n_frames": 190,
-  "ablated": [],
-  "n_couplings": 189,
-  "decision": "gnn",
-  "tracks_after_decision": 6796,
-  "tracks_final": 6796
-}

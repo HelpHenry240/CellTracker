@@ -80,7 +80,7 @@ FGW、运动、多尺度、同帧图、时序上下文、GNN和二层tracklet按
 
 - [最终指标](../../experiments/E0.9_gt_oracle_encoder_20261009/metrics_final.json)
 - [正式配置](../../experiments/E0.9_gt_oracle_encoder_20261009/pipeline_conservative.yaml)
-- [正式证据](../../experiments/E0.9_gt_oracle_encoder_20261009/artifacts/evidence_formal/archive_manifest.json)
+- [正式证据](../../experiments/E0.9_gt_oracle_encoder_20261009/../archives/catalog.json)
 - [推理权重指纹](../../experiments/E0.9_gt_oracle_encoder_20261009/artifacts/models/manifest.json)
 
 ![双种子官方TRA](../../experiments/E0.9_gt_oracle_encoder_20261009/figures/oracle_official_TRA.png)
@@ -90,3 +90,5 @@ FGW、运动、多尺度、同帧图、时序上下文、GNN和二层tracklet按
 ![候选安全漏斗](../../experiments/E0.9_gt_oracle_encoder_20261009/figures/oracle_candidate_safety.png)
 
 后续显式待办：后续候选消融报告继续分列移动/分裂分母；关闭保底时的候选损失不可误归因于GNN。
+
+整理说明（2026-10-09）：入口与目录链接已更新；实验数值和当时的测试计数保持原样。完整原件见 [归档目录](../../experiments/archives/README.md)，保留文件的逐项校验见 [清单](../../experiments/retention_manifest.json)。

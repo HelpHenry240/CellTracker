@@ -1,0 +1,7 @@
+task: repository consolidation
+method_changes: false
+unet_training: false
+cloud_jobs: false
+archives: verified SHA256 before pruning
+raw_data: untouched
+user_file: ctb_lb_tmp.png untouched

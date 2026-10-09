@@ -15,12 +15,11 @@ def test_git_export_contains_data_packages():
         pytest.skip('源码归档没有 Git 索引；包导入由接口测试验证')
     expected = ('src/celltracker/data/__init__.py', 'src/celltracker/data/ctc.py',
                 'src/celltracker/data/build_dataset.py', 'src/celltracker/data/summarize.py',
-                'paperpipe/src/vendor/celltracker/data/__init__.py',
-                'paperpipe/src/vendor/celltracker/data/ctc.py')
+                'src/papertrack/__init__.py', 'src/papertrack/runtime/pipeline.py')
     # 暂存树与提交时的实际内容相同；测试也能在提交前验证新增源码。
     tree = subprocess.check_output(['git', '-C', str(root), 'write-tree'], text=True).strip()
     exported = subprocess.check_output(['git', '-C', str(root), 'archive', tree,
-                                       'src/celltracker', 'paperpipe/src/vendor/celltracker'])
+                                       'src'])
     with tarfile.open(fileobj=io.BytesIO(exported)) as archive:
         names = set(archive.getnames())
     assert set(expected).issubset(names), 'Git 导出遗漏数据接口源码'
