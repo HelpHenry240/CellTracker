@@ -1,0 +1,26 @@
+{"Oracle_instances_prepared": "01", "bytes": 43657764}
+{"Oracle_instances_prepared": "02", "bytes": 42909691}
+{"mask_and_identity_audited": "01", "totals": {"gt_nodes": 23802, "nodes": 23903, "matched_gt_nodes": 23775, "unmatched_nodes": 128, "multi_identity_nodes": 0, "legacy_merged_seed_identity_excess": 211, "legacy_fragmented_seed_identity_excess": 0, "visible_seed_ids": 23795, "missing_gt_nodes": 27, "GT_identity_coverage": 0.9988656415427275}, "displacement_um": {"p50": 0.5674608283649458, "p95": 1.5009632339733059, "p99": 2.596017110541614, "p99.9": 3.756861353235607, "max": 5.664378938570958}}
+{"mask_and_identity_audited": "02", "totals": {"gt_nodes": 22418, "nodes": 22677, "matched_gt_nodes": 22312, "unmatched_nodes": 365, "multi_identity_nodes": 0, "legacy_merged_seed_identity_excess": 108, "legacy_fragmented_seed_identity_excess": 3, "visible_seed_ids": 22338, "missing_gt_nodes": 106, "GT_identity_coverage": 0.995271656704434}, "displacement_um": {"p50": 0.6500149548518936, "p95": 1.7696014257707198, "p99": 2.961211880198251, "p99.9": 4.556823578659242, "max": 11.711936540145008}}
+{"encoder_complete": "01", "bytes": 11882502}
+{"encoder_complete": "02", "bytes": 11268634}
+[P9_nnunet_oracle_encoder_baseline_calibration01] start
+[P9_nnunet_oracle_encoder_baseline_calibration01] complete
+[P9_nnunet_oracle_encoder_baseline_build01] start
+[P9_nnunet_oracle_encoder_baseline_build01] complete
+{"lambda_times_true_cost_p999": 0.26040710251921206, "candidate_recall": 0.9999157823816742, "division_recall": 1.0}
+[P9_nnunet_oracle_encoder_baseline_seed20261008_train] start
+[P9_nnunet_oracle_encoder_baseline_seed20261008_train] complete
+[P9_nnunet_oracle_encoder_baseline_seed20261008_eval01] start
+[P9_nnunet_oracle_encoder_baseline_seed20261008_eval01] complete
+[P9_nnunet_oracle_encoder_baseline_seed20261008_eval02] start
+[P9_nnunet_oracle_encoder_baseline_seed20261008_eval02] complete
+[P9_nnunet_oracle_encoder_baseline_seed20261009_train] start
+[P9_nnunet_oracle_encoder_baseline_seed20261009_train] complete
+[P9_nnunet_oracle_encoder_baseline_seed20261009_eval01] start
+[P9_nnunet_oracle_encoder_baseline_seed20261009_eval01] complete
+[P9_nnunet_oracle_encoder_baseline_seed20261009_eval02] start
+[P9_nnunet_oracle_encoder_baseline_seed20261009_eval02] complete
+[P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat] start
+[P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat] complete
+nnU-Net mask + GT seed Oracle + encoder: complete

@@ -1,0 +1,29 @@
+{
+  "command": [
+    "/root/autodl-tmp/nnunet/venv/bin/python",
+    "/root/CellTracker_nnunet_oracle_encoder_20261009/scripts/predict_to_h5.py",
+    "--pred-dir",
+    "/root/autodl-tmp/nnunet/preds_eval",
+    "--img-root",
+    "/root/autodl-tmp/ctc/Fluo-N3DH-CE",
+    "--seq",
+    "02",
+    "--out",
+    "/root/CellTracker_nnunet_oracle_encoder_20261009/data/interim/Fluo-N3DH-CE_02_nnunet_oracle.partial.h5",
+    "--gt-root",
+    "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE",
+    "--oracle-markers",
+    "--unseeded-policy",
+    "keep_component",
+    "--min-volume",
+    "1",
+    "--h-frac",
+    ".1",
+    "--gaussian-sigma",
+    "0",
+    "--spacing-zyx",
+    "1,.09,.09",
+    "--report",
+    "/root/CellTracker_nnunet_oracle_encoder_20261009/logs/oracle_frontend_02.json"
+  ]
+}

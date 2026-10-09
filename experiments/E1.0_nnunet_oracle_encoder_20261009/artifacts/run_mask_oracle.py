@@ -1,7 +1,7 @@
 """nnU-Net预测前景的GT种子实例Oracle：冻结encoder、独立GNN训练与双序列官方评测。
 
-方法仍为 ideas.pdf 式(25)–(35)，不改变网络或损失；标记体积适配沿用决策0001。
-逐帧验证 GT 输入，全部任务可恢复。原始检测、模型与历史实验均保留。
+追踪方法仍为 ideas.pdf 式(25)–(35)，不改变网络或损失；质量取预测实例体积。
+逐帧核验前景和GT身份。任务可恢复，原始检测、模型与历史实验均保留。
 """
 from pathlib import Path
 from types import SimpleNamespace

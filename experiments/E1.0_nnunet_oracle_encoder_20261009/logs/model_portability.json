@@ -1,0 +1,20 @@
+[
+  {
+    "seed": 20261008,
+    "bytes": 446586,
+    "cpu_load": true,
+    "hashes_match_manifest": true,
+    "all_parameters_finite": true,
+    "parameters": 101185,
+    "input_contract_signature": "532a8a223fb9b3641b40a22ecca1691c3034df44907e77533a9eedd8e4c57472"
+  },
+  {
+    "seed": 20261009,
+    "bytes": 446586,
+    "cpu_load": true,
+    "hashes_match_manifest": true,
+    "all_parameters_finite": true,
+    "parameters": 101185,
+    "input_contract_signature": "532a8a223fb9b3641b40a22ecca1691c3034df44907e77533a9eedd8e4c57472"
+  }
+]

@@ -1,2 +1,5 @@
 parent: 8255dd5
-training_source: release to be frozen before cloud launch
+training_source: clean tracked archive, 180 file SHA256 values verified on cloud
+training_release: 1d84b77569010e73fc0aeb32ecedde1bcfa86bb8
+source_tree_fingerprint: 71d96dd9429653e14247b119117a455719aabfbebbf85c97267f440ebe1b4464
+result_commit: git log -1 -- experiments/E1.0_nnunet_oracle_encoder_20261009/metrics_final.json

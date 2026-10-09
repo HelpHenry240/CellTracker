@@ -1,0 +1,3 @@
+[20:12:24] experiment P9_nnunet_oracle_encoder_baseline_seed20261009_eval02 start: ideas pipeline 重建链路
+[20:14:20] metrics -> /root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/metrics.json
+[20:15:24] experiment P9_nnunet_oracle_encoder_baseline_seed20261009_eval02 finished: done

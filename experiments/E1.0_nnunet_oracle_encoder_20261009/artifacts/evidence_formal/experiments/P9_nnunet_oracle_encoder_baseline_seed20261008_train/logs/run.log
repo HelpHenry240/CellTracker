@@ -1,0 +1,3 @@
+[20:00:26] experiment P9_nnunet_oracle_encoder_baseline_seed20261008_train start: ideas GNN 独立训练
+[20:01:05] metrics -> /root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_train/metrics.json
+[20:01:05] experiment P9_nnunet_oracle_encoder_baseline_seed20261008_train finished: done

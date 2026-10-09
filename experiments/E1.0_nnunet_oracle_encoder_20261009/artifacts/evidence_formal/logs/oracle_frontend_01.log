@@ -1,0 +1,11 @@
+seq 01: 195 帧预测；spacing(z,y,x)=(1.0, 0.09, 0.09) µm，gaussian_sigma=0.0 µm
+  帧  24 [25/195] 实例   13 检测召回 1.000 精确 1.000
+  帧  49 [50/195] 实例   27 检测召回 1.000 精确 0.963
+  帧  74 [75/195] 实例   51 检测召回 1.000 精确 1.000
+  帧  99 [100/195] 实例   93 检测召回 1.000 精确 1.000
+  帧 124 [125/195] 实例  157 检测召回 1.000 精确 1.000
+  帧 149 [150/195] 实例  192 检测召回 1.000 精确 1.000
+  帧 174 [175/195] 实例  324 检测召回 1.000 精确 1.000
+  帧 194 [195/195] 实例  362 检测召回 1.000 精确 1.000
+写出: /root/CellTracker_nnunet_oracle_encoder_20261009/data/interim/Fluo-N3DH-CE_01_nnunet_oracle.partial.h5 (41.6 MB)
+报告: /root/CellTracker_nnunet_oracle_encoder_20261009/logs/oracle_frontend_01.json -> {'n_frames': 195, 'mean_instances': 122.57948717948717, 'config': {'h_frac': 0.1, 'min_distance': 3, 'min_distance_effective': False, 'min_volume': 1, 'gaussian_sigma_um': 0.0, 'spacing_zyx': [1.0, 0.09, 0.09], 'watershed': True}, 'detection_recall': 0.9984688160808799, 'detection_precision': 0.9858258869418597, 'mean_gt_markers': 122.06153846153846}

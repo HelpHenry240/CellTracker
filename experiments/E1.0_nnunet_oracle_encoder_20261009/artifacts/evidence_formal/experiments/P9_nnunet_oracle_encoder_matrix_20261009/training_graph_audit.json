@@ -1,0 +1,23 @@
+{
+  "graphs": 194,
+  "positive_edges": 23746,
+  "division_positive": 704,
+  "bridge_candidates": 14,
+  "all_positive_edges": 23746,
+  "bridge_positive_edges": 0,
+  "true_edges_total": 23748,
+  "division_edges_total": 704,
+  "true_recall": 0.9999157823816742,
+  "division_recall": 1.0,
+  "positive_C_percentiles": {
+    "p50": 1.0048660635948181,
+    "p95": 6.070231318473816,
+    "p99": 16.571069145202625,
+    "p99.9": 260.52261268621606,
+    "max": 23971.0078125
+  },
+  "lambda_OT": 0.001,
+  "input_source": "nnunet_pred",
+  "features": "encoder_npz",
+  "GT_role": "seed-label identities and edge labels; node vectors have no track identity column"
+}

@@ -1,0 +1,324 @@
+{
+  "schema": "ideas-ablation-v1",
+  "dataset": "Fluo-N3DH-CE",
+  "protocol": "seq01 train / seq02 held out",
+  "seeds": [
+    20261008,
+    20261009
+  ],
+  "variants": [
+    {
+      "module": "baseline",
+      "direction": "baseline",
+      "threshold_protocol": "recalibrated_on_seq01_only"
+    }
+  ],
+  "official": true,
+  "jobs": [
+    {
+      "id": "P9_nnunet_oracle_encoder_baseline_calibration01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/paperpipe/scripts/calibrate_params.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_nnunet_oracle.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--config",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/configs/baseline_01.yaml",
+        "--out",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/calibration/baseline.json",
+        "--apply-out",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/configs/baseline_calibrated.yaml",
+        "--cache-dir",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/calibration_cache/baseline"
+      ],
+      "outputs": [
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/calibration/baseline.json",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/configs/baseline_calibrated.yaml"
+      ],
+      "kind": "calibrate",
+      "depends": []
+    },
+    {
+      "id": "P9_nnunet_oracle_encoder_baseline_build01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_nnunet_oracle.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P9_nnunet_oracle_encoder_baseline_build01",
+        "--config",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/configs/baseline_calibrated.yaml",
+        "--cache-dir",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/cache/baseline/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_nnunet_oracle_20261009.npz",
+        "--dump-graphs",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/graphs/baseline",
+        "--build-only"
+      ],
+      "outputs": [
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/graphs/baseline/manifest.json"
+      ],
+      "kind": "build",
+      "depends": [
+        "P9_nnunet_oracle_encoder_baseline_calibration01"
+      ]
+    },
+    {
+      "id": "P9_nnunet_oracle_encoder_baseline_seed20261008_train",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/paperpipe/scripts/train_paper_gnn.py",
+        "--graphs",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/graphs/baseline",
+        "--out",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/models/baseline/seed20261008",
+        "--config",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/configs/baseline_calibrated.yaml",
+        "--epochs",
+        "60",
+        "--seed",
+        "20261008",
+        "--device",
+        "cuda",
+        "--exp-id",
+        "P9_nnunet_oracle_encoder_baseline_seed20261008_train"
+      ],
+      "outputs": [
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/models/baseline/seed20261008/best.pt",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/models/baseline/seed20261008/train_summary.json"
+      ],
+      "kind": "train",
+      "depends": [
+        "P9_nnunet_oracle_encoder_baseline_build01"
+      ]
+    },
+    {
+      "id": "P9_nnunet_oracle_encoder_baseline_seed20261008_eval01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_nnunet_oracle.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P9_nnunet_oracle_encoder_baseline_seed20261008_eval01",
+        "--config",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/configs/baseline_calibrated.yaml",
+        "--cache-dir",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/cache/baseline/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_nnunet_oracle_20261009.npz",
+        "--ckpt",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/models/baseline/seed20261008/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/01_GT"
+      ],
+      "outputs": [
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/metrics_official_01.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P9_nnunet_oracle_encoder_baseline_seed20261008_train"
+      ]
+    },
+    {
+      "id": "P9_nnunet_oracle_encoder_baseline_seed20261008_eval02",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_02_nnunet_oracle.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_02.h5",
+        "--seq",
+        "02",
+        "--exp-id",
+        "P9_nnunet_oracle_encoder_baseline_seed20261008_eval02",
+        "--config",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/configs/baseline_calibrated.yaml",
+        "--cache-dir",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/cache/baseline/02",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_02_nnunet_oracle_20261009.npz",
+        "--ckpt",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/models/baseline/seed20261008/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT"
+      ],
+      "outputs": [
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/metrics_official_02.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P9_nnunet_oracle_encoder_baseline_seed20261008_train"
+      ]
+    },
+    {
+      "id": "P9_nnunet_oracle_encoder_baseline_seed20261009_train",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/paperpipe/scripts/train_paper_gnn.py",
+        "--graphs",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/graphs/baseline",
+        "--out",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/models/baseline/seed20261009",
+        "--config",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/configs/baseline_calibrated.yaml",
+        "--epochs",
+        "60",
+        "--seed",
+        "20261009",
+        "--device",
+        "cuda",
+        "--exp-id",
+        "P9_nnunet_oracle_encoder_baseline_seed20261009_train"
+      ],
+      "outputs": [
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/models/baseline/seed20261009/best.pt",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/models/baseline/seed20261009/train_summary.json"
+      ],
+      "kind": "train",
+      "depends": [
+        "P9_nnunet_oracle_encoder_baseline_build01"
+      ]
+    },
+    {
+      "id": "P9_nnunet_oracle_encoder_baseline_seed20261009_eval01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_nnunet_oracle.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P9_nnunet_oracle_encoder_baseline_seed20261009_eval01",
+        "--config",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/configs/baseline_calibrated.yaml",
+        "--cache-dir",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/cache/baseline/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_nnunet_oracle_20261009.npz",
+        "--ckpt",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/models/baseline/seed20261009/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/01_GT"
+      ],
+      "outputs": [
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/metrics_official_01.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P9_nnunet_oracle_encoder_baseline_seed20261009_train"
+      ]
+    },
+    {
+      "id": "P9_nnunet_oracle_encoder_baseline_seed20261009_eval02",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_02_nnunet_oracle.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_02.h5",
+        "--seq",
+        "02",
+        "--exp-id",
+        "P9_nnunet_oracle_encoder_baseline_seed20261009_eval02",
+        "--config",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/configs/baseline_calibrated.yaml",
+        "--cache-dir",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/cache/baseline/02",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_02_nnunet_oracle_20261009.npz",
+        "--ckpt",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/models/baseline/seed20261009/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT"
+      ],
+      "outputs": [
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/metrics_official_02.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P9_nnunet_oracle_encoder_baseline_seed20261009_train"
+      ]
+    },
+    {
+      "id": "P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_02_nnunet_oracle.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_02.h5",
+        "--seq",
+        "02",
+        "--exp-id",
+        "P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat",
+        "--config",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/configs/baseline_calibrated.yaml",
+        "--cache-dir",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/cache/baseline/02",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_02_nnunet_oracle_20261009.npz",
+        "--ckpt",
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/models/baseline/seed20261008/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT"
+      ],
+      "outputs": [
+        "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/metrics_official_02.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P9_nnunet_oracle_encoder_baseline_seed20261008_train"
+      ]
+    }
+  ],
+  "cloud_note": "云端长任务须 nohup 后台；启动前/训练中/结束后检查 nvidia-smi",
+  "performance_conclusion": "需双序列官方 DET/SEG/TRA 与当前设置重复实验噪声地板",
+  "noise_protocol": "same seed20261008 checkpoint, complete seq02 inference/export/official rerun",
+  "Oracle_definition": "nnU-Net prediction foreground preserved exactly; GT label identity seeds; frozen encoder at Oracle-instance centroids"
+}

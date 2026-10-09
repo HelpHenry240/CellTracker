@@ -1,0 +1,10 @@
+[19:58:58] experiment P9_nnunet_oracle_encoder_baseline_build01 start: ideas pipeline 重建链路
+[load] 195 帧；检测=nnunet_pred；外观=encoder_npz (0.4s)
+[motion] 运动先验初始化完成 (16.7s)
+[couplings] 194 对相邻帧耦合 (14.0s)
+[multiscale] 多尺度=True；桥接耦合=193 (41.9s)
+[decision] 1126 条轨迹 (2.2s)
+[tracklet] 二层 OT=True；最终 737 条轨迹 (0.7s)
+[dump_graphs] 194 张监督图 (8.3s)
+[20:00:23] metrics -> /root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_baseline_build01/metrics.json
+[20:00:23] experiment P9_nnunet_oracle_encoder_baseline_build01 finished: done

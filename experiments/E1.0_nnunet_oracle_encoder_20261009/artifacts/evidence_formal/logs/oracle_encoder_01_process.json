@@ -1,0 +1,21 @@
+{
+  "pid": 836871,
+  "command": [
+    "/root/autodl-tmp/nnunet/venv/bin/python",
+    "/root/CellTracker_nnunet_oracle_encoder_20261009/scripts/nnunet/export_encoder_features.py",
+    "--h5",
+    "/root/CellTracker_nnunet_oracle_encoder_20261009/data/interim/Fluo-N3DH-CE_01_nnunet_oracle.h5",
+    "--images",
+    "/root/autodl-tmp/nnunet/nnUNet_raw/Dataset501_CellTrackerCE/imagesTs_eval",
+    "--model",
+    "/root/autodl-tmp/nnunet/nnUNet_results/Dataset501_CellTrackerCE/nnUNetTrainer__nnUNetPlans__3d_fullres",
+    "--seq",
+    "01",
+    "--out",
+    "/root/CellTracker_nnunet_oracle_encoder_20261009/data/interim/encoder_01_nnunet_oracle_20261009.npz",
+    "--stage",
+    "2",
+    "--device",
+    "cuda"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "role": "experiment orchestration, read-only diagnostics and report helpers; core training source unchanged",
+  "training_source_commit": "1d84b77569010e73fc0aeb32ecedde1bcfa86bb8",
+  "files": {
+    "artifacts/archive_evidence.py": "2ca8ed0aa64a728acc29b9e4f985ae9a267411b41a848f13960b2be8c0e66d90",
+    "artifacts/audit_evaluation_candidates.py": "458f73bc82bbe33ee18819c46fad8f30816cfb19039d7f45f1eb69ad828ef059",
+    "artifacts/collect_oracle.py": "1f79b99c0c08c377e2248b2ed4e82e38173f0cc2fb6dcac2cbc866c72ec001c6",
+    "artifacts/export_inference_weights.py": "be48dd444f47f1fc7f2b5f7375887bd52a2429c64aaf6d66b0c443f985ddd42c",
+    "artifacts/finalize_report.py": "5dbff94960118cd10250a53a52e00d30c018be0567f1c7e69d93b57591acec66",
+    "artifacts/fingerprint_encoder.py": "276f94e54ebdbddf744b5cb2459e7c837dfedbdcf52db9cf7402c8f75c1760cf",
+    "artifacts/plot_results.py": "45edabdc2098d8263373a7acf12bebd95c712fe98e1fd53379c7d620afa3b47c",
+    "artifacts/postprocess_oracle.py": "907bd1088c6e78aa4c6d7388964b47854d9bedcfae4cca9c65bad3c9c54a6df7",
+    "artifacts/run_mask_oracle.py": "5ffe20bd4ce56a2abba81db57d1c3f54dd2308ecdc1be9eaeb2225b7fccc3527",
+    "artifacts/scan_candidate_safety.py": "7b54271d5e0dd1f331097497609a1ee8ab56aced6e519782241453d5a896a782",
+    "artifacts/summarize_oracle.py": "a3d661b8ad6e72a54ad1acb21fab10980d39793562356575b62873e1e74e9984",
+    "artifacts/verify_final_cloud.py": "fc53feb4472c8319262726d1c5ee81b55ecca5f7e27efd2d9866488677ba40ba",
+    "artifacts/verify_local_models.py": "18d543e575a8b5c9650a8d651f2f9db15afff6cb1e399e27ecc080bc5d6a0c92",
+    "artifacts/launch.sh": "8021e10df4a9f9b28f3df4fa6d8af40ff94362c86c325ba938458ad1b437df84",
+    "artifacts/launch_postprocess.sh": "eb36d34e9f853b48661eedfc6e71415885827737167acb64e0d94e0888586fde"
+  },
+  "post_training_documentation": "run_mask_oracle.py docstring clarified predicted-instance volume; execution unchanged"
+}

@@ -1,0 +1,82 @@
+[20:00:26] experiment P9_nnunet_oracle_encoder_baseline_seed20261008_train start: ideas GNN 独立训练
+[epoch   1] P=0.5638 R=0.9980 F1=0.7206
+[epoch   2] P=0.9322 R=0.9813 F1=0.9561
+[epoch   3] P=0.8946 R=0.9868 F1=0.9384
+[epoch   4] P=0.8322 R=0.9923 F1=0.9052
+[epoch   5] P=0.9402 R=0.9800 F1=0.9597
+[epoch   6] P=0.9555 R=0.9768 F1=0.9660
+[epoch   7] P=0.9419 R=0.9837 F1=0.9623
+[epoch   8] P=0.9584 R=0.9808 F1=0.9695
+[epoch   9] P=0.9587 R=0.9811 F1=0.9698
+[epoch  10] P=0.9419 R=0.9866 F1=0.9637
+[epoch  11] P=0.9604 R=0.9821 F1=0.9711
+[epoch  12] P=0.9781 R=0.9738 F1=0.9759
+[epoch  13] P=0.9712 R=0.9813 F1=0.9763
+[epoch  14] P=0.9614 R=0.9852 F1=0.9732
+[epoch  15] P=0.9712 R=0.9791 F1=0.9752
+[epoch  16] P=0.9809 R=0.9780 F1=0.9795
+[epoch  17] P=0.9860 R=0.9722 F1=0.9790
+[epoch  18] P=0.9806 R=0.9809 F1=0.9807
+[epoch  19] P=0.9849 R=0.9802 F1=0.9825
+[epoch  20] P=0.9843 R=0.9804 F1=0.9823
+[epoch  21] P=0.9890 R=0.9787 F1=0.9838
+[epoch  22] P=0.9808 R=0.9879 F1=0.9843
+[epoch  23] P=0.9661 R=0.9867 F1=0.9763
+[epoch  24] P=0.9673 R=0.9860 F1=0.9766
+[epoch  25] P=0.9844 R=0.9767 F1=0.9805
+[epoch  26] P=0.9919 R=0.9705 F1=0.9811
+[epoch  27] P=0.9816 R=0.9857 F1=0.9836
+[epoch  28] P=0.9903 R=0.9771 F1=0.9837
+[epoch  29] P=0.9815 R=0.9870 F1=0.9843
+[epoch  30] P=0.9845 R=0.9861 F1=0.9853
+[epoch  31] P=0.9846 R=0.9880 F1=0.9863
+[epoch  32] P=0.9840 R=0.9900 F1=0.9870
+[epoch  33] P=0.9938 R=0.9779 F1=0.9858
+[epoch  34] P=0.9874 R=0.9782 F1=0.9828
+[epoch  35] P=0.9835 R=0.9859 F1=0.9847
+[epoch  36] P=0.9895 R=0.9843 F1=0.9868
+[epoch  37] P=0.9868 R=0.9886 F1=0.9877
+[epoch  38] P=0.9826 R=0.9901 F1=0.9863
+[epoch  39] P=0.9873 R=0.9894 F1=0.9884
+[epoch  40] P=0.9860 R=0.9898 F1=0.9879
+[epoch  41] P=0.9848 R=0.9905 F1=0.9877
+[epoch  42] P=0.9893 R=0.9856 F1=0.9875
+[epoch  43] P=0.9901 R=0.9866 F1=0.9883
+[epoch  44] P=0.9900 R=0.9860 F1=0.9880
+[epoch  45] P=0.9911 R=0.9865 F1=0.9888
+[epoch  46] P=0.9902 R=0.9857 F1=0.9880
+[epoch  47] P=0.9867 R=0.9917 F1=0.9892
+[epoch  48] P=0.9836 R=0.9925 F1=0.9881
+[epoch  49] P=0.9883 R=0.9910 F1=0.9896
+[epoch  50] P=0.9911 R=0.9868 F1=0.9889
+[epoch  51] P=0.9908 R=0.9862 F1=0.9885
+[epoch  52] P=0.9901 R=0.9874 F1=0.9887
+[epoch  53] P=0.9749 R=0.9922 F1=0.9835
+[epoch  54] P=0.9863 R=0.9898 F1=0.9880
+[epoch  55] P=0.9873 R=0.9888 F1=0.9881
+[epoch  56] P=0.9842 R=0.9919 F1=0.9880
+[epoch  57] P=0.9889 R=0.9877 F1=0.9883
+[epoch  58] P=0.9830 R=0.9923 F1=0.9876
+[epoch  59] P=0.9855 R=0.9911 F1=0.9883
+[epoch  60] P=0.9862 R=0.9903 F1=0.9882
+[20:01:05] metrics -> /root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_train/metrics.json
+[20:01:05] experiment P9_nnunet_oracle_encoder_baseline_seed20261008_train finished: done
+{
+  "out_dir": "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/models/baseline/seed20261008",
+  "best_f1": 0.9896491002018639,
+  "node_dim": 133,
+  "edge_dim": 10,
+  "split_mode": "block",
+  "n_train": 152,
+  "n_val": 38,
+  "checkpoints": {
+    "best.pt": {
+      "bytes": 1174878,
+      "sha256": "bd5560cf33c6148e2797c605bf977f4c20bd5ff1b34693138b64c4611e7868b6"
+    },
+    "last.pt": {
+      "bytes": 1185662,
+      "sha256": "3031094ce962c05ecf3e8db397a4c37f12499af8810562cf5ef4675e2888889f"
+    }
+  }
+}

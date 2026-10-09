@@ -1,0 +1,13 @@
+{
+  "definition": "postprocessing only; pipeline source frozen1d84b775",
+  "files": {
+    "archive_evidence.py": "2ca8ed0aa64a728acc29b9e4f985ae9a267411b41a848f13960b2be8c0e66d90",
+    "summarize_oracle.py": "a3d661b8ad6e72a54ad1acb21fab10980d39793562356575b62873e1e74e9984",
+    "export_inference_weights.py": "be48dd444f47f1fc7f2b5f7375887bd52a2429c64aaf6d66b0c443f985ddd42c",
+    "fingerprint_encoder.py": "276f94e54ebdbddf744b5cb2459e7c837dfedbdcf52db9cf7402c8f75c1760cf",
+    "launch_postprocess.sh": "eb36d34e9f853b48661eedfc6e71415885827737167acb64e0d94e0888586fde",
+    "collect_oracle.py": "1f79b99c0c08c377e2248b2ed4e82e38173f0cc2fb6dcac2cbc866c72ec001c6",
+    "verify_final_cloud.py": "fc53feb4472c8319262726d1c5ee81b55ecca5f7e27efd2d9866488677ba40ba",
+    "postprocess_oracle.py": "907bd1088c6e78aa4c6d7388964b47854d9bedcfae4cca9c65bad3c9c54a6df7"
+  }
+}

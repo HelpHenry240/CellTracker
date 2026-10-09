@@ -1,0 +1,99 @@
+{
+  "protocol": "read-only diagnostic; frozen seq01-calibrated configuration",
+  "r_max_um": 6.4,
+  "candidate_topk": 3,
+  "sequences": {
+    "01": {
+      "counts": {
+        "true_pairs": 23748,
+        "within_gate": 23748,
+        "retained_true": 23746,
+        "division_pairs": 704,
+        "retained_division": 704,
+        "candidate_pairs": 76501,
+        "true_recall": 0.9999157823816742,
+        "division_recall": 1.0
+      },
+      "missing_true_pairs": [
+        {
+          "source_frame": 125,
+          "source_gt": 720,
+          "target_gt": 720,
+          "division": false,
+          "displacement_um": 5.349948949494997,
+          "outside_gate": false
+        },
+        {
+          "source_frame": 126,
+          "source_gt": 720,
+          "target_gt": 720,
+          "division": false,
+          "displacement_um": 5.664378938570958,
+          "outside_gate": false
+        }
+      ]
+    },
+    "02": {
+      "counts": {
+        "true_pairs": 22275,
+        "within_gate": 22274,
+        "retained_true": 22269,
+        "division_pairs": 709,
+        "retained_division": 704,
+        "candidate_pairs": 65751,
+        "true_recall": 0.9997306397306397,
+        "division_recall": 0.9929478138222849
+      },
+      "missing_true_pairs": [
+        {
+          "source_frame": 3,
+          "source_gt": 1,
+          "target_gt": 257,
+          "division": true,
+          "displacement_um": 11.711936540145008,
+          "outside_gate": true
+        },
+        {
+          "source_frame": 150,
+          "source_gt": 712,
+          "target_gt": 714,
+          "division": true,
+          "displacement_um": 4.080234316238226,
+          "outside_gate": false
+        },
+        {
+          "source_frame": 165,
+          "source_gt": 57,
+          "target_gt": 58,
+          "division": true,
+          "displacement_um": 3.249483684180951,
+          "outside_gate": false
+        },
+        {
+          "source_frame": 166,
+          "source_gt": 16,
+          "target_gt": 16,
+          "division": false,
+          "displacement_um": 5.030131471274206,
+          "outside_gate": false
+        },
+        {
+          "source_frame": 171,
+          "source_gt": 634,
+          "target_gt": 635,
+          "division": true,
+          "displacement_um": 3.1393633039583237,
+          "outside_gate": false
+        },
+        {
+          "source_frame": 175,
+          "source_gt": 251,
+          "target_gt": 253,
+          "division": true,
+          "displacement_um": 3.6028610501490164,
+          "outside_gate": false
+        }
+      ]
+    }
+  }
+}

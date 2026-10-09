@@ -1,0 +1,32 @@
+{
+  "01": {
+    "file": "/root/CellTracker_nnunet_oracle_encoder_20261009/data/interim/encoder_01_nnunet_oracle_20261009.npz",
+    "resolved_file": "/root/CellTracker_nnunet_oracle_encoder_20261009/data/interim/encoder_01_nnunet_oracle_20261009.npz",
+    "bytes": 11882502,
+    "sha256": "d3f837fd55f364098670f19d1ea527f3d649c8aadb16d0f68b79504f25543c87",
+    "metadata": {
+      "schema": "encoder_centroid_v1",
+      "model_sha256": "f5388fb1eb4159b26f6976882f2204072378e7c15938a6a68f00aa0d95defdfd",
+      "detection_sha256": "3141973baf205a9db4ad974a0b9e79e8cf61b4d667562c452e0f868209e3057a",
+      "stage": 2,
+      "seq": "01",
+      "aggregation": "mean_of_overlapping_tile_centroid_samples",
+      "feature_dim": 128
+    }
+  },
+  "02": {
+    "file": "/root/CellTracker_nnunet_oracle_encoder_20261009/data/interim/encoder_02_nnunet_oracle_20261009.npz",
+    "resolved_file": "/root/CellTracker_nnunet_oracle_encoder_20261009/data/interim/encoder_02_nnunet_oracle_20261009.npz",
+    "bytes": 11268634,
+    "sha256": "c619e0f01e47a6f37dc30be22f92349a56ba64892fa0942c7950a6614c0ce0ba",
+    "metadata": {
+      "schema": "encoder_centroid_v1",
+      "model_sha256": "f5388fb1eb4159b26f6976882f2204072378e7c15938a6a68f00aa0d95defdfd",
+      "detection_sha256": "10e0440ccfa5ec9b0d564e8c3af58a5c80a4b1fdfb4218f08a3fc4fa2eed7796",
+      "stage": 2,
+      "seq": "02",
+      "aggregation": "mean_of_overlapping_tile_centroid_samples",
+      "feature_dim": 128
+    }
+  }
+}

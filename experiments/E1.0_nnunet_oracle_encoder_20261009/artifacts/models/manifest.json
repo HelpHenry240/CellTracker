@@ -1,0 +1,28 @@
+[
+  {
+    "profile": "nnunet_oracle_encoder",
+    "seed": 20261008,
+    "path": "/root/CellTracker_nnunet_oracle_encoder_20261009/oracle_inference/nnunet_oracle_encoder/seed20261008_inference.pt",
+    "bytes": 446586,
+    "md5": "a3e2f93250895c6110551a8da6e12bc1",
+    "sha256": "570e5e0373ff4a6a1cf6f5171353f4b443c71dfb319d7463b82e8b550721466f",
+    "source_checkpoint_sha256": "bd5560cf33c6148e2797c605bf977f4c20bd5ff1b34693138b64c4611e7868b6",
+    "epoch": 49,
+    "input_contract_signature": "532a8a223fb9b3641b40a22ecca1691c3034df44907e77533a9eedd8e4c57472",
+    "git_commit": "1d84b77569010e73fc0aeb32ecedde1bcfa86bb8",
+    "tensor_identity_verified": true
+  },
+  {
+    "profile": "nnunet_oracle_encoder",
+    "seed": 20261009,
+    "path": "/root/CellTracker_nnunet_oracle_encoder_20261009/oracle_inference/nnunet_oracle_encoder/seed20261009_inference.pt",
+    "bytes": 446586,
+    "md5": "69226a1d93beda7ce6f729e759ead14f",
+    "sha256": "b5321bf1bcb58ae724985b48f9a799e4a9f4011dc39ea547487d1dc7f145e64a",
+    "source_checkpoint_sha256": "5f21a23aa692c01b97ae33cb0bf8ef45463f42ff6b8aab079aa7a40f9aa49471",
+    "epoch": 53,
+    "input_contract_signature": "532a8a223fb9b3641b40a22ecca1691c3034df44907e77533a9eedd8e4c57472",
+    "git_commit": "1d84b77569010e73fc0aeb32ecedde1bcfa86bb8",
+    "tensor_identity_verified": true
+  }
+]

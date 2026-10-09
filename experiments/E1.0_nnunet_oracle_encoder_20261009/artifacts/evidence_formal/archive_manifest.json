@@ -1,0 +1,1286 @@
+{
+  "files": {
+    "SOURCE_VERSION.json": {
+      "source_sha256": "3b9e102492e4e8de10c8885c72ffe2266ebb4dc41ed18a6c336a0b980912338f",
+      "source_bytes": 20502,
+      "compacted_diagnostics": false,
+      "repository_sha256": "3b9e102492e4e8de10c8885c72ffe2266ebb4dc41ed18a6c336a0b980912338f"
+    },
+    "data/interim/encoder_01_nnunet_oracle_20261009.json": {
+      "source_sha256": "5e8c2812d9b0c75328ac7a3f2eb3a5553e9da2fcc173bec6547f610690c3f350",
+      "source_bytes": 326,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5e8c2812d9b0c75328ac7a3f2eb3a5553e9da2fcc173bec6547f610690c3f350"
+    },
+    "data/interim/encoder_02_nnunet_oracle_20261009.json": {
+      "source_sha256": "79d6f161e6fa0fa2b5b386777f7ca5cc621f89fe57418df6e984c7d8233db9a1",
+      "source_bytes": 326,
+      "compacted_diagnostics": false,
+      "repository_sha256": "79d6f161e6fa0fa2b5b386777f7ca5cc621f89fe57418df6e984c7d8233db9a1"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_build01/artifacts/pipeline/run_info.json": {
+      "source_sha256": "16b55b89bfbad1f07362360d538480e7d9d0a3280bd71a26f94d2c3158f90594",
+      "source_bytes": 2237771,
+      "compacted_diagnostics": true,
+      "repository_sha256": "ab874c26f3cf371384096a727093541b6a6036a4fd2b04233616d3aa0c16d62e"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_build01/command.sh": {
+      "source_sha256": "5df058f306c36d14fd7f4ec59f54f6a411e604ee85787cd345a1e7ea9d12c3fa",
+      "source_bytes": 893,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5df058f306c36d14fd7f4ec59f54f6a411e604ee85787cd345a1e7ea9d12c3fa"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_build01/config.yaml": {
+      "source_sha256": "5daa882a5a54320771e44d080c4c7adfc8d9cb7c31b0bea1d60b1d4784f6d555",
+      "source_bytes": 1946,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5daa882a5a54320771e44d080c4c7adfc8d9cb7c31b0bea1d60b1d4784f6d555"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_build01/env.txt": {
+      "source_sha256": "cab139a1631e525bc06e651ea036d60338f29d16cb68a132ef18034982b7fa27",
+      "source_bytes": 5847,
+      "compacted_diagnostics": false,
+      "repository_sha256": "cab139a1631e525bc06e651ea036d60338f29d16cb68a132ef18034982b7fa27"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_build01/figures/pipeline_stages.svg": {
+      "source_sha256": "d18f97aa0b85727b91574b321ad91328d48da6041b52b27eafbe671ebd1750ed",
+      "source_bytes": 699,
+      "compacted_diagnostics": false,
+      "repository_sha256": "d18f97aa0b85727b91574b321ad91328d48da6041b52b27eafbe671ebd1750ed"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_build01/git_commit.txt": {
+      "source_sha256": "628d68fb14faf1d8ae1ea6b5a01d8a01d8e62f5d4c7bf4728d8fa04e02e23fbe",
+      "source_bytes": 129,
+      "compacted_diagnostics": false,
+      "repository_sha256": "628d68fb14faf1d8ae1ea6b5a01d8a01d8e62f5d4c7bf4728d8fa04e02e23fbe"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_build01/logs/run.log": {
+      "source_sha256": "b954a44bf8359791d979e887df7fe1a9bd0a0ada86eb616f6866e5c2df4f85c0",
+      "source_bytes": 316,
+      "compacted_diagnostics": false,
+      "repository_sha256": "b954a44bf8359791d979e887df7fe1a9bd0a0ada86eb616f6866e5c2df4f85c0"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_build01/metrics.json": {
+      "source_sha256": "6ccfb2c2ffcbf5135b42fbaadb19810b2fce4976bef78ce5f944938e15e76ae4",
+      "source_bytes": 2570135,
+      "compacted_diagnostics": true,
+      "repository_sha256": "b432622998bc077471c33086604756184ddb1d3b6429616264759ae6cdedc369"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_build01/notes.md": {
+      "source_sha256": "e8ebc4b3b7b84a462b2373350edcb49b836222a9286dd62ced410f8ca0454fd9",
+      "source_bytes": 217,
+      "compacted_diagnostics": false,
+      "repository_sha256": "e8ebc4b3b7b84a462b2373350edcb49b836222a9286dd62ced410f8ca0454fd9"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_build01/pipeline_config.yaml": {
+      "source_sha256": "6349ed0a54699c42b2311348a256ea2776d6f232aabd1b74a255854cd65b3c08",
+      "source_bytes": 1819,
+      "compacted_diagnostics": false,
+      "repository_sha256": "6349ed0a54699c42b2311348a256ea2776d6f232aabd1b74a255854cd65b3c08"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/artifacts/pipeline/run_info.json": {
+      "source_sha256": "07093664fe7f0e022867ecc4725dc46dd3a174d0a9225a0392a34efe30e56079",
+      "source_bytes": 2209030,
+      "compacted_diagnostics": true,
+      "repository_sha256": "238baed8b2b365bc75525534bc92a360044b8d3b7228398b391337964956d891"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/artifacts/submission/01_RES/DET_log.txt": {
+      "source_sha256": "f58dc4636cb4d85308798666cb1890124b19f8b48d4b2ec1e19946a6c9a898d4",
+      "source_bytes": 2639,
+      "compacted_diagnostics": false,
+      "repository_sha256": "f58dc4636cb4d85308798666cb1890124b19f8b48d4b2ec1e19946a6c9a898d4"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/artifacts/submission/01_RES/SEG_log.txt": {
+      "source_sha256": "c6ca2cd9a95cdf68fb64ac6d27d7606bca81d88a34d1d4a01bf60b20524272eb",
+      "source_bytes": 2483,
+      "compacted_diagnostics": false,
+      "repository_sha256": "c6ca2cd9a95cdf68fb64ac6d27d7606bca81d88a34d1d4a01bf60b20524272eb"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/artifacts/submission/01_RES/TRA_log.txt": {
+      "source_sha256": "e0484e0446e01f5612c54de20cfe602911e776147fb78b06037b12cdb412a10e",
+      "source_bytes": 25253,
+      "compacted_diagnostics": false,
+      "repository_sha256": "e0484e0446e01f5612c54de20cfe602911e776147fb78b06037b12cdb412a10e"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/artifacts/submission/01_RES/local_metrics.json": {
+      "source_sha256": "1b436eb8c9313c11ecfa37b372b77c372d8b19cf00e7261b55a1224683fad10f",
+      "source_bytes": 610,
+      "compacted_diagnostics": false,
+      "repository_sha256": "1b436eb8c9313c11ecfa37b372b77c372d8b19cf00e7261b55a1224683fad10f"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/artifacts/submission/01_RES/res_track.txt": {
+      "source_sha256": "765013f1c6af2cb41c27fc0d0fb26808b3dd0d258408c5ac8e8ccad33d21537c",
+      "source_bytes": 10410,
+      "compacted_diagnostics": false,
+      "repository_sha256": "765013f1c6af2cb41c27fc0d0fb26808b3dd0d258408c5ac8e8ccad33d21537c"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/command.sh": {
+      "source_sha256": "8a5102b4b1b028e8a200b46c9a347fa347383725db70e5ca874c6bd8625eb8b3",
+      "source_bytes": 1027,
+      "compacted_diagnostics": false,
+      "repository_sha256": "8a5102b4b1b028e8a200b46c9a347fa347383725db70e5ca874c6bd8625eb8b3"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/config.yaml": {
+      "source_sha256": "2a7395ac801e7944d22e4c6638beb7ce990ec359bb6c24479485e98028048b8b",
+      "source_bytes": 2194,
+      "compacted_diagnostics": false,
+      "repository_sha256": "2a7395ac801e7944d22e4c6638beb7ce990ec359bb6c24479485e98028048b8b"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/env.txt": {
+      "source_sha256": "f4d4add3b8d031a063b8331e964149d335db06d3daa8b24a2d08d1067b7e442a",
+      "source_bytes": 5847,
+      "compacted_diagnostics": false,
+      "repository_sha256": "f4d4add3b8d031a063b8331e964149d335db06d3daa8b24a2d08d1067b7e442a"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/figures/pipeline_stages.svg": {
+      "source_sha256": "e62a860dfc812d26a31c417abaf122aff002ecf99b140d8c882390d38d759934",
+      "source_bytes": 611,
+      "compacted_diagnostics": false,
+      "repository_sha256": "e62a860dfc812d26a31c417abaf122aff002ecf99b140d8c882390d38d759934"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/git_commit.txt": {
+      "source_sha256": "628d68fb14faf1d8ae1ea6b5a01d8a01d8e62f5d4c7bf4728d8fa04e02e23fbe",
+      "source_bytes": 129,
+      "compacted_diagnostics": false,
+      "repository_sha256": "628d68fb14faf1d8ae1ea6b5a01d8a01d8e62f5d4c7bf4728d8fa04e02e23fbe"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/logs/run.log": {
+      "source_sha256": "eca38cc78c20517387a05eebe564659777ebe191903a992ef14351838c32a60a",
+      "source_bytes": 352,
+      "compacted_diagnostics": false,
+      "repository_sha256": "eca38cc78c20517387a05eebe564659777ebe191903a992ef14351838c32a60a"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/metrics.json": {
+      "source_sha256": "ffe9fd51dbfa6c35e8660276335dac9f37d6fb8229fd3bb9a1f9a875e634b8ed",
+      "source_bytes": 789,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ffe9fd51dbfa6c35e8660276335dac9f37d6fb8229fd3bb9a1f9a875e634b8ed"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/metrics_official_01.json": {
+      "source_sha256": "96665f57ad496435a7b0611645732aeb4c1314c349c0cacfabff6d97ef9ecc55",
+      "source_bytes": 565,
+      "compacted_diagnostics": false,
+      "repository_sha256": "96665f57ad496435a7b0611645732aeb4c1314c349c0cacfabff6d97ef9ecc55"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/notes.md": {
+      "source_sha256": "41a710b7871282dfd7e9d48cb5075557dfed6a18994694e5d8853a8e2086017f",
+      "source_bytes": 213,
+      "compacted_diagnostics": false,
+      "repository_sha256": "41a710b7871282dfd7e9d48cb5075557dfed6a18994694e5d8853a8e2086017f"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/official_logs/DET_log.txt": {
+      "source_sha256": "f58dc4636cb4d85308798666cb1890124b19f8b48d4b2ec1e19946a6c9a898d4",
+      "source_bytes": 2639,
+      "compacted_diagnostics": false,
+      "repository_sha256": "f58dc4636cb4d85308798666cb1890124b19f8b48d4b2ec1e19946a6c9a898d4"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/official_logs/DET_stdout.txt": {
+      "source_sha256": "c6b9ab5ee8960e391506a5bf338fc0d919db3dfa4b02898926b709ca3c01972a",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "c6b9ab5ee8960e391506a5bf338fc0d919db3dfa4b02898926b709ca3c01972a"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/official_logs/SEG_log.txt": {
+      "source_sha256": "c6ca2cd9a95cdf68fb64ac6d27d7606bca81d88a34d1d4a01bf60b20524272eb",
+      "source_bytes": 2483,
+      "compacted_diagnostics": false,
+      "repository_sha256": "c6ca2cd9a95cdf68fb64ac6d27d7606bca81d88a34d1d4a01bf60b20524272eb"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/official_logs/SEG_stdout.txt": {
+      "source_sha256": "56071888ad7603edb380af6e3d28933a8d873b6548f186a93541488e77ad1028",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "56071888ad7603edb380af6e3d28933a8d873b6548f186a93541488e77ad1028"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/official_logs/TRA_log.txt": {
+      "source_sha256": "e0484e0446e01f5612c54de20cfe602911e776147fb78b06037b12cdb412a10e",
+      "source_bytes": 25253,
+      "compacted_diagnostics": false,
+      "repository_sha256": "e0484e0446e01f5612c54de20cfe602911e776147fb78b06037b12cdb412a10e"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/official_logs/TRA_stdout.txt": {
+      "source_sha256": "9762b6ea46205da2597aea6f3d7895f688b22e7d07f40ece2213ce85d357933c",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "9762b6ea46205da2597aea6f3d7895f688b22e7d07f40ece2213ce85d357933c"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01/pipeline_config.yaml": {
+      "source_sha256": "6349ed0a54699c42b2311348a256ea2776d6f232aabd1b74a255854cd65b3c08",
+      "source_bytes": 1819,
+      "compacted_diagnostics": false,
+      "repository_sha256": "6349ed0a54699c42b2311348a256ea2776d6f232aabd1b74a255854cd65b3c08"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/artifacts/pipeline/run_info.json": {
+      "source_sha256": "830040b6370dae68ce7f18b0721ed77b0e6d775d0a1f957fd72e6f68c62dff9c",
+      "source_bytes": 2064648,
+      "compacted_diagnostics": true,
+      "repository_sha256": "ec68d69f528dfda060615b6a3c8a6c63dcc0dc8ea6fd0d700c0dfb5acfea3baa"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/artifacts/submission/02_RES/DET_log.txt": {
+      "source_sha256": "5566891da5fc740f1affa6d06f21c95b19d60e6f1d2021eb8168355e9344ff72",
+      "source_bytes": 7406,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5566891da5fc740f1affa6d06f21c95b19d60e6f1d2021eb8168355e9344ff72"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/artifacts/submission/02_RES/SEG_log.txt": {
+      "source_sha256": "ff98f162cf55f8921ccd140bb6185c4eb18778e7efd4ca8c8c7c9b4da1f95dfd",
+      "source_bytes": 2508,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ff98f162cf55f8921ccd140bb6185c4eb18778e7efd4ca8c8c7c9b4da1f95dfd"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/artifacts/submission/02_RES/TRA_log.txt": {
+      "source_sha256": "6ff33a3e8d73dfdcc9c7bb02a793e46f304480b5ec79e25fbca89e8805ab12e4",
+      "source_bytes": 38158,
+      "compacted_diagnostics": false,
+      "repository_sha256": "6ff33a3e8d73dfdcc9c7bb02a793e46f304480b5ec79e25fbca89e8805ab12e4"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/artifacts/submission/02_RES/local_metrics.json": {
+      "source_sha256": "bbb94b8a1b6e63439a5b71538e909189c7dc1aa71e10f6c69604044c22facb37",
+      "source_bytes": 610,
+      "compacted_diagnostics": false,
+      "repository_sha256": "bbb94b8a1b6e63439a5b71538e909189c7dc1aa71e10f6c69604044c22facb37"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/artifacts/submission/02_RES/res_track.txt": {
+      "source_sha256": "30498cc7b3d29c1916554ab866dfde11724538f22a9ae50024d625d99fcdb2d4",
+      "source_bytes": 11671,
+      "compacted_diagnostics": false,
+      "repository_sha256": "30498cc7b3d29c1916554ab866dfde11724538f22a9ae50024d625d99fcdb2d4"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/command.sh": {
+      "source_sha256": "83194cb0f2c2cefcfa48fdc5881fed7b40eed4caece800dd43de565117e36037",
+      "source_bytes": 1027,
+      "compacted_diagnostics": false,
+      "repository_sha256": "83194cb0f2c2cefcfa48fdc5881fed7b40eed4caece800dd43de565117e36037"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/config.yaml": {
+      "source_sha256": "28556bb73484e69381dfd1ef0b88124298b13b59d82ec247cb1e7255113e9b6f",
+      "source_bytes": 2194,
+      "compacted_diagnostics": false,
+      "repository_sha256": "28556bb73484e69381dfd1ef0b88124298b13b59d82ec247cb1e7255113e9b6f"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/env.txt": {
+      "source_sha256": "957c86a5b971e3a6d0180f38af89540069d7b6441c37653039fbee4166d2e8d0",
+      "source_bytes": 5847,
+      "compacted_diagnostics": false,
+      "repository_sha256": "957c86a5b971e3a6d0180f38af89540069d7b6441c37653039fbee4166d2e8d0"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/figures/pipeline_stages.svg": {
+      "source_sha256": "9fcf56394009dacbcdd6038a1517144e29a8f19daf881219b0fb0a13eae22f72",
+      "source_bytes": 613,
+      "compacted_diagnostics": false,
+      "repository_sha256": "9fcf56394009dacbcdd6038a1517144e29a8f19daf881219b0fb0a13eae22f72"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/git_commit.txt": {
+      "source_sha256": "628d68fb14faf1d8ae1ea6b5a01d8a01d8e62f5d4c7bf4728d8fa04e02e23fbe",
+      "source_bytes": 129,
+      "compacted_diagnostics": false,
+      "repository_sha256": "628d68fb14faf1d8ae1ea6b5a01d8a01d8e62f5d4c7bf4728d8fa04e02e23fbe"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/logs/run.log": {
+      "source_sha256": "21af0d45ad87156d495afdd5906687cfd06c3f83406467fc58333077bccab509",
+      "source_bytes": 352,
+      "compacted_diagnostics": false,
+      "repository_sha256": "21af0d45ad87156d495afdd5906687cfd06c3f83406467fc58333077bccab509"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/metrics.json": {
+      "source_sha256": "d0202c765feaf238c307d5288fe90bdccaca8762db0c9f57d79365371585d947",
+      "source_bytes": 789,
+      "compacted_diagnostics": false,
+      "repository_sha256": "d0202c765feaf238c307d5288fe90bdccaca8762db0c9f57d79365371585d947"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/metrics_official_02.json": {
+      "source_sha256": "9d825b33c29e572a1a0845a6dda6d52e8de7dee60eabe10662d2266bbee0b155",
+      "source_bytes": 565,
+      "compacted_diagnostics": false,
+      "repository_sha256": "9d825b33c29e572a1a0845a6dda6d52e8de7dee60eabe10662d2266bbee0b155"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/notes.md": {
+      "source_sha256": "41a710b7871282dfd7e9d48cb5075557dfed6a18994694e5d8853a8e2086017f",
+      "source_bytes": 213,
+      "compacted_diagnostics": false,
+      "repository_sha256": "41a710b7871282dfd7e9d48cb5075557dfed6a18994694e5d8853a8e2086017f"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/official_logs/DET_log.txt": {
+      "source_sha256": "5566891da5fc740f1affa6d06f21c95b19d60e6f1d2021eb8168355e9344ff72",
+      "source_bytes": 7406,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5566891da5fc740f1affa6d06f21c95b19d60e6f1d2021eb8168355e9344ff72"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/official_logs/DET_stdout.txt": {
+      "source_sha256": "c89e7c7e2a8d4d2aa33e1a896d5839331838f53b343a9407f8d88000be4b2072",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "c89e7c7e2a8d4d2aa33e1a896d5839331838f53b343a9407f8d88000be4b2072"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/official_logs/SEG_log.txt": {
+      "source_sha256": "ff98f162cf55f8921ccd140bb6185c4eb18778e7efd4ca8c8c7c9b4da1f95dfd",
+      "source_bytes": 2508,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ff98f162cf55f8921ccd140bb6185c4eb18778e7efd4ca8c8c7c9b4da1f95dfd"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/official_logs/SEG_stdout.txt": {
+      "source_sha256": "7211a5866faef937a309fdfa8cd549b7d6760de63f6331a87213c0e39df1db32",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "7211a5866faef937a309fdfa8cd549b7d6760de63f6331a87213c0e39df1db32"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/official_logs/TRA_log.txt": {
+      "source_sha256": "6ff33a3e8d73dfdcc9c7bb02a793e46f304480b5ec79e25fbca89e8805ab12e4",
+      "source_bytes": 38158,
+      "compacted_diagnostics": false,
+      "repository_sha256": "6ff33a3e8d73dfdcc9c7bb02a793e46f304480b5ec79e25fbca89e8805ab12e4"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/official_logs/TRA_stdout.txt": {
+      "source_sha256": "34fbfae8e47cbe322429a618e1261ca42301c1e41a6b778bf60fd7796adc2f2a",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "34fbfae8e47cbe322429a618e1261ca42301c1e41a6b778bf60fd7796adc2f2a"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02/pipeline_config.yaml": {
+      "source_sha256": "7952e4d64e2ab0172db26aefadf79e6bf121390b97f09b5a88e5748ec490acc6",
+      "source_bytes": 1819,
+      "compacted_diagnostics": false,
+      "repository_sha256": "7952e4d64e2ab0172db26aefadf79e6bf121390b97f09b5a88e5748ec490acc6"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/artifacts/pipeline/run_info.json": {
+      "source_sha256": "dbc26795eca62f032b51515d59408102344e99ad4285523958188f2d66368378",
+      "source_bytes": 2064643,
+      "compacted_diagnostics": true,
+      "repository_sha256": "87daaca0d56ade833d4d225537ab9f033e76fd717817a46ab0f932a8a3dd95d4"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/artifacts/submission/02_RES/DET_log.txt": {
+      "source_sha256": "5566891da5fc740f1affa6d06f21c95b19d60e6f1d2021eb8168355e9344ff72",
+      "source_bytes": 7406,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5566891da5fc740f1affa6d06f21c95b19d60e6f1d2021eb8168355e9344ff72"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/artifacts/submission/02_RES/SEG_log.txt": {
+      "source_sha256": "ff98f162cf55f8921ccd140bb6185c4eb18778e7efd4ca8c8c7c9b4da1f95dfd",
+      "source_bytes": 2508,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ff98f162cf55f8921ccd140bb6185c4eb18778e7efd4ca8c8c7c9b4da1f95dfd"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/artifacts/submission/02_RES/TRA_log.txt": {
+      "source_sha256": "6ff33a3e8d73dfdcc9c7bb02a793e46f304480b5ec79e25fbca89e8805ab12e4",
+      "source_bytes": 38158,
+      "compacted_diagnostics": false,
+      "repository_sha256": "6ff33a3e8d73dfdcc9c7bb02a793e46f304480b5ec79e25fbca89e8805ab12e4"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/artifacts/submission/02_RES/local_metrics.json": {
+      "source_sha256": "bbb94b8a1b6e63439a5b71538e909189c7dc1aa71e10f6c69604044c22facb37",
+      "source_bytes": 610,
+      "compacted_diagnostics": false,
+      "repository_sha256": "bbb94b8a1b6e63439a5b71538e909189c7dc1aa71e10f6c69604044c22facb37"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/artifacts/submission/02_RES/res_track.txt": {
+      "source_sha256": "30498cc7b3d29c1916554ab866dfde11724538f22a9ae50024d625d99fcdb2d4",
+      "source_bytes": 11671,
+      "compacted_diagnostics": false,
+      "repository_sha256": "30498cc7b3d29c1916554ab866dfde11724538f22a9ae50024d625d99fcdb2d4"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/command.sh": {
+      "source_sha256": "1db9802c6c53e3165bba2db7adb65537a33055f9853536ce8d9f3aeef21f3567",
+      "source_bytes": 1034,
+      "compacted_diagnostics": false,
+      "repository_sha256": "1db9802c6c53e3165bba2db7adb65537a33055f9853536ce8d9f3aeef21f3567"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/config.yaml": {
+      "source_sha256": "7f8caa277f15d0ad8e9f0d54aac2ae66772f2b90a42e39bd16af9ec1820742f3",
+      "source_bytes": 2215,
+      "compacted_diagnostics": false,
+      "repository_sha256": "7f8caa277f15d0ad8e9f0d54aac2ae66772f2b90a42e39bd16af9ec1820742f3"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/env.txt": {
+      "source_sha256": "32bedd2751cfe21a464b64446289dc7683982c9163c51d309942533045a349e3",
+      "source_bytes": 5847,
+      "compacted_diagnostics": false,
+      "repository_sha256": "32bedd2751cfe21a464b64446289dc7683982c9163c51d309942533045a349e3"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/figures/pipeline_stages.svg": {
+      "source_sha256": "75dffea275d6e2f2174e4a07b8811c6af588c18b7e8efd76bb0faec4eede3dad",
+      "source_bytes": 611,
+      "compacted_diagnostics": false,
+      "repository_sha256": "75dffea275d6e2f2174e4a07b8811c6af588c18b7e8efd76bb0faec4eede3dad"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/git_commit.txt": {
+      "source_sha256": "628d68fb14faf1d8ae1ea6b5a01d8a01d8e62f5d4c7bf4728d8fa04e02e23fbe",
+      "source_bytes": 129,
+      "compacted_diagnostics": false,
+      "repository_sha256": "628d68fb14faf1d8ae1ea6b5a01d8a01d8e62f5d4c7bf4728d8fa04e02e23fbe"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/logs/run.log": {
+      "source_sha256": "408e42467d3ffbce7901a6af586b6fea4004e2e1a61927de95762ec2d86bd557",
+      "source_bytes": 373,
+      "compacted_diagnostics": false,
+      "repository_sha256": "408e42467d3ffbce7901a6af586b6fea4004e2e1a61927de95762ec2d86bd557"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/metrics.json": {
+      "source_sha256": "d0202c765feaf238c307d5288fe90bdccaca8762db0c9f57d79365371585d947",
+      "source_bytes": 789,
+      "compacted_diagnostics": false,
+      "repository_sha256": "d0202c765feaf238c307d5288fe90bdccaca8762db0c9f57d79365371585d947"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/metrics_official_02.json": {
+      "source_sha256": "9d825b33c29e572a1a0845a6dda6d52e8de7dee60eabe10662d2266bbee0b155",
+      "source_bytes": 565,
+      "compacted_diagnostics": false,
+      "repository_sha256": "9d825b33c29e572a1a0845a6dda6d52e8de7dee60eabe10662d2266bbee0b155"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/notes.md": {
+      "source_sha256": "41a710b7871282dfd7e9d48cb5075557dfed6a18994694e5d8853a8e2086017f",
+      "source_bytes": 213,
+      "compacted_diagnostics": false,
+      "repository_sha256": "41a710b7871282dfd7e9d48cb5075557dfed6a18994694e5d8853a8e2086017f"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/official_logs/DET_log.txt": {
+      "source_sha256": "5566891da5fc740f1affa6d06f21c95b19d60e6f1d2021eb8168355e9344ff72",
+      "source_bytes": 7406,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5566891da5fc740f1affa6d06f21c95b19d60e6f1d2021eb8168355e9344ff72"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/official_logs/DET_stdout.txt": {
+      "source_sha256": "c89e7c7e2a8d4d2aa33e1a896d5839331838f53b343a9407f8d88000be4b2072",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "c89e7c7e2a8d4d2aa33e1a896d5839331838f53b343a9407f8d88000be4b2072"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/official_logs/SEG_log.txt": {
+      "source_sha256": "ff98f162cf55f8921ccd140bb6185c4eb18778e7efd4ca8c8c7c9b4da1f95dfd",
+      "source_bytes": 2508,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ff98f162cf55f8921ccd140bb6185c4eb18778e7efd4ca8c8c7c9b4da1f95dfd"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/official_logs/SEG_stdout.txt": {
+      "source_sha256": "7211a5866faef937a309fdfa8cd549b7d6760de63f6331a87213c0e39df1db32",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "7211a5866faef937a309fdfa8cd549b7d6760de63f6331a87213c0e39df1db32"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/official_logs/TRA_log.txt": {
+      "source_sha256": "6ff33a3e8d73dfdcc9c7bb02a793e46f304480b5ec79e25fbca89e8805ab12e4",
+      "source_bytes": 38158,
+      "compacted_diagnostics": false,
+      "repository_sha256": "6ff33a3e8d73dfdcc9c7bb02a793e46f304480b5ec79e25fbca89e8805ab12e4"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/official_logs/TRA_stdout.txt": {
+      "source_sha256": "34fbfae8e47cbe322429a618e1261ca42301c1e41a6b778bf60fd7796adc2f2a",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "34fbfae8e47cbe322429a618e1261ca42301c1e41a6b778bf60fd7796adc2f2a"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat/pipeline_config.yaml": {
+      "source_sha256": "7952e4d64e2ab0172db26aefadf79e6bf121390b97f09b5a88e5748ec490acc6",
+      "source_bytes": 1819,
+      "compacted_diagnostics": false,
+      "repository_sha256": "7952e4d64e2ab0172db26aefadf79e6bf121390b97f09b5a88e5748ec490acc6"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_train/command.sh": {
+      "source_sha256": "b81b3b2c609320d8582531123f750d9b16bf01263b5decfc1a2e499b714340be",
+      "source_bytes": 736,
+      "compacted_diagnostics": false,
+      "repository_sha256": "b81b3b2c609320d8582531123f750d9b16bf01263b5decfc1a2e499b714340be"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_train/config.yaml": {
+      "source_sha256": "cd8e4f992522a0b625a95721e32be28444704f887548201f4a0622bab8f3f65a",
+      "source_bytes": 1490,
+      "compacted_diagnostics": false,
+      "repository_sha256": "cd8e4f992522a0b625a95721e32be28444704f887548201f4a0622bab8f3f65a"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_train/env.txt": {
+      "source_sha256": "7114cd98900450e1dc2ed08177c2cf544b125225bdd6aa1c65605938875d788d",
+      "source_bytes": 5847,
+      "compacted_diagnostics": false,
+      "repository_sha256": "7114cd98900450e1dc2ed08177c2cf544b125225bdd6aa1c65605938875d788d"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_train/figures/validation_f1.svg": {
+      "source_sha256": "f74d37aa89bc2f34a49bd9d20bf524854b850844781bb815948919f1576b6aa7",
+      "source_bytes": 935,
+      "compacted_diagnostics": false,
+      "repository_sha256": "f74d37aa89bc2f34a49bd9d20bf524854b850844781bb815948919f1576b6aa7"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_train/git_commit.txt": {
+      "source_sha256": "628d68fb14faf1d8ae1ea6b5a01d8a01d8e62f5d4c7bf4728d8fa04e02e23fbe",
+      "source_bytes": 129,
+      "compacted_diagnostics": false,
+      "repository_sha256": "628d68fb14faf1d8ae1ea6b5a01d8a01d8e62f5d4c7bf4728d8fa04e02e23fbe"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_train/logs/run.log": {
+      "source_sha256": "c29daa6695a575306ca16ccbb6f19cd4013fcf2511e49f3fee1750af92b58b30",
+      "source_bytes": 344,
+      "compacted_diagnostics": false,
+      "repository_sha256": "c29daa6695a575306ca16ccbb6f19cd4013fcf2511e49f3fee1750af92b58b30"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_train/metrics.json": {
+      "source_sha256": "9ad651f097752bb351df4b3179b654a953dedb4a1d220bbf725b0655a660f1c8",
+      "source_bytes": 562,
+      "compacted_diagnostics": false,
+      "repository_sha256": "9ad651f097752bb351df4b3179b654a953dedb4a1d220bbf725b0655a660f1c8"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261008_train/notes.md": {
+      "source_sha256": "da79382dafdd6b5d2094b60bc4ef27f7f8cd677200d6f5bfea729d0439fcd812",
+      "source_bytes": 445,
+      "compacted_diagnostics": false,
+      "repository_sha256": "da79382dafdd6b5d2094b60bc4ef27f7f8cd677200d6f5bfea729d0439fcd812"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/artifacts/pipeline/run_info.json": {
+      "source_sha256": "7ca5e34cb11a2dee1dd494696f58b4743a03deb9b53a56d47fca6fd1dbfdc9c4",
+      "source_bytes": 2203965,
+      "compacted_diagnostics": true,
+      "repository_sha256": "d661302fd19124b0e9737ca4c6f1d44c2f44870cf5fc6ca5d51caa635e07c04b"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/artifacts/submission/01_RES/DET_log.txt": {
+      "source_sha256": "6cdcdd6534b51e309574a335ca1811de267478a86600ba344576c6f7802f93cd",
+      "source_bytes": 2639,
+      "compacted_diagnostics": false,
+      "repository_sha256": "6cdcdd6534b51e309574a335ca1811de267478a86600ba344576c6f7802f93cd"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/artifacts/submission/01_RES/SEG_log.txt": {
+      "source_sha256": "c6ca2cd9a95cdf68fb64ac6d27d7606bca81d88a34d1d4a01bf60b20524272eb",
+      "source_bytes": 2483,
+      "compacted_diagnostics": false,
+      "repository_sha256": "c6ca2cd9a95cdf68fb64ac6d27d7606bca81d88a34d1d4a01bf60b20524272eb"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/artifacts/submission/01_RES/TRA_log.txt": {
+      "source_sha256": "24b906c90122f9ac4ddc2b37935b44c3a49dc2c201af1362007b9a869aa0bc44",
+      "source_bytes": 25294,
+      "compacted_diagnostics": false,
+      "repository_sha256": "24b906c90122f9ac4ddc2b37935b44c3a49dc2c201af1362007b9a869aa0bc44"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/artifacts/submission/01_RES/local_metrics.json": {
+      "source_sha256": "40f9507381579c45135d553db07769cee1cc047c63925e460d972ae7cc7deb7a",
+      "source_bytes": 610,
+      "compacted_diagnostics": false,
+      "repository_sha256": "40f9507381579c45135d553db07769cee1cc047c63925e460d972ae7cc7deb7a"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/artifacts/submission/01_RES/res_track.txt": {
+      "source_sha256": "2d2bd2aa84cde5fc0af50cd56329b15019be0fc5d399598f42a694193ea0e7e9",
+      "source_bytes": 10364,
+      "compacted_diagnostics": false,
+      "repository_sha256": "2d2bd2aa84cde5fc0af50cd56329b15019be0fc5d399598f42a694193ea0e7e9"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/command.sh": {
+      "source_sha256": "04be556e21b234b210f528aac137d849b543ff3e3de74d64822ddaa816dba003",
+      "source_bytes": 1027,
+      "compacted_diagnostics": false,
+      "repository_sha256": "04be556e21b234b210f528aac137d849b543ff3e3de74d64822ddaa816dba003"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/config.yaml": {
+      "source_sha256": "82b7d388ce17600b59957a8976c4cdb60a8067a3626082421448c6a7ee88eb9d",
+      "source_bytes": 2194,
+      "compacted_diagnostics": false,
+      "repository_sha256": "82b7d388ce17600b59957a8976c4cdb60a8067a3626082421448c6a7ee88eb9d"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/env.txt": {
+      "source_sha256": "48de460806385009ac4be6ad8e6aef47750b085aa4cfdff371c7830218877a79",
+      "source_bytes": 5847,
+      "compacted_diagnostics": false,
+      "repository_sha256": "48de460806385009ac4be6ad8e6aef47750b085aa4cfdff371c7830218877a79"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/figures/pipeline_stages.svg": {
+      "source_sha256": "beda43f26f95947404252717ebd3ae86adec4e09416714ef78e55398814cd415",
+      "source_bytes": 611,
+      "compacted_diagnostics": false,
+      "repository_sha256": "beda43f26f95947404252717ebd3ae86adec4e09416714ef78e55398814cd415"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/git_commit.txt": {
+      "source_sha256": "628d68fb14faf1d8ae1ea6b5a01d8a01d8e62f5d4c7bf4728d8fa04e02e23fbe",
+      "source_bytes": 129,
+      "compacted_diagnostics": false,
+      "repository_sha256": "628d68fb14faf1d8ae1ea6b5a01d8a01d8e62f5d4c7bf4728d8fa04e02e23fbe"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/logs/run.log": {
+      "source_sha256": "5e7f2cc579326400f209c66d9137cbfa4aeb204bde35e6666442e812f94ab827",
+      "source_bytes": 352,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5e7f2cc579326400f209c66d9137cbfa4aeb204bde35e6666442e812f94ab827"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/metrics.json": {
+      "source_sha256": "fb2f7288f9d6f784725dae9de1a7aff3f78bcba326a080078eeecacad941ea27",
+      "source_bytes": 789,
+      "compacted_diagnostics": false,
+      "repository_sha256": "fb2f7288f9d6f784725dae9de1a7aff3f78bcba326a080078eeecacad941ea27"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/metrics_official_01.json": {
+      "source_sha256": "8696b57fc74d6a9feb5c9e53efdf06a513f2fdf51667874557bc3659b834a438",
+      "source_bytes": 565,
+      "compacted_diagnostics": false,
+      "repository_sha256": "8696b57fc74d6a9feb5c9e53efdf06a513f2fdf51667874557bc3659b834a438"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/notes.md": {
+      "source_sha256": "41a710b7871282dfd7e9d48cb5075557dfed6a18994694e5d8853a8e2086017f",
+      "source_bytes": 213,
+      "compacted_diagnostics": false,
+      "repository_sha256": "41a710b7871282dfd7e9d48cb5075557dfed6a18994694e5d8853a8e2086017f"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/official_logs/DET_log.txt": {
+      "source_sha256": "6cdcdd6534b51e309574a335ca1811de267478a86600ba344576c6f7802f93cd",
+      "source_bytes": 2639,
+      "compacted_diagnostics": false,
+      "repository_sha256": "6cdcdd6534b51e309574a335ca1811de267478a86600ba344576c6f7802f93cd"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/official_logs/DET_stdout.txt": {
+      "source_sha256": "c6b9ab5ee8960e391506a5bf338fc0d919db3dfa4b02898926b709ca3c01972a",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "c6b9ab5ee8960e391506a5bf338fc0d919db3dfa4b02898926b709ca3c01972a"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/official_logs/SEG_log.txt": {
+      "source_sha256": "c6ca2cd9a95cdf68fb64ac6d27d7606bca81d88a34d1d4a01bf60b20524272eb",
+      "source_bytes": 2483,
+      "compacted_diagnostics": false,
+      "repository_sha256": "c6ca2cd9a95cdf68fb64ac6d27d7606bca81d88a34d1d4a01bf60b20524272eb"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/official_logs/SEG_stdout.txt": {
+      "source_sha256": "56071888ad7603edb380af6e3d28933a8d873b6548f186a93541488e77ad1028",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "56071888ad7603edb380af6e3d28933a8d873b6548f186a93541488e77ad1028"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/official_logs/TRA_log.txt": {
+      "source_sha256": "24b906c90122f9ac4ddc2b37935b44c3a49dc2c201af1362007b9a869aa0bc44",
+      "source_bytes": 25294,
+      "compacted_diagnostics": false,
+      "repository_sha256": "24b906c90122f9ac4ddc2b37935b44c3a49dc2c201af1362007b9a869aa0bc44"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/official_logs/TRA_stdout.txt": {
+      "source_sha256": "ddc9383b7b8607027edc877187bb7b48671e83946089ada4d80281b852cd71a0",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ddc9383b7b8607027edc877187bb7b48671e83946089ada4d80281b852cd71a0"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01/pipeline_config.yaml": {
+      "source_sha256": "6349ed0a54699c42b2311348a256ea2776d6f232aabd1b74a255854cd65b3c08",
+      "source_bytes": 1819,
+      "compacted_diagnostics": false,
+      "repository_sha256": "6349ed0a54699c42b2311348a256ea2776d6f232aabd1b74a255854cd65b3c08"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/artifacts/pipeline/run_info.json": {
+      "source_sha256": "8b0a10aba240853c6c93f3bf374dc18338a9a92b5e1d3f66ff9dcb8cfe1ca0d5",
+      "source_bytes": 2059746,
+      "compacted_diagnostics": true,
+      "repository_sha256": "c055f1d7b08ff8890053d0222f1e01684cad0df57c86e26d0857b6438b9c0e6c"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/artifacts/submission/02_RES/DET_log.txt": {
+      "source_sha256": "4375ee9eee434ae6947d9fa27da7f3fefebed7a463fe2bd9e2f2aa2ebe17c860",
+      "source_bytes": 7406,
+      "compacted_diagnostics": false,
+      "repository_sha256": "4375ee9eee434ae6947d9fa27da7f3fefebed7a463fe2bd9e2f2aa2ebe17c860"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/artifacts/submission/02_RES/SEG_log.txt": {
+      "source_sha256": "ff98f162cf55f8921ccd140bb6185c4eb18778e7efd4ca8c8c7c9b4da1f95dfd",
+      "source_bytes": 2508,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ff98f162cf55f8921ccd140bb6185c4eb18778e7efd4ca8c8c7c9b4da1f95dfd"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/artifacts/submission/02_RES/TRA_log.txt": {
+      "source_sha256": "09d461c29f97c3890a771969d0374a453c1c2f3c5b0e75af378dc21ca5120e76",
+      "source_bytes": 39151,
+      "compacted_diagnostics": false,
+      "repository_sha256": "09d461c29f97c3890a771969d0374a453c1c2f3c5b0e75af378dc21ca5120e76"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/artifacts/submission/02_RES/local_metrics.json": {
+      "source_sha256": "4e0e1cd7fafbb454b4b1cc5a7a550bf907b339725ec99d7e0f8a564d0d00b735",
+      "source_bytes": 611,
+      "compacted_diagnostics": false,
+      "repository_sha256": "4e0e1cd7fafbb454b4b1cc5a7a550bf907b339725ec99d7e0f8a564d0d00b735"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/artifacts/submission/02_RES/res_track.txt": {
+      "source_sha256": "c780b955a96e8b0a6e223eeddabc32b320387e2c536173a68c1791c168470042",
+      "source_bytes": 11694,
+      "compacted_diagnostics": false,
+      "repository_sha256": "c780b955a96e8b0a6e223eeddabc32b320387e2c536173a68c1791c168470042"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/command.sh": {
+      "source_sha256": "7c9f48c9f83d22aa50680019146ea4ceab548e2bba6ea2b6f1638def8f12a163",
+      "source_bytes": 1027,
+      "compacted_diagnostics": false,
+      "repository_sha256": "7c9f48c9f83d22aa50680019146ea4ceab548e2bba6ea2b6f1638def8f12a163"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/config.yaml": {
+      "source_sha256": "520e22c185ed3978821d12a54a10d991e3d98f5008941ea3c0cacc5efeba2d8d",
+      "source_bytes": 2194,
+      "compacted_diagnostics": false,
+      "repository_sha256": "520e22c185ed3978821d12a54a10d991e3d98f5008941ea3c0cacc5efeba2d8d"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/env.txt": {
+      "source_sha256": "65c85740b9b4e8d771af731dc06f6455b14aa1f979f6f443fa3b2666d24c1f1b",
+      "source_bytes": 5847,
+      "compacted_diagnostics": false,
+      "repository_sha256": "65c85740b9b4e8d771af731dc06f6455b14aa1f979f6f443fa3b2666d24c1f1b"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/figures/pipeline_stages.svg": {
+      "source_sha256": "2745ef0bf2856bb48059e5ff6b53a00dc66567be7a88123eae3212ae4f6c6125",
+      "source_bytes": 611,
+      "compacted_diagnostics": false,
+      "repository_sha256": "2745ef0bf2856bb48059e5ff6b53a00dc66567be7a88123eae3212ae4f6c6125"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/git_commit.txt": {
+      "source_sha256": "628d68fb14faf1d8ae1ea6b5a01d8a01d8e62f5d4c7bf4728d8fa04e02e23fbe",
+      "source_bytes": 129,
+      "compacted_diagnostics": false,
+      "repository_sha256": "628d68fb14faf1d8ae1ea6b5a01d8a01d8e62f5d4c7bf4728d8fa04e02e23fbe"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/logs/run.log": {
+      "source_sha256": "e3d54b39b88a04c84f53304e17bdb89540da6dac9a09e387983291682d312033",
+      "source_bytes": 352,
+      "compacted_diagnostics": false,
+      "repository_sha256": "e3d54b39b88a04c84f53304e17bdb89540da6dac9a09e387983291682d312033"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/metrics.json": {
+      "source_sha256": "a222a9ddccca2ed95c15a840abbdbe468d684855a01703e1c02b30a7829109a1",
+      "source_bytes": 790,
+      "compacted_diagnostics": false,
+      "repository_sha256": "a222a9ddccca2ed95c15a840abbdbe468d684855a01703e1c02b30a7829109a1"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/metrics_official_02.json": {
+      "source_sha256": "12554cb6dc5cde6718b2a45071ce03edcc030979e7b027eee1226f2d80e13d0e",
+      "source_bytes": 565,
+      "compacted_diagnostics": false,
+      "repository_sha256": "12554cb6dc5cde6718b2a45071ce03edcc030979e7b027eee1226f2d80e13d0e"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/notes.md": {
+      "source_sha256": "41a710b7871282dfd7e9d48cb5075557dfed6a18994694e5d8853a8e2086017f",
+      "source_bytes": 213,
+      "compacted_diagnostics": false,
+      "repository_sha256": "41a710b7871282dfd7e9d48cb5075557dfed6a18994694e5d8853a8e2086017f"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/official_logs/DET_log.txt": {
+      "source_sha256": "4375ee9eee434ae6947d9fa27da7f3fefebed7a463fe2bd9e2f2aa2ebe17c860",
+      "source_bytes": 7406,
+      "compacted_diagnostics": false,
+      "repository_sha256": "4375ee9eee434ae6947d9fa27da7f3fefebed7a463fe2bd9e2f2aa2ebe17c860"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/official_logs/DET_stdout.txt": {
+      "source_sha256": "c89e7c7e2a8d4d2aa33e1a896d5839331838f53b343a9407f8d88000be4b2072",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "c89e7c7e2a8d4d2aa33e1a896d5839331838f53b343a9407f8d88000be4b2072"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/official_logs/SEG_log.txt": {
+      "source_sha256": "ff98f162cf55f8921ccd140bb6185c4eb18778e7efd4ca8c8c7c9b4da1f95dfd",
+      "source_bytes": 2508,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ff98f162cf55f8921ccd140bb6185c4eb18778e7efd4ca8c8c7c9b4da1f95dfd"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/official_logs/SEG_stdout.txt": {
+      "source_sha256": "7211a5866faef937a309fdfa8cd549b7d6760de63f6331a87213c0e39df1db32",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "7211a5866faef937a309fdfa8cd549b7d6760de63f6331a87213c0e39df1db32"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/official_logs/TRA_log.txt": {
+      "source_sha256": "09d461c29f97c3890a771969d0374a453c1c2f3c5b0e75af378dc21ca5120e76",
+      "source_bytes": 39151,
+      "compacted_diagnostics": false,
+      "repository_sha256": "09d461c29f97c3890a771969d0374a453c1c2f3c5b0e75af378dc21ca5120e76"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/official_logs/TRA_stdout.txt": {
+      "source_sha256": "15f8b59881e70119ad7afa30903bb946f79ed5729da1b36c92e3f9ef69928e19",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "15f8b59881e70119ad7afa30903bb946f79ed5729da1b36c92e3f9ef69928e19"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02/pipeline_config.yaml": {
+      "source_sha256": "7952e4d64e2ab0172db26aefadf79e6bf121390b97f09b5a88e5748ec490acc6",
+      "source_bytes": 1819,
+      "compacted_diagnostics": false,
+      "repository_sha256": "7952e4d64e2ab0172db26aefadf79e6bf121390b97f09b5a88e5748ec490acc6"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_train/command.sh": {
+      "source_sha256": "394585d75bfb83b45d190e6ed760317f27f1b6c5993fe4585d0a1f2502b80723",
+      "source_bytes": 736,
+      "compacted_diagnostics": false,
+      "repository_sha256": "394585d75bfb83b45d190e6ed760317f27f1b6c5993fe4585d0a1f2502b80723"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_train/config.yaml": {
+      "source_sha256": "4474b706ee850c58bb8d1aa5f3cf126334f53e337c8b841dc24ec9ca72d56a4c",
+      "source_bytes": 1490,
+      "compacted_diagnostics": false,
+      "repository_sha256": "4474b706ee850c58bb8d1aa5f3cf126334f53e337c8b841dc24ec9ca72d56a4c"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_train/env.txt": {
+      "source_sha256": "ecf176aadc0ded0582de0b1aabc041fbac11293ce12ef0ec3fbafedb20448ac7",
+      "source_bytes": 5847,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ecf176aadc0ded0582de0b1aabc041fbac11293ce12ef0ec3fbafedb20448ac7"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_train/figures/validation_f1.svg": {
+      "source_sha256": "1ef05eb5e15836bcc17ead23f2ec68ea9efd92861dba8d3173377c61e0fcfd68",
+      "source_bytes": 935,
+      "compacted_diagnostics": false,
+      "repository_sha256": "1ef05eb5e15836bcc17ead23f2ec68ea9efd92861dba8d3173377c61e0fcfd68"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_train/git_commit.txt": {
+      "source_sha256": "628d68fb14faf1d8ae1ea6b5a01d8a01d8e62f5d4c7bf4728d8fa04e02e23fbe",
+      "source_bytes": 129,
+      "compacted_diagnostics": false,
+      "repository_sha256": "628d68fb14faf1d8ae1ea6b5a01d8a01d8e62f5d4c7bf4728d8fa04e02e23fbe"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_train/logs/run.log": {
+      "source_sha256": "d39a96c69e221c2610b513f9fcbd786e9102528c25401a82a73df9a890d53bd9",
+      "source_bytes": 344,
+      "compacted_diagnostics": false,
+      "repository_sha256": "d39a96c69e221c2610b513f9fcbd786e9102528c25401a82a73df9a890d53bd9"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_train/metrics.json": {
+      "source_sha256": "9c9ffb72ac5c72255f8b439fbace515aae0271a4791f150ed141943c14eb80ba",
+      "source_bytes": 562,
+      "compacted_diagnostics": false,
+      "repository_sha256": "9c9ffb72ac5c72255f8b439fbace515aae0271a4791f150ed141943c14eb80ba"
+    },
+    "experiments/P9_nnunet_oracle_encoder_baseline_seed20261009_train/notes.md": {
+      "source_sha256": "f521d96de8cea3a6d37fca9541fda5f1d4bd447024a7638f5c16dcc41d542141",
+      "source_bytes": 445,
+      "compacted_diagnostics": false,
+      "repository_sha256": "f521d96de8cea3a6d37fca9541fda5f1d4bd447024a7638f5c16dcc41d542141"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/calibration/baseline.json": {
+      "source_sha256": "51d42d3cd18d2a2d10dadcced0c5d26e8829f2b2db828efb700fadcb585dab07",
+      "source_bytes": 7133,
+      "compacted_diagnostics": false,
+      "repository_sha256": "51d42d3cd18d2a2d10dadcced0c5d26e8829f2b2db828efb700fadcb585dab07"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/configs/baseline_01.yaml": {
+      "source_sha256": "60acc5d5f31cef926cd265e599f49866b19b558c74316facb03605dd279deece",
+      "source_bytes": 1721,
+      "compacted_diagnostics": false,
+      "repository_sha256": "60acc5d5f31cef926cd265e599f49866b19b558c74316facb03605dd279deece"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/configs/baseline_02.yaml": {
+      "source_sha256": "3cce8a962c77ad0eaa9e3ed193e2b4fad1e2e3da8b8043313dd5e20f3c083515",
+      "source_bytes": 1721,
+      "compacted_diagnostics": false,
+      "repository_sha256": "3cce8a962c77ad0eaa9e3ed193e2b4fad1e2e3da8b8043313dd5e20f3c083515"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/configs/baseline_calibrated.yaml": {
+      "source_sha256": "6349ed0a54699c42b2311348a256ea2776d6f232aabd1b74a255854cd65b3c08",
+      "source_bytes": 1819,
+      "compacted_diagnostics": false,
+      "repository_sha256": "6349ed0a54699c42b2311348a256ea2776d6f232aabd1b74a255854cd65b3c08"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_build01.log": {
+      "source_sha256": "bb216eaff879df541d59db048d29cd15abc1b2b4fca5d1ca7abcc0ff1de2256a",
+      "source_bytes": 650,
+      "compacted_diagnostics": false,
+      "repository_sha256": "bb216eaff879df541d59db048d29cd15abc1b2b4fca5d1ca7abcc0ff1de2256a"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_calibration01.log": {
+      "source_sha256": "ae32de6ccb7f23fc7b35608ea9f0eb1f099c01ced52270782d5bd1af862abe4a",
+      "source_bytes": 7429,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ae32de6ccb7f23fc7b35608ea9f0eb1f099c01ced52270782d5bd1af862abe4a"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01.log": {
+      "source_sha256": "6f9e862f74e2b2037e84c5bd3e98856ea336973ab6a3e54660fab6e8cfcdc92c",
+      "source_bytes": 646,
+      "compacted_diagnostics": false,
+      "repository_sha256": "6f9e862f74e2b2037e84c5bd3e98856ea336973ab6a3e54660fab6e8cfcdc92c"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01_gpu_active.txt": {
+      "source_sha256": "56a39e1fa444812fa765cc47620a9912c12ba8ad0c58f24ec8e48e5b54a79552",
+      "source_bytes": 16,
+      "compacted_diagnostics": false,
+      "repository_sha256": "56a39e1fa444812fa765cc47620a9912c12ba8ad0c58f24ec8e48e5b54a79552"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01_gpu_after.txt": {
+      "source_sha256": "a58c56341c9ddcaff96b9feddf5966d8960f2a5a19f648d4e42f16265c066dfb",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "a58c56341c9ddcaff96b9feddf5966d8960f2a5a19f648d4e42f16265c066dfb"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261008_eval01_gpu_before.txt": {
+      "source_sha256": "5eccd1396f4edf3b24aed9977ecbd7379c477cc4556e058e61c96b220bd43dab",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5eccd1396f4edf3b24aed9977ecbd7379c477cc4556e058e61c96b220bd43dab"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02.log": {
+      "source_sha256": "c289f700bac13183f96824c6e19a19289c5024099a3121063f485837381cdb39",
+      "source_bytes": 648,
+      "compacted_diagnostics": false,
+      "repository_sha256": "c289f700bac13183f96824c6e19a19289c5024099a3121063f485837381cdb39"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_gpu_active.txt": {
+      "source_sha256": "3f2a098ffac4b4693b8afa649d7757af11dcb985342947f7228929efa22412da",
+      "source_bytes": 16,
+      "compacted_diagnostics": false,
+      "repository_sha256": "3f2a098ffac4b4693b8afa649d7757af11dcb985342947f7228929efa22412da"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_gpu_after.txt": {
+      "source_sha256": "bfd7ea1af02a59a83c5ec2ed974250a13ae33518e040eb8c872fc368778c5b91",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "bfd7ea1af02a59a83c5ec2ed974250a13ae33518e040eb8c872fc368778c5b91"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_gpu_before.txt": {
+      "source_sha256": "e667842236b1efb88bd5e5b55c6d0b786bae24564f9d4d051fddb8f6536fd6ac",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "e667842236b1efb88bd5e5b55c6d0b786bae24564f9d4d051fddb8f6536fd6ac"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat.log": {
+      "source_sha256": "86418a7fda4e55fed2c6b204dea9907af3d157f523829d67865fa4401236da29",
+      "source_bytes": 667,
+      "compacted_diagnostics": false,
+      "repository_sha256": "86418a7fda4e55fed2c6b204dea9907af3d157f523829d67865fa4401236da29"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat_gpu_active.txt": {
+      "source_sha256": "d4a499e41c5a70c43d44187a54eda03f11ed9a3e41938ef4390cb5b53a719b19",
+      "source_bytes": 16,
+      "compacted_diagnostics": false,
+      "repository_sha256": "d4a499e41c5a70c43d44187a54eda03f11ed9a3e41938ef4390cb5b53a719b19"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat_gpu_after.txt": {
+      "source_sha256": "5981da303120b24dc4657168f7fca5eaadb29c9587cda7eeee0969adb35b418a",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5981da303120b24dc4657168f7fca5eaadb29c9587cda7eeee0969adb35b418a"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261008_eval02_repeat_gpu_before.txt": {
+      "source_sha256": "55c72d2bd50b8031527a80a164ed4a45cddd685b0ca8f91ba10aba59abd922fc",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "55c72d2bd50b8031527a80a164ed4a45cddd685b0ca8f91ba10aba59abd922fc"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261008_train.log": {
+      "source_sha256": "77a57f69f34ec8eb743335141e88d2093e302469d4a691525777cb9a4e8229da",
+      "source_bytes": 3307,
+      "compacted_diagnostics": false,
+      "repository_sha256": "77a57f69f34ec8eb743335141e88d2093e302469d4a691525777cb9a4e8229da"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261008_train_gpu_active.txt": {
+      "source_sha256": "94aad92f13c6930fe8fececf66aa7ca83d8bca8bf7788681329b9a8aa9b2c941",
+      "source_bytes": 17,
+      "compacted_diagnostics": false,
+      "repository_sha256": "94aad92f13c6930fe8fececf66aa7ca83d8bca8bf7788681329b9a8aa9b2c941"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261008_train_gpu_after.txt": {
+      "source_sha256": "5eccd1396f4edf3b24aed9977ecbd7379c477cc4556e058e61c96b220bd43dab",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5eccd1396f4edf3b24aed9977ecbd7379c477cc4556e058e61c96b220bd43dab"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261008_train_gpu_before.txt": {
+      "source_sha256": "769a3294848de639eb5a6d9eca30ac37e6af7a7de67c214c8c8e450047621a93",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "769a3294848de639eb5a6d9eca30ac37e6af7a7de67c214c8c8e450047621a93"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01.log": {
+      "source_sha256": "ea170f1c1572bf8108108a461e6c3d36168d9780000c37c5438cf646b323ed2d",
+      "source_bytes": 646,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ea170f1c1572bf8108108a461e6c3d36168d9780000c37c5438cf646b323ed2d"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01_gpu_active.txt": {
+      "source_sha256": "b3599d9ed385df4d0baf0251a9c956ea8a32cf1d90631e1271f505d79ef7cb9f",
+      "source_bytes": 16,
+      "compacted_diagnostics": false,
+      "repository_sha256": "b3599d9ed385df4d0baf0251a9c956ea8a32cf1d90631e1271f505d79ef7cb9f"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01_gpu_after.txt": {
+      "source_sha256": "ce866538f737aa0d28a3833cc213b62e6b0a128f7131feda57babb910e8dd6aa",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ce866538f737aa0d28a3833cc213b62e6b0a128f7131feda57babb910e8dd6aa"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261009_eval01_gpu_before.txt": {
+      "source_sha256": "91e025141288147c90b9b5e3ec543eb26fe96692b76ccbc00439debe39349a13",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "91e025141288147c90b9b5e3ec543eb26fe96692b76ccbc00439debe39349a13"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02.log": {
+      "source_sha256": "09a6e115b0e77b228cf5ba41a99fe0308fe0db633d832638d3fde1539af79288",
+      "source_bytes": 646,
+      "compacted_diagnostics": false,
+      "repository_sha256": "09a6e115b0e77b228cf5ba41a99fe0308fe0db633d832638d3fde1539af79288"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02_gpu_active.txt": {
+      "source_sha256": "2b0c791b316e631adb27b680bfd4e783390aa0bb0360059e3fdceaed39e94fcd",
+      "source_bytes": 16,
+      "compacted_diagnostics": false,
+      "repository_sha256": "2b0c791b316e631adb27b680bfd4e783390aa0bb0360059e3fdceaed39e94fcd"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02_gpu_after.txt": {
+      "source_sha256": "d4c71e41e32eaa198a0daca13c7a1ecc3678a691ad49fdfec6261c0ad042574a",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "d4c71e41e32eaa198a0daca13c7a1ecc3678a691ad49fdfec6261c0ad042574a"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261009_eval02_gpu_before.txt": {
+      "source_sha256": "d6ecabf8df2ce7896e754706d3519e9e05a987c98a47dc6d3538788c677e4cb4",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "d6ecabf8df2ce7896e754706d3519e9e05a987c98a47dc6d3538788c677e4cb4"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261009_train.log": {
+      "source_sha256": "e4cf7b13501cc6323fc0d6c2931e6125afe669bc7bdb14506eba9372be1589fd",
+      "source_bytes": 3307,
+      "compacted_diagnostics": false,
+      "repository_sha256": "e4cf7b13501cc6323fc0d6c2931e6125afe669bc7bdb14506eba9372be1589fd"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261009_train_gpu_active.txt": {
+      "source_sha256": "5b60f5be0c8ebe7069df2f8cc09221d079e5cf9e1216840908949e9b270ceee1",
+      "source_bytes": 17,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5b60f5be0c8ebe7069df2f8cc09221d079e5cf9e1216840908949e9b270ceee1"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261009_train_gpu_after.txt": {
+      "source_sha256": "8dfc31b4b17ee3fa375f656ff83c6d6ab21f7f5d6811c2aa8db0a5725703c410",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "8dfc31b4b17ee3fa375f656ff83c6d6ab21f7f5d6811c2aa8db0a5725703c410"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/logs/P9_nnunet_oracle_encoder_baseline_seed20261009_train_gpu_before.txt": {
+      "source_sha256": "9b5ea5e8a53f79a584f007c3570f7723acb4f2ba281c9d2bd9813a9a27e3d92f",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "9b5ea5e8a53f79a584f007c3570f7723acb4f2ba281c9d2bd9813a9a27e3d92f"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/models/baseline/seed20261008/history.json": {
+      "source_sha256": "7438624a95ffd4289da46dad41ccc742a04be0772195106a6f43eb6fda28a76d",
+      "source_bytes": 19583,
+      "compacted_diagnostics": false,
+      "repository_sha256": "7438624a95ffd4289da46dad41ccc742a04be0772195106a6f43eb6fda28a76d"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/models/baseline/seed20261008/train_summary.json": {
+      "source_sha256": "9ad651f097752bb351df4b3179b654a953dedb4a1d220bbf725b0655a660f1c8",
+      "source_bytes": 562,
+      "compacted_diagnostics": false,
+      "repository_sha256": "9ad651f097752bb351df4b3179b654a953dedb4a1d220bbf725b0655a660f1c8"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/models/baseline/seed20261009/history.json": {
+      "source_sha256": "8c16c0abb8c0e837a8d18d07b77b121d402e8cdac102a6df6a0f55cb107cba90",
+      "source_bytes": 19576,
+      "compacted_diagnostics": false,
+      "repository_sha256": "8c16c0abb8c0e837a8d18d07b77b121d402e8cdac102a6df6a0f55cb107cba90"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/models/baseline/seed20261009/train_summary.json": {
+      "source_sha256": "9c9ffb72ac5c72255f8b439fbace515aae0271a4791f150ed141943c14eb80ba",
+      "source_bytes": 562,
+      "compacted_diagnostics": false,
+      "repository_sha256": "9c9ffb72ac5c72255f8b439fbace515aae0271a4791f150ed141943c14eb80ba"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/plan.json": {
+      "source_sha256": "07680fb3e688d5b72855178f0ce2805eb3b87d7d1a6868039be9e4cd9fc56cc8",
+      "source_bytes": 14359,
+      "compacted_diagnostics": false,
+      "repository_sha256": "07680fb3e688d5b72855178f0ce2805eb3b87d7d1a6868039be9e4cd9fc56cc8"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/source_release.json": {
+      "source_sha256": "3b9e102492e4e8de10c8885c72ffe2266ebb4dc41ed18a6c336a0b980912338f",
+      "source_bytes": 20502,
+      "compacted_diagnostics": false,
+      "repository_sha256": "3b9e102492e4e8de10c8885c72ffe2266ebb4dc41ed18a6c336a0b980912338f"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/status.json": {
+      "source_sha256": "5c0693dc7c1ebc8568c6f54a37966ff7083f97eb9398268d65c18ee26b70beb7",
+      "source_bytes": 12438,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5c0693dc7c1ebc8568c6f54a37966ff7083f97eb9398268d65c18ee26b70beb7"
+    },
+    "experiments/P9_nnunet_oracle_encoder_matrix_20261009/training_graph_audit.json": {
+      "source_sha256": "5ccfc89e96621d109e60a4cbd95d78129db65b2831455796ec1f80ad3d48a3ff",
+      "source_bytes": 652,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5ccfc89e96621d109e60a4cbd95d78129db65b2831455796ec1f80ad3d48a3ff"
+    },
+    "logs/oracle_encoder_01.log": {
+      "source_sha256": "b451dbe7f9686ca4b90e3b677ef564d058a9ad52b6c88108f45619e5383541f9",
+      "source_bytes": 20979,
+      "compacted_diagnostics": false,
+      "repository_sha256": "b451dbe7f9686ca4b90e3b677ef564d058a9ad52b6c88108f45619e5383541f9"
+    },
+    "logs/oracle_encoder_01_gpu_active.txt": {
+      "source_sha256": "81df9d62317d28abf88dcd064740c6189962b59cb165564137df1389bc153209",
+      "source_bytes": 17,
+      "compacted_diagnostics": false,
+      "repository_sha256": "81df9d62317d28abf88dcd064740c6189962b59cb165564137df1389bc153209"
+    },
+    "logs/oracle_encoder_01_gpu_after.txt": {
+      "source_sha256": "504c014d8e21763fd08f4d5b020e53df113e18ddde08cfba69e4c8ea0dfab4bc",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "504c014d8e21763fd08f4d5b020e53df113e18ddde08cfba69e4c8ea0dfab4bc"
+    },
+    "logs/oracle_encoder_01_gpu_before.txt": {
+      "source_sha256": "ddd0721a2c44a0bbf9f5b612a87f0d816578a5262513b5a75ee0f80776bd7bb6",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ddd0721a2c44a0bbf9f5b612a87f0d816578a5262513b5a75ee0f80776bd7bb6"
+    },
+    "logs/oracle_encoder_01_process.json": {
+      "source_sha256": "ad6261b69c608cf92e0e8a6a31c0375f9f26ef430cd72720dd457c1368d3dfe1",
+      "source_bytes": 714,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ad6261b69c608cf92e0e8a6a31c0375f9f26ef430cd72720dd457c1368d3dfe1"
+    },
+    "logs/oracle_encoder_02.log": {
+      "source_sha256": "f780307b39aab176381db220792e3b2275e1be00038151d1141195a2e022cac4",
+      "source_bytes": 20403,
+      "compacted_diagnostics": false,
+      "repository_sha256": "f780307b39aab176381db220792e3b2275e1be00038151d1141195a2e022cac4"
+    },
+    "logs/oracle_encoder_02_gpu_active.txt": {
+      "source_sha256": "e4c6ee497c7d1d48e54b16ac0fbde48df9af6472b1df8ce9dc2b70afbb0f41bd",
+      "source_bytes": 17,
+      "compacted_diagnostics": false,
+      "repository_sha256": "e4c6ee497c7d1d48e54b16ac0fbde48df9af6472b1df8ce9dc2b70afbb0f41bd"
+    },
+    "logs/oracle_encoder_02_gpu_after.txt": {
+      "source_sha256": "109bd09bec1196c69c569b6d4bd67191c7b9e879b4051726e684d9d7eb0e9a39",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "109bd09bec1196c69c569b6d4bd67191c7b9e879b4051726e684d9d7eb0e9a39"
+    },
+    "logs/oracle_encoder_02_gpu_before.txt": {
+      "source_sha256": "16240b02a4c9bbc0dca1803276429ddf971c9397d9ff96d1bd1c721db4bc5284",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "16240b02a4c9bbc0dca1803276429ddf971c9397d9ff96d1bd1c721db4bc5284"
+    },
+    "logs/oracle_encoder_02_process.json": {
+      "source_sha256": "153c0b18c358cd4c85118c9b88a72d91048447742a55347fa0b18f2a1216d40b",
+      "source_bytes": 714,
+      "compacted_diagnostics": false,
+      "repository_sha256": "153c0b18c358cd4c85118c9b88a72d91048447742a55347fa0b18f2a1216d40b"
+    },
+    "logs/oracle_encoder_pipeline.complete": {
+      "source_sha256": "37a40f08d8548dba289b9b0bb35bcf63b359f6d37ee86044ebc6b6da080b9ec1",
+      "source_bytes": 9,
+      "compacted_diagnostics": false,
+      "repository_sha256": "37a40f08d8548dba289b9b0bb35bcf63b359f6d37ee86044ebc6b6da080b9ec1"
+    },
+    "logs/oracle_encoder_pipeline.log": {
+      "source_sha256": "6a87c7bb58dbf3ba255a302aed4dcc14cfde01c3ffd7a86b56aed3a68b594639",
+      "source_bytes": 2485,
+      "compacted_diagnostics": false,
+      "repository_sha256": "6a87c7bb58dbf3ba255a302aed4dcc14cfde01c3ffd7a86b56aed3a68b594639"
+    },
+    "logs/oracle_encoder_pipeline.pid": {
+      "source_sha256": "dea48854bb24d170bbb26120bea5f193488500adf8583be5c204aa0ef018be14",
+      "source_bytes": 7,
+      "compacted_diagnostics": false,
+      "repository_sha256": "dea48854bb24d170bbb26120bea5f193488500adf8583be5c204aa0ef018be14"
+    },
+    "logs/oracle_evaluation_candidate_funnel.json": {
+      "source_sha256": "2775997fc99c8327b147751845e3dfad646235ff221fcd2101ff87e963bbca34",
+      "source_bytes": 2576,
+      "compacted_diagnostics": false,
+      "repository_sha256": "2775997fc99c8327b147751845e3dfad646235ff221fcd2101ff87e963bbca34"
+    },
+    "logs/oracle_feature_fingerprints.json": {
+      "source_sha256": "2efbb5e93a542f318b042312ba783e88abfd2e568b28dc4f6d7f28605beee938",
+      "source_bytes": 1470,
+      "compacted_diagnostics": false,
+      "repository_sha256": "2efbb5e93a542f318b042312ba783e88abfd2e568b28dc4f6d7f28605beee938"
+    },
+    "logs/oracle_final_acceptance.json": {
+      "source_sha256": "d13f9f170bb3a37d9ef42fa6cd9980d5cb9498a1dffdd03a5aae4afbc11fd8df",
+      "source_bytes": 268,
+      "compacted_diagnostics": false,
+      "repository_sha256": "d13f9f170bb3a37d9ef42fa6cd9980d5cb9498a1dffdd03a5aae4afbc11fd8df"
+    },
+    "logs/oracle_frontend_01.json": {
+      "source_sha256": "47174dd4b386f785b74517928c83acf3d5265bc34f411df3d03dd2a22f4d7b0e",
+      "source_bytes": 37767,
+      "compacted_diagnostics": false,
+      "repository_sha256": "47174dd4b386f785b74517928c83acf3d5265bc34f411df3d03dd2a22f4d7b0e"
+    },
+    "logs/oracle_frontend_01.log": {
+      "source_sha256": "463f24e8641b08239b5db2669f8455898df5774a4bff5fdb2a216994f8e21134",
+      "source_bytes": 1158,
+      "compacted_diagnostics": false,
+      "repository_sha256": "463f24e8641b08239b5db2669f8455898df5774a4bff5fdb2a216994f8e21134"
+    },
+    "logs/oracle_frontend_01_command.json": {
+      "source_sha256": "bf1ce732e8542bddf6ee97946dbd517379e132f619e73c5cd0e0635efb1f7a1e",
+      "source_bytes": 774,
+      "compacted_diagnostics": false,
+      "repository_sha256": "bf1ce732e8542bddf6ee97946dbd517379e132f619e73c5cd0e0635efb1f7a1e"
+    },
+    "logs/oracle_frontend_02.json": {
+      "source_sha256": "91f52e3f49cabb7d7c832740b916f184f15329aa0a0f8480bd5414c34b8556a1",
+      "source_bytes": 37462,
+      "compacted_diagnostics": false,
+      "repository_sha256": "91f52e3f49cabb7d7c832740b916f184f15329aa0a0f8480bd5414c34b8556a1"
+    },
+    "logs/oracle_frontend_02.log": {
+      "source_sha256": "36918df616cc4829f252c22755d78ce31f02e213e7346f59ca63ea7db433a419",
+      "source_bytes": 1158,
+      "compacted_diagnostics": false,
+      "repository_sha256": "36918df616cc4829f252c22755d78ce31f02e213e7346f59ca63ea7db433a419"
+    },
+    "logs/oracle_frontend_02_command.json": {
+      "source_sha256": "9d410cc8699c9fd8b968575b1febcb50dfec92ef1e3340fa48000d974fd4a816",
+      "source_bytes": 774,
+      "compacted_diagnostics": false,
+      "repository_sha256": "9d410cc8699c9fd8b968575b1febcb50dfec92ef1e3340fa48000d974fd4a816"
+    },
+    "logs/oracle_frozen_model_identity.json": {
+      "source_sha256": "d9ae8ffb1a30535d2572abc88d693aec91ee67e571543f37e4124a76133d5100",
+      "source_bytes": 182,
+      "compacted_diagnostics": false,
+      "repository_sha256": "d9ae8ffb1a30535d2572abc88d693aec91ee67e571543f37e4124a76133d5100"
+    },
+    "logs/oracle_gpu_final_idle.txt": {
+      "source_sha256": "c783aee1b0da1872abbfb2500af1f7a3f88c3d348ba2d06976a71de81afc3bb4",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "c783aee1b0da1872abbfb2500af1f7a3f88c3d348ba2d06976a71de81afc3bb4"
+    },
+    "logs/oracle_gpu_idle.txt": {
+      "source_sha256": "18e572ecc16869dd56c62ec1437c6cc9a5147701babec7d79beb55d42a831b59",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "18e572ecc16869dd56c62ec1437c6cc9a5147701babec7d79beb55d42a831b59"
+    },
+    "logs/oracle_mask_input_audit.json": {
+      "source_sha256": "be4d628818c4bdc1081a2f8c1d86e32c9ac64702eaab735e577d4ae7f5d5d9ac",
+      "source_bytes": 198056,
+      "compacted_diagnostics": false,
+      "repository_sha256": "be4d628818c4bdc1081a2f8c1d86e32c9ac64702eaab735e577d4ae7f5d5d9ac"
+    },
+    "logs/oracle_metrics_final.json": {
+      "source_sha256": "df735d8d85c4aa8f4357df8a2df3725720ef259d35215082f4e7216fc2ac63f6",
+      "source_bytes": 27186,
+      "compacted_diagnostics": false,
+      "repository_sha256": "df735d8d85c4aa8f4357df8a2df3725720ef259d35215082f4e7216fc2ac63f6"
+    },
+    "logs/oracle_postprocess.complete": {
+      "source_sha256": "37a40f08d8548dba289b9b0bb35bcf63b359f6d37ee86044ebc6b6da080b9ec1",
+      "source_bytes": 9,
+      "compacted_diagnostics": false,
+      "repository_sha256": "37a40f08d8548dba289b9b0bb35bcf63b359f6d37ee86044ebc6b6da080b9ec1"
+    },
+    "logs/oracle_postprocess.log": {
+      "source_sha256": "72fd1288c24b9a9eaac1eee571fbd5cec5c913e2475d0cceffa4ad234749e76f",
+      "source_bytes": 92,
+      "compacted_diagnostics": false,
+      "repository_sha256": "72fd1288c24b9a9eaac1eee571fbd5cec5c913e2475d0cceffa4ad234749e76f"
+    },
+    "logs/oracle_postprocess.pid": {
+      "source_sha256": "d722b3d567e9b88700819a2969140715ac78955fa075679e3886127730b4ba21",
+      "source_bytes": 7,
+      "compacted_diagnostics": false,
+      "repository_sha256": "d722b3d567e9b88700819a2969140715ac78955fa075679e3886127730b4ba21"
+    },
+    "logs/pipeline_preflight.yaml": {
+      "source_sha256": "60acc5d5f31cef926cd265e599f49866b19b558c74316facb03605dd279deece",
+      "source_bytes": 1721,
+      "compacted_diagnostics": false,
+      "repository_sha256": "60acc5d5f31cef926cd265e599f49866b19b558c74316facb03605dd279deece"
+    },
+    "logs/regression_clean_source.txt": {
+      "source_sha256": "df49b881d2f8dba26b9a7d9b833f48994b6ae989b965f6190fd870dee8395913",
+      "source_bytes": 272,
+      "compacted_diagnostics": false,
+      "repository_sha256": "df49b881d2f8dba26b9a7d9b833f48994b6ae989b965f6190fd870dee8395913"
+    }
+  },
+  "count": 213,
+  "full_cloud_archive": "/root/mask_oracle_evidence_final_20261009.tar.gz",
+  "archive_sha256": "04fb310f8407dca7bef473e615f5927b4848bf5fa4a09cad8a800954d798089e",
+  "rule": "only diagnostic lists >64 in JSON files >1MB summarized; official results/logs unchanged"
+}

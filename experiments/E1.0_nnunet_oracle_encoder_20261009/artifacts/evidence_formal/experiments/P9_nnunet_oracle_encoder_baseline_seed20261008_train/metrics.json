@@ -1,0 +1,19 @@
+{
+  "out_dir": "/root/CellTracker_nnunet_oracle_encoder_20261009/experiments/P9_nnunet_oracle_encoder_matrix_20261009/models/baseline/seed20261008",
+  "best_f1": 0.9896491002018639,
+  "node_dim": 133,
+  "edge_dim": 10,
+  "split_mode": "block",
+  "n_train": 152,
+  "n_val": 38,
+  "checkpoints": {
+    "best.pt": {
+      "bytes": 1174878,
+      "sha256": "bd5560cf33c6148e2797c605bf977f4c20bd5ff1b34693138b64c4611e7868b6"
+    },
+    "last.pt": {
+      "bytes": 1185662,
+      "sha256": "3031094ce962c05ecf3e8db397a4c37f12499af8810562cf5ef4675e2888889f"
+    }
+  }
+}
