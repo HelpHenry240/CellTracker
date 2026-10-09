@@ -24,6 +24,8 @@ checkpoints/
 # 例外：GNN 模型极小（约 413 KB/个），入库即可保证"产生报告数字的那个模型"可追溯
 # （nnU-Net 的 348MB checkpoint 不适用，仍走本地/云端备份）
 !experiments/**/artifacts/model/best.pt
+# 例外：E0.8 冻结前端对照的 8 份推理权重（约 434 KB/份，manifest 带 md5/sha256 指纹）
+!experiments/**/artifacts/models/**/*.pt
 
 # --- 实验结果：默认入库（只增不改），但大二进制产物排除 ---
 experiments/**/artifacts/*.zip
@@ -48,5 +50,6 @@ dist/
 
 # --- 本地 scratch ---
 scratch/
+/tmp/
 .cache/
 *.tmp

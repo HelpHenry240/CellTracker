@@ -124,3 +124,35 @@ oracle 和再切分规则也进入权重来源校验。不能把未再切的数�
 `ideas-v2` 的背景编号会参与旧估速，已确认是缺陷；该分支只用于历史复现，结果
 不能作为新版扩展模块结论。`ideas-v3` 的估速只使用正轨迹编号。最终性能比较须
 使用修复版本独立重训，不能把缺陷修复与模块开关的收益混在一起。
+
+## 已完成的 CE 双序列配置
+
+`configs/ce_calibrated_20261009.yaml` 对应真实预测检测的再切分 k=1.6，保留孤立
+实例；FGW、运动、多尺度、GNN 与 tracklet 均开启。它是数据集专用标定结果，
+完整论文模板仍在 `paper_default.yaml`。换分割来源或数据集时重新标定和训练。
+
+四档配置的两个训练种子、双序列官方结果、重复运行、训练与 GPU 日志，以及
+八份小型推理权重见 `experiments/E0.8_ideas_final_v3_20261009/`；最终说明见
+`docs/reports/ideas_pipeline_rebuild_20261009.md`。推理权重与原训练模型逐张量一致，
+每份另有 MD5/SHA256，原始含优化器和随机状态的训练断点仍保留在云端。
+`artifacts/models/conservative_k16/seed20261008_inference.pt` 是固定种子的复现入口，
+不要根据 seq02 分数重新挑选种子。
+
+在备用3已有工作目录 `/root/autodl-tmp/CellTracker_rebuild_20261008` 中可直接复跑：
+
+```bash
+python scripts/run_ideas_pipeline.py \
+  --h5 data/interim/Fluo-N3DH-CE_02_resplit_v2.h5 \
+  --gt-h5 data/interim/Fluo-N3DH-CE_02.h5 --seq 02 \
+  --config experiments/P7_ideas_v3_conservative_k16_matrix_20261009/configs/baseline_calibrated.yaml \
+  --set node.encoder_feat_path=data/interim/encoder_02_resplit_v2.npz \
+  --ckpt /root/ideas_inference_weights_20261009/conservative_k16/seed20261008_inference.pt \
+  --exp-id CE02_reproduction_unique --device cuda --official \
+  --cache-dir data/interim/CE02_reproduction_unique_cache \
+  --official-tools /root/EvaluationSoftware/Linux \
+  --official-gt-dir /root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT
+```
+
+云端先激活 `/root/autodl-tmp/nnunet/venv`；完整序列任务使用后台启动方式并保存
+PID、日志和 GPU 检查。复跑使用新实验名，保留已有正式结果。上述分割产物来自
+既有 nnU-Net，而 GNN 只在 seq01 训练；这不是分割器从未见过 seq02 的端到端盲测。

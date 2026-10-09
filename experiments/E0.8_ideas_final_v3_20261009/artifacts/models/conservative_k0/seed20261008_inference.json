@@ -1,0 +1,13 @@
+{
+  "profile": "conservative_k0",
+  "seed": 20261008,
+  "path": "/root/ideas_inference_weights_20261009/conservative_k0/seed20261008_inference.pt",
+  "bytes": 443706,
+  "md5": "2bb7bbfbefb401a4b574f09a931e217c",
+  "sha256": "147cb7b8a20dbe863ff596d837b2ca6c44be961480d022a20667cb91a4a6a33c",
+  "source_checkpoint_sha256": "ed4ba8399e71d85e9274cdb918632845e028e15319c25ea6f91b065503e2f289",
+  "epoch": 40,
+  "input_contract_signature": "295aa1bd4ba92ab0cddb45abf8344f52b81a0b605a73e62cb621bdd6572d84e3",
+  "git_commit": "88bf5cae8f41d9e13134d6aed007392fc085ae43",
+  "tensor_identity_verified": true
+}

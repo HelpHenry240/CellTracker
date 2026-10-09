@@ -1,0 +1,13 @@
+{
+  "profile": "paper_all_k16",
+  "seed": 20261009,
+  "path": "/root/ideas_inference_weights_20261009/paper_all_k16/seed20261009_inference.pt",
+  "bytes": 443770,
+  "md5": "10212dbe234338d53f1a527196b83c3c",
+  "sha256": "2cc9822f78ec24ff585ef8ba7faf8cda2e153b319c7b4d56dec34f99afeaef27",
+  "source_checkpoint_sha256": "f6da6ab1880c648bc07b30603a7e65396ae9d2cb1d12cb1fe9f1b3fad3e94c64",
+  "epoch": 60,
+  "input_contract_signature": "6968fcd54b4a4f3873441538294c38e24490a7dd7cf7f044fd9522af8d0798d0",
+  "git_commit": "88bf5cae8f41d9e13134d6aed007392fc085ae43",
+  "tensor_identity_verified": true
+}
