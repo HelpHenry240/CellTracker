@@ -1,0 +1,40 @@
+experiment: nnU-Net semantic mask + GT-seeded Oracle instances + frozen encoder
+seeds:
+- 20261008
+- 20261009
+epochs: 60
+train_and_calibrate: seq01 only
+evaluate:
+- '01'
+- '02'
+repeat: seed20261008 complete seq02 rerun
+unet_retraining: false
+handcrafted_control: false
+frontend:
+  source: existing frozen nnU-Net checkpoint_best semantic predictions
+  oracle_markers: true
+  oracle_seed_version: preserve_label_ids_v2
+  unseeded_policy: keep_component
+  min_volume: 1
+  gaussian_sigma_um: 0.0
+  spacing_zyx_um:
+  - 1.0
+  - 0.09
+  - 0.09
+  h_frac: 0.1
+  h_frac_effective: false
+  resplit_k: 0.0
+foreground: output labels>0 must be exactly equal to input prediction>0 in every frame
+export: split holes; no synthesized detections; retain isolated instances
+mass_mode: volume
+volume_conservation: true
+loss: existing ideas.pdf eq34-35; lambda_OT0.001 audited before training
+candidate_safety: calibration and actual deployment true/division recall>=99%; only
+  existing top-k fallback
+r_max: start6.4um; use seq01 actual Oracle-centroid true displacement distribution
+  before freezing
+expected_minutes:
+- 45
+- 90
+conclusion_resolution_TRA: 0.001
+status: preparing

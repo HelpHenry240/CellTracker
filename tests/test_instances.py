@@ -183,6 +183,40 @@ def test_unseeded_component_policy_keep():
     assert len(np.unique(keep)) - 1 == 2
 
 
+def test_oracle_touching_seed_ids_remain_distinct():
+    mask = np.ones((3, 7, 9), dtype=bool)
+    seeds = np.zeros(mask.shape, dtype=np.int32)
+    seeds[1, 3, 3] = 7
+    seeds[1, 3, 4] = 12  # 相邻GT标记不是同一个实例，不能二值化后合并。
+    labels = split_instances(mask, InstanceSplitConfig(min_volume=1, gaussian_sigma=0,
+        unseeded_policy='keep_component'), seeds=seeds)
+    assert labels[1, 3, 3] == 7 and labels[1, 3, 4] == 12
+    assert np.array_equal(labels > 0, mask)
+
+
+def test_oracle_clipped_seed_fragments_share_one_identity():
+    mask = np.zeros((3, 7, 9), dtype=bool)
+    mask[1, 2:5, 1:3] = True
+    mask[1, 2:5, 6:8] = True
+    seeds = np.zeros(mask.shape, dtype=np.int32)
+    seeds[1, 3, 2] = seeds[1, 3, 6] = 7  # 前景截开的同一标记仍属于同一目标。
+    labels = split_instances(mask, InstanceSplitConfig(min_volume=1, gaussian_sigma=0,
+        unseeded_policy='keep_component'), seeds=seeds)
+    assert np.unique(labels[labels > 0]).tolist() == [7]
+    assert np.array_equal(labels > 0, mask)
+
+
+def test_oracle_no_visible_seed_respects_unseeded_policy():
+    mask = np.zeros((3, 7, 9), dtype=bool); mask[1, 2:5, 2:5] = True
+    seeds = np.zeros(mask.shape, dtype=np.int32)
+    drop = split_instances(mask, InstanceSplitConfig(min_volume=1, gaussian_sigma=0,
+        unseeded_policy='drop'), seeds=seeds)
+    keep = split_instances(mask, InstanceSplitConfig(min_volume=1, gaussian_sigma=0,
+        unseeded_policy='keep_component'), seeds=seeds)
+    assert not drop.any()
+    assert np.array_equal(keep > 0, mask)
+
+
 def test_refine_oversized_splits_only_the_big_blob():
     """回归：后处理再切只应作用于"体积异常大"的实例，其他实例原样保留。
 

@@ -326,10 +326,25 @@ def test_detection_loader_keeps_frontend_provenance(tmp_path):
     path=write_h5(tmp_path/'detections.h5',detections(3))
     with h5py.File(path,'r+') as f:
         f.attrs.update(h_frac=.1,min_volume=300,gaussian_sigma=0.,watershed=True,
-                       oracle_markers=False,resplit_k=1.6,resplit_version='background_zero_v2')
+                       oracle_markers=False,oracle_seed_version='preserve_label_ids_v2',
+                       resplit_k=1.6,resplit_version='background_zero_v2')
     dets=Detections.from_h5(path)
     assert dets.meta['resplit_k']==1.6 and dets.meta['min_volume']==300
     assert dets.meta['resplit_version']=='background_zero_v2'
+    assert dets.meta['oracle_seed_version']=='preserve_label_ids_v2'
+
+
+def test_oracle_contract_rejects_seed_identity_recipe_change():
+    cfg=config();cfg.detection_source='nnunet_pred'
+    meta={'h_frac':.1,'min_volume':1,'gaussian_sigma':0.,'watershed':True,
+          'oracle_markers':True,'resplit_k':0.,'unseeded_policy':'keep_component'}
+    legacy=pipeline_contract(cfg,meta)
+    corrected=pipeline_contract(cfg,{**meta,'oracle_seed_version':'preserve_label_ids_v2'})
+    with pytest.raises(ValueError):check_contract(legacy,corrected)
+    # 常规预测没有外部种子，种子转换版本不改变已冻结的普通预测实验契约。
+    normal={**meta,'oracle_markers':False}
+    check_contract(pipeline_contract(cfg,normal),pipeline_contract(cfg,
+        {**normal,'oracle_seed_version':'not_applicable'}))
 
 
 def test_ablation_defaults_flip_and_ot_consumers_are_removed():

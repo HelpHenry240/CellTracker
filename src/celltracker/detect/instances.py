@@ -79,9 +79,15 @@ def split_instances(mask: np.ndarray, cfg: InstanceSplitConfig | None = None,
         seed_vol = np.asarray(seeds)
         if seed_vol.shape != binary.shape:
             raise ValueError(f"seeds 形状 {seed_vol.shape} 与掩码 {binary.shape} 不一致")
-        # 只保留落在掩码内的种子：掩码外的不参与（其目标自然成为缺失）
-        markers, n_seeds = ndimage.label((seed_vol > 0) & binary)
+        # 外部种子的数值表示实例身份。先二值化再找连通域会合并相邻的不同身份，
+        # 也会把同一身份被前景截开的碎片变成多个种子。只裁掉背景，保留原身份。
+        # 这是实例前端的工程转换；ideas.pdf §2.0.1 式(25)(29)要求后续节点和监督
+        # 对应同一个检测实例，Oracle检查也必须遵守这一点。
+        markers = np.where(binary, seed_vol, 0).astype(np.int32, copy=False)
+        n_seeds = np.unique(markers[markers > 0]).size
         if n_seeds == 0:
+            if cfg.unseeded_policy == "drop":
+                return np.zeros(binary.shape, dtype=np.int32)
             labels, n = ndimage.label(binary)
             return _filter_small(labels, n, cfg.min_volume)
         labels = watershed(-dist, markers, mask=binary)

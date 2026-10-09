@@ -41,6 +41,9 @@ def pipeline_contract(cfg, detection_meta=None, encoder_meta=None):
                 raise ValueError('固定距离种子缺少 min_distance')
             frontend['min_distance']=int(meta['min_distance'])
         frontend['resplit_version']=str(meta.get('resplit_version','legacy')) if float(frontend['resplit_k'])>0 else 'disabled'
+        if bool(meta['oracle_markers']):
+            # Oracle种子的身份转换改变了检测实例；旧连通域版本的GNN不能直接复用。
+            frontend['oracle_seed_version']=str(meta.get('oracle_seed_version','legacy_connected_components'))
         selected['frontend']=frontend
     if encoder_meta:
         selected["encoder"] = {k:encoder_meta.get(k) for k in ("schema","model_sha256","stage","feature_dim","aggregation")}

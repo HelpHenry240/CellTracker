@@ -1,0 +1,2 @@
+parent: 8255dd5
+training_source: release to be frozen before cloud launch

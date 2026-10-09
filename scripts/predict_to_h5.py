@@ -113,6 +113,8 @@ def main() -> None:
                        spacing_zyx=np.asarray(spacing_zyx, dtype=np.float32),
                        gaussian_sigma=args.gaussian_sigma,
                        oracle_markers=bool(args.oracle_markers),
+                       oracle_seed_version=("preserve_label_ids_v2" if args.oracle_markers
+                                            else "not_applicable"),
                        unseeded_policy=args.unseeded_policy,
                        resplit_k=args.resplit_k,
                        watershed=not args.no_watershed)
