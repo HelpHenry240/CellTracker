@@ -173,7 +173,10 @@ def refine_oversized_instances(mask: np.ndarray, labels: np.ndarray,
         if n_sub <= 1:
             continue                                 # 切不出更多，保持原样
         out_win = out[win]                           # 基础切片 → 视图，可直接赋值
-        out_win[region_local] = sub[region_local] + next_id
+        # 分水岭中被过滤的小区域仍是背景（0）；只给正标签加编号偏移。
+        # 给 0 也加偏移会把这些体素并入另一个既有实例。
+        local_labels = sub[region_local]
+        out_win[region_local] = np.where(local_labels > 0, local_labels + next_id, 0)
         next_id += n_sub
     return _relabel_contiguous(out)
 

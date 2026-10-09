@@ -428,8 +428,10 @@ def test_matrix_recalibrates_on_training_sequence_and_selects_test_encoder(tmp_p
 def test_compressed_ctc_export_is_pixel_identical(tmp_path):
     import tifffile
     from celltracker.eval.ctc_io import ResultWriter
-    labels=np.zeros((8,24,24),dtype=np.uint16); labels[2:5,5:12,6:14]=65534
+    labels=np.zeros((4,24,24),dtype=np.uint16); labels[1:3,5:12,6:14]=65534
     writer=ResultWriter(tmp_path,compression='zlib')
     path=writer.add(3,labels)
     assert np.array_equal(tifffile.imread(path),labels)
+    with tifffile.TiffFile(path) as tif:
+        assert tif.pages[0].photometric==1  # 3/4 张切片也必须是标量标签栈，不能被当成 RGB。
     assert path.stat().st_size<labels.nbytes

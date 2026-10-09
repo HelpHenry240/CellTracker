@@ -1,0 +1,9 @@
+phase: frontend_same_source_comparison
+date: 2026-10-09
+input: original_rebuild_prediction_instances
+resplit_k: 1.6
+background_offset_fix: true
+foreground_source: existing_prediction_instances
+encoder: frozen_existing_nnunet_stage2
+unet_retraining: false
+status: preparation_pending

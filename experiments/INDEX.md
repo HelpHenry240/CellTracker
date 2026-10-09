@@ -66,3 +66,4 @@
 | **E0.4-audit** | 2026-10-08 | 审核 | **ideas 全公式/双 pipeline 审核**（源码 ee33622，仅新增证据） | 见目录 | 89+16 项既有测试全绿；15 项 CPU 探针复现 FGW 完整目标、熵符号、C 漂移、历史图断连、监督映射、tracklet 单位/谱系等偏差 | `pipeline_audit` | **工程链路已打通，严格论文对齐验收不通过**；追加更正 P0/P4 的“严格完成”判断，历史官方数值不修改；未训练/未使用 GPU | `experiments/E0.4_ideas_audit_20261008/`；`docs/reports/ideas_pipeline_audit_20261008.md` |
 | **E0.5-rebuild-local** | 2026-10-09 | 重建 | ideas 全模块本地回归 + CE 双序列 120–125 帧接口冒烟 | 见目录 | 全模块建图/两轮 GNN/双序列 OT 与 GNN 导出格式通过；强度外观工程近似 | — | 仅链路验证，非性能结论 | `experiments/E0.5_ideas_rebuild_local_20261009/` |
 | **E0.6-rebuild-cloud** | 2026-10-09 | 重建 | 备用3完整 encoder pipeline / seq01训练 / seq02留出 / 多种子官方评测 | 见目录 | 运行中；新标定可定义真实候选 99.8%、分裂边 98.7% | — | 等待双序列官方指标；未重训 nnU-Net | `experiments/E0.6_ideas_cloud_20261009/` |
+| E0.7 | 2026-10-09 | 同来源前端再切分对照 + 背景编号回归 | `E0.7_ideas_frontend_20261009/` | 云端准备中；不重训 nnU-Net，结论待双序列官方评测 |

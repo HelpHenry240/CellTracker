@@ -33,7 +33,7 @@ def write_result(
         lab = labels_per_frame[t]
         dtype = np.uint16 if lab.max(initial=0) < 65535 else np.uint32
         tifffile.imwrite(out_dir / f"mask{t:0{num_digits}d}.tif",
-                         lab.astype(dtype, copy=False))
+                         lab.astype(dtype, copy=False), photometric="minisblack")
     with (out_dir / "res_track.txt").open("w") as fh:
         for label in sorted(tracks):
             tr = tracks[label]
@@ -56,7 +56,8 @@ class ResultWriter:
         lab = np.asarray(labels)
         dtype = np.uint16 if int(lab.max(initial=0)) < 65535 else np.uint32
         path = self.out_dir / f"mask{t:0{self.num_digits}d}.tif"
-        tifffile.imwrite(path, lab.astype(dtype, copy=False), compression=self.compression)
+        tifffile.imwrite(path, lab.astype(dtype, copy=False), compression=self.compression,
+                         photometric="minisblack")
         self.frames_written += 1
         return path
 
