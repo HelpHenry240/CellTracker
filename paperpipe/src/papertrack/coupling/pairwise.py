@@ -1,6 +1,6 @@
 """§1.3 相邻帧最优传输耦合（ideas.pdf 式 8–14）。
 
-原文公式（R1 抄录）
+论文公式
 ------------------
 式(9)   L(Γ^t) = (1−η) Σ_{i,j} C_feat_ij Γ_ij
                + η Σ_{i,k} Σ_{j,ℓ} (D^t_ik − D^{t+1}_jℓ)² Γ_ij Γ_kℓ
@@ -43,11 +43,11 @@ def eps_from(C: np.ndarray, cfg: CouplingConfig) -> tuple[float, str]:
 
     原文只要求 ε>0。若显式给 `cfg.eps` 则按原文标量使用；否则用
     **ENG_SUPP** `ε = eps_rel × median(C)`：C 是平方距离，取固定 ε 会随数据尺度
-    失配（R3）。返回 (ε, 口径说明)。
+    失配。返回 (ε, 口径说明)。
     """
     if cfg.eps is not None:
         return float(cfg.eps), "explicit"
-    finite = C[np.isfinite(C)]
+    finite = C[np.isfinite(C) & (C > 0)]
     if cfg.eps_rel is not None and finite.size:
         return float(cfg.eps_rel * np.median(finite)), "median_scaled"
     return 1.0, "default_1.0"
@@ -77,7 +77,7 @@ class PairCoupling:
         return self.plan.sum(axis=0)
 
     def theta_gamma(self, frac: float | None, absolute: float | None) -> np.ndarray:
-        """式(24)/(26) 的 θ_Γ：默认按"占源质量的比"标定（见 config 注释）。"""
+        """式(24)/(26) 的绝对 θ_Γ；frac 为显式的源质量比例对照。"""
         if absolute is not None:
             return np.full(self.plan.shape[0], float(absolute))
         f = 0.05 if frac is None else float(frac)
@@ -127,16 +127,19 @@ def solve_coupling(src_xy: np.ndarray, dst_xy: np.ndarray,
                                  ccfg, spacing)
     a = masses(src_vol, C.shape[0], mcfg.mass_mode)          # 式(1)
     b = masses(dst_vol, C.shape[1], mcfg.mass_mode)          # 式(3)
+    if not ccfg.enabled:
+        return PairCoupling(np.zeros_like(C),C,a,b,d_cur,1.0,
+                            info={**cinfo,'enabled':False,'mass_mode':mcfg.mass_mode})
     eps_eff, eps_src = (float(eps), "given") if eps is not None else eps_from(C, ccfg)
 
     extra: dict = {}
     if ccfg.eta > 0:
         # 式(9)：FGW（特征项 + 结构项）—— 复用原仓库实现
-        D, _, _ = knn_structure(src_xy, src_vol, mcfg, spacing)
-        Dp, _, _ = knn_structure(dst_xy, dst_vol, mcfg, spacing)
+        D, _, _ = knn_structure(src_xy, src_vol, mcfg, spacing, d_full=mcfg.structure_mode == "full")
+        Dp, _, _ = knn_structure(dst_xy, dst_vol, mcfg, spacing, d_full=mcfg.structure_mode == "full")
         plan, extra = fused_gw(C, a, b, D, Dp, eta=ccfg.eta, eps=eps_eff,
                                tau_a=ccfg.tau_a, tau_b=ccfg.tau_b,
-                               n_outer=int(ccfg.fgw_outer))
+                               n_outer=int(ccfg.fgw_outer), n_inner=ccfg.sinkhorn_iters)
         extra["structural_term"] = structural_term(plan, D, Dp)
     else:
         # 式(12)（τ=None ⇒ 平衡）或式(14)（τ 有限 ⇒ 非平衡）

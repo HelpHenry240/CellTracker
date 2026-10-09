@@ -18,6 +18,7 @@ def load_model(checkpoint: str | Path, device: str = "cpu") -> EdgeGNN:
     ckpt = torch.load(str(checkpoint), map_location=device, weights_only=False)
     model = EdgeGNN(ModelConfig(**ckpt["model_config"])).to(device)
     model.load_state_dict(ckpt["model"])
+    model.input_contract = ckpt.get("input_contract")
     model.eval()
     return model
 
@@ -44,11 +45,12 @@ def _to_tensors(g: dict) -> dict:
 
 
 def make_edge_decider(checkpoint: str | Path, cfg, device: str = "cpu",
-                      mcfg=None, spacing=None):
+                      mcfg=None, spacing=None, input_contract=None):
     """生成 `decider(dets, couplings, jump) -> {t: 决策}`，可直接插进 pipeline。"""
     model = load_model(checkpoint, device)
-    exp_node_dim = node_dim_for(cfg.node.f_source,
-                               encoder_dim=0 if cfg.node.f_source == "intensity" else -1)
+    if input_contract is not None:
+        from ..runtime.contracts import check_contract
+        check_contract(model.input_contract, input_contract)
 
     def _decider(dets, couplings, jump, encoder_feats=None, r_max: float = 3.0):
         ts = dets.t_range
@@ -56,7 +58,7 @@ def make_edge_decider(checkpoint: str | Path, cfg, device: str = "cpu",
         for pos, t in enumerate(ts[:-1]):
             g = build_graph(dets, t, ts, couplings.get(pos), jump.get(t), cfg.graph,
                             mcfg, encoder_feats=encoder_feats, spacing=spacing,
-                            r_max=r_max)
+                            r_max=r_max, context_couplings=couplings, context_jump=jump)
             if not g or g["cand_edges"].shape[0] == 0:
                 continue
             dec[t] = predict_graph(model, g, device)

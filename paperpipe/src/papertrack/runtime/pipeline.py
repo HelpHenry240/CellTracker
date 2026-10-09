@@ -1,91 +1,44 @@
-"""严格论文口径的完整 pipeline **编排**（ideas.pdf §1.2 → §2.0.1 的顺序串联）。
+"""按 ideas.pdf 顺序编排检测→OT→多尺度→动态图/GNN→重建→tracklet。
 
-阶段顺序（与原文一致）
----------------------
-§1.2 测度与帧内图（式1-7） → 检测表 `Detections`
-§1.5 运动先验（式20-22）  → 两遍式：第1遍 α′=0 估速 → 第2遍 α′>0
-§1.3 相邻帧 OT（式8-14）  → {Γ^t}
-§1.4 多尺度时间正则（式17-19） → 精炼 {Γ^t}，同时产出跳帧耦合 Γ^{t,t+k}_direct
-§1.6 轨迹重建（式23-24）  → 顶点/边约束下的硬关联（OT 规则路径）
-§2.0.1 时间展开图 + GNN（式25-35）→ 边分类决策（推荐路径）
-§1.5/§1.6 第二层 tracklet OT → 长程串联
-导出 CTC 结果（含空洞帧补画）→ 见 `reconstruction/exporter.py::export_ctc`
-
-产物与留痕
-----------
-`run_pipeline` 返回 `PipelineRun`：配置、检测表、{Γ^t}、跳帧耦合、轨迹结果、
-运行信息（含各项诊断计数）。可选落盘：`artifacts_dir`（耦合 + info）、
-`dump_graphs`（图数据集，供训练 GNN；**训练与推理用同一检测来源**，R11）。
+体数据由检测与导出阶段逐帧读取；运行阶段仅保留实例表和小型耦合矩阵。
+每个阶段记录耗时、输入契约和诊断计数。耦合缓存带输入文件及配置指纹，
+中断后可以复用已经完成的帧对，不能用其他配置的结果替代当前计算。
 """
-
 from __future__ import annotations
 
 import json
 import time
-from dataclasses import dataclass, field, replace
+from dataclasses import asdict, dataclass, field, replace
 from pathlib import Path
-
 import numpy as np
 
 from celltracker.track.base import Detections, TrackResult
-
-from ..config import PipelineConfig
-from ..coupling.pairwise import PairCoupling, solve_coupling, solve_jump_coupling
-from ..graph.build import build_dataset
+from ..config import PipelineConfig, validate_config
+from ..coupling.pairwise import PairCoupling, solve_coupling, solve_jump_coupling, load_coupling
+from ..graph.build import build_dataset, load_encoder_features
 from ..longrange.motion import attach_velocity, estimate_velocity, velocity_report
 from ..longrange.tracklet import link_tracklets
 from ..reconstruction.rules import reconstruct_from_edges, reconstruct_from_ot
-from ..reconstruction.tracks import holes_of, normalize_tracks
+from ..reconstruction.tracks import holes_of
 from ..representation.measure import resolve_spacing
 from ..temporal.multiscale import refine_couplings
+from .contracts import file_hash, pipeline_contract
 
-__all__ = ["PipelineRun", "run_pipeline", "load_detections", "load_gt_parent"]
+
+def load_detections(h5_path):
+    """读取实例表、完整 GT 映射、外观统计与物理间距，不载入三维掩码。"""
+    return Detections.from_h5(h5_path)
 
 
-# ---------------------------------------------------------------------------
-# 检测表载入（含原仓库 `from_h5` 的一个已知缺口的修补）
-# ---------------------------------------------------------------------------
-
-def load_detections(h5_path: str | Path) -> Detections:
-    """读检测表（复用 `Detections.from_h5`）。
-
-    ⚠️ 修补一个已核实的缺口（审计 B2）：原 `Detections.from_h5` 只读
-    `intensity_mean`，**没有读 `intensity_std`**，导致式(25) 节点特征里强度标准差
-    那一维恒为 0（实测 std=0.00000），同时 h5 里其实存了该字段
-    （`data/build_dataset.py` / `scripts/predict_to_h5.py` 都写）。
-    本函数在载入后补齐这一列，使式(25) 的 f_i 两个分量都真实生效。
-    """
+def load_gt_parent(gt_h5):
+    """读取谱系。缺失轨迹表是监督输入错误；合法无分裂序列可返回空字典。"""
     import h5py
+    with h5py.File(gt_h5, 'r') as f:
+        if 'tracks' not in f:
+            raise ValueError(f'GT 缺少 tracks 表：{gt_h5}')
+        tracks = np.asarray(f['tracks'])
+    return {int(l):int(p) for l,p in zip(tracks['label'], tracks['parent'])}
 
-    dets = Detections.from_h5(h5_path)
-    with h5py.File(h5_path, "r") as f:
-        for key in f["frames"].keys():
-            t = int(key)
-            if t not in dets.frames:
-                continue
-            g = f["frames"][key]
-            if "intensity_std" in g:
-                dets.frames[t]["intensity_std"] = np.asarray(g["intensity_std"],
-                                                            dtype=float)
-            if "gt_label" in g:
-                dets.frames[t]["gt_label"] = np.asarray(g["gt_label"], dtype=np.int64)
-    return dets
-
-
-def load_gt_parent(gt_h5: str | Path) -> dict[int, int]:
-    """读 GT 血缘（式29 的边标签需要；预测检测的 h5 没有 tracks 表）。"""
-    import h5py
-
-    with h5py.File(gt_h5, "r") as f:
-        if "tracks" not in f:
-            return {}
-        tr = np.asarray(f["tracks"])
-    return {int(l): int(p) for l, p in zip(tr["label"], tr["parent"])}
-
-
-# ---------------------------------------------------------------------------
-# 主流程
-# ---------------------------------------------------------------------------
 
 @dataclass
 class PipelineRun:
@@ -100,188 +53,193 @@ class PipelineRun:
     artifacts_dir: Path | None = None
 
 
-def run_pipeline(h5_path: str | Path, cfg: PipelineConfig,
-                 gt_h5: str | Path | None = None,
-                 ckpt: str | Path | None = None,
-                 frames: list[int] | None = None,
-                 artifacts_dir: str | Path | None = None,
-                 dump_graphs: str | Path | None = None,
-                 device: str = "cpu",
-                 raw_image: str | Path | None = None,
-                 verbose: bool = True) -> PipelineRun:
-    """按论文顺序跑完整链路。
+def run_pipeline(h5_path, cfg, gt_h5=None, ckpt=None, frames=None, artifacts_dir=None,
+                 dump_graphs=None, device='cpu', raw_image=None, verbose=True,
+                 cache_dir=None,resume_graphs=False):
+    """执行完整实例追踪。无权重时走式(23)/(24)，可用于建图和接口冒烟。
 
-    决策路径：`ckpt` 给出时走 §2.0.1 的 GNN（式33）；否则走 §1.6 的 OT 规则
-    （式23/24），后者可用于"未训练模型时的端到端冒烟"。
+    GNN 推理必须使用相同检测来源和上游配置训练的权重。主配置中的 encoder
+    特征不能静默回退为强度统计；强度与无外观特征分别是显式配置对照。
     """
+    validate_config(cfg)
+    started = last_stage = time.monotonic()
+    stage_seconds = {}
+    def say(message, stage):
+        nonlocal last_stage
+        now = time.monotonic()
+        stage_seconds[stage] = round(now-last_stage, 3)
+        last_stage = now
+        if verbose:
+            print(f'[{stage}] {message} ({stage_seconds[stage]:.1f}s)', flush=True)
+    if ckpt and not cfg.gnn.enabled:
+        raise ValueError('GNN 已关闭，不能同时传入权重')
     h5_path = Path(h5_path)
-    t_start = time.time()
-    stage_seconds: dict[str, float] = {}
-
-    def _say(msg: str, key: str | None = None) -> None:
-        """阶段进度（E11：长任务要能看到进度，长跑时每阶段一行）。"""
-        nonlocal t_start
-        now = time.time()
-        if key is not None:
-            stage_seconds[key] = round(now - t_start, 1)
-            t_start = now
-            if verbose:
-                print(f"[{time.strftime('%H:%M:%S')}] {key}: {msg} "
-                      f"({stage_seconds[key]:.1f}s)", flush=True)
-        elif verbose:
-            print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
-
     dets = load_detections(h5_path)
     if frames is not None:
         keep = set(frames)
-        dets = Detections({t: d for t, d in dets.frames.items() if t in keep},
-                          meta=dets.meta)
+        dets = Detections({t:d for t,d in dets.frames.items() if t in keep}, meta=dets.meta)
     ts = dets.t_range
-    if len(ts) < 2:
-        raise ValueError("至少需要 2 帧")
-    _say(f"载入检测：{len(ts)} 帧", "load")
-
-    mcfg = cfg.measure
-    # 式(22) 的 α′ 由 §1.5 的配置给出；它进入 C_feat，故覆盖到 coupling 配置
-    ccfg = replace(cfg.coupling,
-                   alpha_pred=(cfg.motion.alpha_pred if cfg.motion.enabled else 0.0))
-    spacing = resolve_spacing(mcfg.spacing_zyx, h5_path, raw_image)
-    info: dict = {"n_frames": len(ts), "decision": "gnn" if ckpt else "ot_rule",
-                  "detection_source": cfg.detection_source,
-                  "spacing_zyx": list(spacing) if spacing else None,
-                  "spacing_source": ("config" if mcfg.spacing_zyx else
-                                     ("h5" if spacing else "none(voxel units!)")),
-                  "gt_h5": str(gt_h5) if gt_h5 else None,
-                  "mass_mode": mcfg.mass_mode}
-    if spacing is None:
-        info["warning"] = ("未解析到体素间距 → 距离按体素单位计算，"
-                           "违反 R3（物理量必须按 spacing 换算）")
-    art_dir = Path(artifacts_dir) if artifacts_dir else None
-    if art_dir:
-        art_dir.mkdir(parents=True, exist_ok=True)
-
-    # ---- §1.5 运动先验：两遍式（第 1 遍 α′=0 建立硬关联 → 估速 → 第 2 遍）----
-    pred_xy: dict[int, np.ndarray] = {}
+    if len(ts) < 2 or any(b != a+1 for a,b in zip(ts[:-1],ts[1:])):
+        raise ValueError('至少提供两帧连续输入；漏检帧应保留为空实例表')
+    spacing = resolve_spacing(cfg.measure.spacing_zyx,h5_path,raw_image)
+    if spacing is None or len(spacing) != 3 or not np.isfinite(spacing).all() or min(spacing) <= 0:
+        raise ValueError('无法确定合法物理间距，请提供 measure.spacing_zyx 或 H5 元数据')
+    actual_source = str(dets.meta.get('detection_source',cfg.detection_source))
+    if actual_source != cfg.detection_source:
+        raise ValueError(f'检测来源不一致：H5={actual_source}，config={cfg.detection_source}')
+    dets.meta['spacing_zyx'] = spacing
+    encoder_feats, encoder_meta = _appearance(cfg,dets,spacing)
+    contract = pipeline_contract(cfg,dets.meta,encoder_meta)
+    info = {'schema':cfg.schema_version, 'n_frames':len(ts), 'frames':ts,
+            'decision':'gnn' if ckpt else 'ot_rule', 'gnn_enabled':cfg.gnn.enabled,
+            'detection_source':actual_source, 'spacing_zyx':list(spacing),
+            'h5':str(h5_path), 'gt_h5':str(gt_h5) if gt_h5 else None,
+            'input_sha256':file_hash(h5_path), 'input_contract':contract,
+            'mass_mode':cfg.measure.mass_mode, 'f_source':cfg.node.f_source,
+            'encoder_metadata':encoder_meta}
+    if dump_graphs is not None:
+        if gt_h5 is None:
+            raise ValueError('训练图需要显式 --gt-h5，不能把预测标签当作谱系真值')
+        if cfg.detection_source == 'nnunet_pred' and any('gt_ids' not in d for d in dets.frames.values()):
+            raise ValueError('预测检测监督需要 gt_ids 完整映射；请先运行 relabel_detections.py')
+    cache = _prepare_cache(cache_dir,info,cfg) if cache_dir else None
+    say(f'{len(ts)} 帧；检测={actual_source}；外观={cfg.node.f_source}', 'load')
+    ccfg = replace(cfg.coupling,alpha_pred=cfg.motion.alpha_pred if cfg.motion.enabled else 0.0)
+    pred_xy = {}
     if cfg.motion.enabled and cfg.motion.alpha_pred > 0:
-        coarse = _solve_all(dets, replace(ccfg, alpha_pred=0.0), mcfg, spacing)
-        result_coarse = reconstruct_from_ot(dets, coarse, cfg.reconstruct, ccfg.r_max,
-                                            bridge=False)
-        vel, valid = estimate_velocity(dets, result_coarse)
-        attach_velocity(dets, vel, valid)
-        for t in ts:
-            pred_xy[t] = dets.centroid(t) + np.asarray(vel[t], dtype=float)
-        info["motion"] = {"pass1_tracks": result_coarse.n_tracks(),
-                          "alpha_pred": cfg.motion.alpha_pred,
-                          "velocity": velocity_report(dets)}
-        _say(f"第 1 遍（α′=0）估速完成：{result_coarse.n_tracks()} 条轨迹", "motion_pass1")
-
-    # ---- §1.3 相邻帧 OT（式8-14）----
-    couplings = _solve_all(dets, ccfg, mcfg, spacing, pred_xy=pred_xy)
-    info["n_couplings"] = len(couplings)
-    info["coupling_eps"] = sorted({round(c.eps_eff, 6) for c in couplings.values()})
-    _say(f"第 2 遍 OT 完成：{len(couplings)} 对，ε={info['coupling_eps'][:3]}", "couplings")
-
-    # ---- §1.4 多尺度时间正则（式17-19）+ 跳帧耦合（式18/19 的 Γ^{t,t+k}_direct）----
-    frame_xy = {t: dets.centroid(t) for t in ts}
-    frame_vol = {t: dets.volume(t) for t in ts}
-    ms = refine_couplings(couplings, ts, frame_xy, frame_vol, cfg.multiscale,
-                          ccfg, mcfg, spacing, pred_xy=pred_xy)
+        coarse = _solve_all(dets,replace(ccfg,alpha_pred=0.0),cfg.measure,spacing,cache=cache,phase='coarse')
+        coarse_result = reconstruct_from_ot(dets,coarse,cfg.reconstruct,ccfg.r_max,bridge=False)
+        vel,valid = estimate_velocity(dets,coarse_result)
+        attach_velocity(dets,vel,valid)
+        pred_xy = {t:dets.centroid(t)+vel[t] for t in ts}
+        info['motion'] = {'enabled':True,'alpha_pred':cfg.motion.alpha_pred,
+                          'pass1_tracks':coarse_result.n_tracks(),'velocity':velocity_report(dets,spacing)}
+    else:
+        info['motion'] = {'enabled':False}
+    say('运动先验初始化完成', 'motion')
+    couplings = _solve_all(dets,ccfg,cfg.measure,spacing,pred_xy,cache,'adjacent')
+    info['n_couplings'] = len(couplings)
+    info['coupling_eps'] = [float(c.eps_eff) for c in couplings.values()]
+    say(f'{len(couplings)} 对相邻帧耦合', 'couplings')
+    xy,vol = {t:dets.centroid(t) for t in ts},{t:dets.volume(t) for t in ts}
+    ms = refine_couplings(couplings,ts,xy,vol,cfg.multiscale,ccfg,cfg.measure,spacing,pred_xy)
     couplings = ms.couplings
-    info["multiscale"] = {k: v for k, v in ms.info.items() if k != "history"}
-    if ms.history:
-        info["multiscale"]["history"] = ms.history
-
-    jump: dict[int, PairCoupling] = {}
-    need_gap = int(cfg.graph.bridge_gap)
-    if cfg.graph.bridge or cfg.multiscale.enabled:
-        for pos, t in enumerate(ts):
-            if pos + need_gap <= len(ts) - 1:
-                cached = ms.direct.get((pos, need_gap))
-                if cached is not None:
-                    jump[t] = cached
+    info['multiscale'] = ms.info
+    jump = {}
+    gap = cfg.graph.bridge_gap
+    if cfg.graph.bridge:
+        for pos,t in enumerate(ts):
+            if pos+gap >= len(ts):
+                continue
+            jump[t] = ms.direct.get((pos,gap))
+            if jump[t] is None:
+                path = cache/f'jump_{t:04d}.npz' if cache else None
+                if path and path.exists():
+                    jump[t] = load_coupling(path)
                 else:
-                    jump[t] = solve_jump_coupling(
-                        frame_xy[t], frame_xy[ts[pos + need_gap]], need_gap, ccfg,
-                        mcfg, frame_vol[t], frame_vol[ts[pos + need_gap]], spacing,
-                        eps=couplings[pos].eps_eff)
-    info["n_jump_couplings"] = len(jump)
-    _say(f"多尺度精炼完成：跳帧耦合 {len(jump)} 个", "multiscale")
-
-    # ---- §2.0.1 决策 ----
-    encoder_feats = _load_encoder_features(cfg, dets, info)
+                    jump[t] = solve_jump_coupling(xy[t],xy[ts[pos+gap]],gap,ccfg,cfg.measure,
+                                                  vol[t],vol[ts[pos+gap]],spacing,eps=couplings[pos].eps_eff)
+                    if path:
+                        jump[t].save(path)
+    info['n_jump_couplings'] = len(jump)
+    say(f'多尺度={cfg.multiscale.enabled}；桥接耦合={len(jump)}', 'multiscale')
     if ckpt:
         from ..gnn.infer import make_edge_decider
-
-        decider = make_edge_decider(ckpt, cfg, device=device, mcfg=mcfg,
-                                    spacing=spacing)
-        decisions = decider(dets, couplings, jump, encoder_feats=encoder_feats,
-                            r_max=ccfg.r_max)
-        info["n_decision_pairs"] = len(decisions)
-        result = reconstruct_from_edges(dets, decisions, cfg.reconstruct)
+        decider = make_edge_decider(ckpt,cfg,device,cfg.measure,spacing,input_contract=contract)
+        decisions = decider(dets,couplings,jump,encoder_feats,ccfg.r_max)
+        result = reconstruct_from_edges(dets,decisions,cfg.reconstruct,couplings,jump)
+        info['checkpoint_sha256'] = file_hash(ckpt)
     else:
-        result = reconstruct_from_ot(dets, couplings, cfg.reconstruct, ccfg.r_max,
-                                     jump=jump, bridge=cfg.graph.bridge)
-    _say(f"决策（{info['decision']}）完成：{result.n_tracks()} 条轨迹", "decision")
-    info["tracks_after_decision"] = result.n_tracks()
-
-    # ---- §1.5 末段 / §1.6 第二层 tracklet OT ----
-    if cfg.tracklet.enabled:
-        tl = link_tracklets(dets, result, cfg.tracklet, ccfg, mcfg, spacing)
-        result = tl.result
-        info["tracklet"] = tl.info
-    info["tracks_final"] = result.n_tracks()
-
+        result = reconstruct_from_ot(dets,couplings,cfg.reconstruct,ccfg.r_max,jump,
+                                     cfg.graph.bridge,bridge_gap=gap)
+    info['tracks_after_decision'] = result.n_tracks()
+    say(f'{result.n_tracks()} 条轨迹', 'decision')
+    tl = link_tracklets(dets,result,cfg.tracklet,ccfg,cfg.measure,spacing)
+    result = tl.result
+    info['tracklet'] = tl.info
+    info['tracks_final'] = result.n_tracks()
+    say(f'二层 OT={cfg.tracklet.enabled}；最终 {result.n_tracks()} 条轨迹', 'tracklet')
     holes = holes_of(result.assignment)
-    info["holes"] = {"n_tracks_with_holes": len(holes),
-                     "n_hole_frames": int(sum(len(v) for v in holes.values())),
-                     "hole_policy": cfg.reconstruct.hole_policy}
-    info["reconstruct"] = dict(result.meta)
-
-    # ---- 可选落盘 ----
-    if art_dir:
-        np.savez_compressed(art_dir / "couplings.npz",
-                            **{f"plan_{i}": c.plan for i, c in couplings.items()})
-        (art_dir / "run_info.json").write_text(
-            json.dumps(info, ensure_ascii=False, indent=2, default=str))
+    info['holes'] = {'n_tracks_with_holes':len(holes),'n_hole_frames':sum(map(len,holes.values())),
+                     'hole_policy':cfg.reconstruct.hole_policy}
+    info['reconstruct'] = dict(result.meta)
     if dump_graphs is not None:
-        gt_parent = load_gt_parent(gt_h5) if gt_h5 else {}
-        if not gt_parent:
-            print("警告：GT 血缘为空 → 式(29) 的边标签无法生成，"
-                  "请用 --gt-h5 指定 GT 文件（R11：训练/推理检测来源必须同分布）")
-        stats = build_dataset(dets, couplings, jump, cfg.graph, mcfg, dump_graphs,
-                             gt_parent=gt_parent or None, encoder_feats=encoder_feats,
-                             spacing=spacing, r_max=ccfg.r_max)
-        info["graph_dataset"] = stats
-        (Path(dump_graphs) / "run_info.json").write_text(
-            json.dumps(info, ensure_ascii=False, indent=2, default=str))
-        _say(f"图数据集落盘：{stats['n_graphs']} 张", "dump_graphs")
+        parent = load_gt_parent(gt_h5)
+        graph_dir=Path(dump_graphs)
+        graph_dir.mkdir(parents=True,exist_ok=True)
+        graph_identity={'input_contract':contract,'detection_sha256':info['input_sha256'],
+                        'gt_sha256':file_hash(gt_h5),'frames':ts}
+        graph_identity=json.loads(json.dumps(graph_identity))
+        identity_path=graph_dir/'graph_identity.json'
+        if identity_path.exists():
+            if json.loads(identity_path.read_text())!=graph_identity:
+                raise ValueError('恢复图的数据来源或配置不匹配')
+        elif any(graph_dir.glob('pair_*.npz')):
+            raise ValueError('已有图缺少来源契约，不能恢复')
+        else:
+            identity_path.write_text(json.dumps(graph_identity,ensure_ascii=False,indent=2))
+        stats = build_dataset(dets,couplings,jump,cfg.graph,cfg.measure,dump_graphs,
+                              parent,encoder_feats,spacing,ccfg.r_max,resume=resume_graphs)
+        info['graph_dataset'] = stats
+        manifest = {'schema':cfg.schema_version,'input_contract':contract,
+                    'detection_sha256':info['input_sha256'],'gt_sha256':file_hash(gt_h5),
+                    'frames':ts,'stats':stats}
+        (Path(dump_graphs)/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2))
+        say(f'{stats["n_graphs"]} 张监督图', 'dump_graphs')
+    info.update(stage_seconds=stage_seconds,total_seconds=round(time.monotonic()-started,3))
+    art_dir = Path(artifacts_dir) if artifacts_dir else None
+    if art_dir:
+        art_dir.mkdir(parents=True,exist_ok=True)
+        np.savez_compressed(art_dir/'couplings.npz',**{f'plan_{i}':c.plan for i,c in couplings.items()})
+        np.savez_compressed(art_dir/'assignment.npz',**{f'frame_{t}':v for t,v in result.assignment.items()})
+        (art_dir/'run_info.json').write_text(json.dumps(info,ensure_ascii=False,indent=2,default=str))
+    return PipelineRun(cfg,dets,couplings,jump,result,spacing,holes,info,art_dir)
 
-    info["stage_seconds"] = stage_seconds
-    return PipelineRun(config=cfg, dets=dets, couplings=couplings, jump=jump,
-                       result=result, spacing=spacing, holes=holes, info=info,
-                       artifacts_dir=art_dir)
+
+def _appearance(cfg,dets,spacing):
+    if cfg.node.f_source == 'none':
+        return {t:np.empty((dets.n(t),0),dtype=np.float32) for t in dets.t_range},{}
+    if cfg.node.f_source == 'intensity':
+        return None,{}
+    if not cfg.node.encoder_feat_path:
+        raise ValueError('encoder_npz 需要 node.encoder_feat_path，不能回退为强度统计')
+    with np.load(cfg.node.encoder_feat_path,allow_pickle=False) as stored:
+        if 'metadata_json' not in stored:
+            raise ValueError('encoder 侧车缺少模型与预处理元数据')
+        meta = json.loads(str(stored['metadata_json'].item()))
+    return load_encoder_features(cfg.node.encoder_feat_path,dets,spacing),meta
 
 
-def _solve_all(dets: Detections, ccfg, mcfg, spacing, pred_xy=None
-               ) -> dict[int, PairCoupling]:
-    ts = dets.t_range
-    out: dict[int, PairCoupling] = {}
-    for pos, (t, t_next) in enumerate(zip(ts[:-1], ts[1:])):
-        out[pos] = solve_coupling(
-            dets.centroid(t), dets.centroid(t_next), dets.volume(t),
-            dets.volume(t_next), None if pred_xy is None else pred_xy.get(t),
-            ccfg, mcfg, spacing)
-    return out
+def _prepare_cache(root,info,cfg):
+    root = Path(root)
+    root.mkdir(parents=True,exist_ok=True)
+    identity = {'schema':cfg.schema_version,'input_sha256':info['input_sha256'],
+                'frames':info['frames'],'spacing':info['spacing_zyx'],
+                'measure':asdict(cfg.measure),'coupling':asdict(cfg.coupling),
+                'motion':asdict(cfg.motion),'reconstruct':asdict(cfg.reconstruct),
+                'multiscale':asdict(cfg.multiscale),'bridge_gap':cfg.graph.bridge_gap}
+    # JSON 往返统一 tuple/list 以及数值字典键。
+    identity = json.loads(json.dumps(identity))
+    manifest = root/'cache_manifest.json'
+    if manifest.exists():
+        if json.loads(manifest.read_text()) != identity:
+            raise ValueError('耦合缓存输入/配置不匹配，请使用独立目录')
+    elif list(root.glob('*.npz')):
+        raise ValueError('缓存缺少来源契约，不能复用')
+    else:
+        manifest.write_text(json.dumps(identity,ensure_ascii=False,indent=2))
+    return root
 
 
-def _load_encoder_features(cfg: PipelineConfig, dets: Detections, info: dict):
-    """式(25) 的 f_i：走论文口径（encoder 特征侧车文件）时载入，否则返回 None。"""
-    if cfg.node.f_source != "encoder_npz" or not cfg.node.encoder_feat_path:
-        info["f_source"] = "intensity(工程近似：实例内强度均值/标准差)"
-        return None
-    from ..graph.build import load_encoder_features
-
-    feats = load_encoder_features(cfg.node.encoder_feat_path, dets)
-    info["f_source"] = f"encoder_npz:{cfg.node.encoder_feat_path}"
-    info["encoder_feature_frames"] = len(feats)
-    return feats
+def _solve_all(dets,ccfg,mcfg,spacing,pred_xy=None,cache=None,phase='adjacent'):
+    output = {}
+    for pos,(t,tn) in enumerate(zip(dets.t_range[:-1],dets.t_range[1:])):
+        path = cache/f'{phase}_{t:04d}.npz' if cache else None
+        if path and path.exists():
+            output[pos] = load_coupling(path)
+        else:
+            output[pos] = solve_coupling(dets.centroid(t),dets.centroid(tn),dets.volume(t),
+                dets.volume(tn),None if pred_xy is None else pred_xy.get(t),ccfg,mcfg,spacing)
+            if path:
+                output[pos].save(path)
+    return output

@@ -1,86 +1,100 @@
-# paperpipe 默认配置：**严格按 ideas.pdf** 的口径。
-# 字段注释见 src/papertrack/config.py；标定方法与经验分布见 FORMULA_MAP.md。
-#
-# 标记含义：PAPER = 论文给出；CALIB = 论文未给数值，按物理量纲标定（R3）；
-#           ENG = 论文之外的工程补充（R2 要求单独标注）。
-
-measure:                 # §1.2 式(1)-(7)
-  mass_mode: volume      # PAPER 式(1)：质量 ∝ 尺寸（面向 nnU-Net 预测实例）
-  knn_k: 6               # CALIB 式(5)
-  sigma_x: null          # CALIB 式(6)：null = 正距离中位数
-  sigma_f: null          # CALIB 式(6)：null = 正特征距离中位数
-  spacing_zyx: null      # R3：null = 从 h5 attrs / TIFF 头自动解析
-
-coupling:                # §1.3 式(8)-(14)
-  alpha: 1.0             # PAPER 式(8)
-  beta: 1.0              # PAPER 式(8)：原文要求 α,β>0
-  sigma_s: null          # CALIB 式(8)：null = 体积中位数
-  r_max: 3.0             # CALIB 式(8)：单位 µm（calibrate_params.py 会给出 p99.9）
-  eta: 0.3               # PAPER 式(9)：η>0 启用结构项（0 = 纯特征 OT）
-  eps_rel: 0.1           # ENG  式(12)：ε = 0.1 × median(C)
-  eps: null              # PAPER 式(12)：显式值优先
-  tau_a: 1.0             # CALIB 式(14)：有限值 = 启用非平衡 OT（η_death/η_birth 的前提）
+# ideas.pdf 完整模块模板；生产评测前须标定阈值并设置 encoder_feat_path。
+# 完整默认配置是方法定义，性能优化必须由双序列官方指标决定。
+# 此版本的绝对质量阈值尚待新设置标定，不能沿用历史相对阈值。
+measure:
+  mass_mode: volume
+  knn_k: 6
+  sigma_x: null
+  sigma_f: null
+  spacing_zyx: null
+  structure_mode: full
+coupling:
+  enabled: true
+  alpha: 1.0
+  alpha_pred: 0.0
+  beta: 1.0
+  sigma_s: null
+  r_max: 3.0
+  eta: 0.3
+  eps_rel: 0.1
+  eps: null
+  tau_a: 1.0
   tau_b: 1.0
-  sinkhorn_iters: 1000   # ENG
-  fgw_outer: 10          # ENG：式(9) 条件梯度外层轮数上限
-
-motion:                  # §1.5 式(20)-(22)
+  sinkhorn_iters: 1000
+  fgw_outer: 10
+motion:
   enabled: true
-  alpha_pred: 1.0        # PAPER 式(22)
-
-multiscale:              # §1.4/§1.5 式(17)-(19)
+  alpha_pred: 1.0
+multiscale:
   enabled: true
-  ks: [2, 3, 5]          # PAPER 式(19)："K 如 {2,3,5}"
-  lambda_temp: {2: 0.1, 3: 0.05, 5: 0.02}   # CALIB 式(19) 的逐尺度 λ^(k)_temp
-  n_rounds: 2            # CALIB（§1.7：少量迭代微调）
-  norm: cond             # PAPER 原文给出条件概率定义；raw = 式(18)(19) 字面乘积
-  line_search: true      # ENG
+  ks:
+  - 2
+  - 3
+  - 5
+  lambda_temp:
+    2: 0.1
+    3: 0.05
+    5: 0.02
+  n_rounds: 2
+  norm: raw
+  line_search: true
   jump_r_max_scale: 1.0
-
-tracklet:                # §1.5 末段 / §1.6 第二层 OT
+tracklet:
   enabled: true
-  window: 5              # PAPER "较短滑动时间窗口（如 3–5 帧）"
-  theta_link: 0.5        # CALIB "较严格的阈值"
-  tau: 0.5               # CALIB 第二层非平衡 OT
-  max_gap: 3             # CALIB
-  velocity_weight: 1.0   # CALIB
+  window: 5
+  theta_link: 0.5
+  local_confidence: 0.8
+  tau: 0.5
+  max_gap: 3
+  velocity_weight: 1.0
+  size_weight: 1.0
   merge_division_children: false
-  hole_policy: fill      # ENG：CTC 格式与"轨迹不截断"的冲突处理
-
-graph:                   # §2.0.1 式(25)-(29)
-  theta_gamma_frac: 0.05 # CALIB 式(26)：θ_Γ(i) = frac × a_i^t
-  theta_gamma: null      # PAPER 式(26)：绝对阈值（给了就优先）
-  theta_c: null          # PAPER 式(26)：null → R_max²
-  cand_topk: 0           # ENG：0 = 原文口径（不做 top-k 保底）
-  ctx_window: 1          # §2.0.1 "多步时间上下文"
-  bridge: true           # §2.0.1 跨帧桥接边 (i,t−1)→(k,t+1)
-  bridge_gap: 2          # PAPER 原文即"跨一帧"
-  bridge_scope: missing_only   # PAPER 前置条件：仅当 t+1 该节点缺失时才桥接
-  intra_knn: 4           # CALIB 式(28)
-  use_ot_candidates: true
-
-reconstruct:             # §1.6 式(23)-(24)
-  theta_gamma_frac: 0.05 # CALIB 式(24)
-  theta_gamma: null
+  hole_policy: fill
+graph:
+  theta_gamma_frac: null
+  theta_gamma: 0.0
   theta_c: null
-  eta_death: 0.5         # CALIB 式(24)：行和 / a_i
-  eta_birth: 0.5         # CALIB 式(24)：列和 / a_j
-  div_ratio: 0.5         # CALIB 分裂判据的"显著质量比例"
-  vol_tol: 0.5           # CALIB 体积守恒容差 |s_j1+s_j2−s_i|/s_i
-  max_children: 2        # PAPER §2.0.1"有限个子节点"
-  tau_edge: 0.5          # CALIB 式(33) 的接受阈值
-  hole_policy: fill      # ENG
-
-node:                    # 式(25)
-  f_source: intensity    # 论文口径应改为 encoder_npz（需侧车特征文件）
+  cand_topk: 0
+  ctx_window: 2
+  bridge: true
+  bridge_gap: 2
+  bridge_scope: missing_only
+  intra_knn: 4
+  intra_enabled: true
+  context_enabled: true
+  use_ot_candidates: true
+  use_ot_features: true
+  use_intra_similarity: true
+reconstruct:
+  theta_gamma_frac: null
+  theta_gamma: 0.0
+  theta_c: null
+  eta_death: 0.0
+  eta_birth: 0.0
+  mass_threshold_mode: absolute
+  birth_death_enabled: true
+  death_veto: true
+  birth_veto: true
+  division_enabled: true
+  volume_conservation: true
+  div_ratio: 0.05
+  vol_tol: 0.5
+  max_children: 2
+  tau_edge: 0.5
+  hole_policy: fill
+  filter_isolated: true
+  mark_uncertainty: true
+node:
+  f_source: encoder_npz
   encoder_feat_path: null
-
-gnn:                     # §2.0.1 式(30)-(35)
+gnn:
+  enabled: true
   hidden: 64
   layers: 3
   dropout: 0.1
-  lambda_ot: 0.2         # CALIB 式(35)
-  class_weighted_ce: false   # ENG
-
-seed: 20260923
+  lambda_ot: 0.2
+  class_weighted_ce: false
+  residual: false
+seed: 20261008
 detection_source: nnunet_pred
+schema_version: ideas-v2

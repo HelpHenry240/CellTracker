@@ -1,117 +1,109 @@
-## 1. 结构
+# ideas pipeline
 
-```
-paperpipe/
-  configs/paper_default.yaml     # 全参数（含 PAPER/CALIB/ENG 标记）
-  src/
-    vendor/                        # 复用到的 celltracker 模块**副本**（自包含，见 vendor/README.md）
-      celltracker/{ot,cost,track,data,eval,gnn,pipeline,experiment}/
-    papertrack/
-      _paths.py                    # 把 vendor 插到 sys.path 最前（paperpipe 不依赖外层仓库）
-      config.py                    # 全参数（论文符号 + PAPER/CALIB/ENG 标记）
-      representation/  §1.2         measure.py           式(1)-(7) 测度、帧内图与 W、C_feat
-      coupling/        §1.3         pairwise.py          式(8)-(14) FGW / 平衡 / 非平衡 OT
-      temporal/        §1.4         multiscale.py        式(15)-(19) 时间展开图 + 多尺度正则
-      longrange/       §1.5         motion.py            式(20)-(22) 两遍式运动先验
-                                    tracklet.py          §1.5末/§1.6 滑动窗口 tracklet + 二层 OT
-      reconstruction/  §1.6/§2.0.1  rules.py             式(23)(24) OT 规则重建 + 式(33) GNN 边决策
-                                    tracks.py            轨迹规范化（CTC 合法性、空洞登记）
-                                    exporter.py          流式写 CTC 提交 + 空洞帧补画
-      graph/           §2.0.1       build.py             式(25)-(29) 时间展开图（含跨帧桥接边）
-      gnn/             §2.0.1       model.py             式(30)-(33) 消息传递 + sigmoid 边分类头
-                                    train.py             式(34)(35) BCE + OT 正则；时间块切分
-                                    infer.py             载入权重 → 边决策
-      runtime/                      pipeline.py          端到端编排（§1.2→§2.0.1）
-                                    validate.py          CTC 提交格式校验（E2）
-  scripts/
-    run_paper_pipeline.py   # 端到端入口（OT 规则 或 GNN 决策 + 导出 + 可选官方指标）
-    train_paper_gnn.py      # 训练 §2.0.1 的 GNN
-    calibrate_params.py     # 论文未给数值的参数按物理量纲标定（R3）
-    check_candidate_coverage.py  # 候选覆盖率标定（R5：不可逆筛选必须量化）
-    cloud_nnunet_infer.sh   # 云端 nnU-Net 推理（固化命令，便于复现）
-  tests/test_papertrack.py  # 15 项回归测试（合成数据，秒级）
+本目录是 `ideas.pdf` 方法的主实现。仓库入口 `scripts/run_ideas_pipeline.py` 与
+`paperpipe/scripts/run_paper_pipeline.py` 调用同一实现。外层旧追踪脚本保留用于历史基线。
+
+```text
+nnU-Net 语义掩码 → 实例 H5 / 完整 GT 身份映射 / 冻结 encoder 特征
+ → 测度与物理空间图（式1–7）
+ → 两遍运动先验 / 相邻 FGW 或 OT（式8–14、20–22）
+ → 多尺度时间精炼（式17–19）
+ → 连通的时间图 / 边分类 GNN（式25–35）
+ → 生死、分裂、冲突与不确定性重建（式23–24、§2.0.1）
+ → 滑窗高置信 tracklet / 二层 OT（§1.5）
+ → CTC 导出 / 格式校验 / 官方 DET、SEG、TRA
 ```
 
-**自包含**：`paperpipe/` 只需要自己这一个目录即可运行（`vendor/` 里是复用到的
-`celltracker` 模块副本，`_paths.py` 会把它插到 `sys.path` 最前）。
-自检：`python -c "import papertrack, celltracker; print(celltracker.__file__)"`
-应打印 `paperpipe/src/vendor/celltracker/...`（测试里有一条专门的回归用例）。
+配置集中在 `configs/`，公式与实现对应见 [FORMULA_MAP.md](FORMULA_MAP.md)。
+`paper_default.yaml` 和 `paper_e2e_ce.yaml` 是完整模块模板，需要设置 encoder 侧车路径并
+标定新设置的绝对质量阈值。历史配置和历史指标不代表当前重建版本的性能。
 
-## 2. 怎么跑
+## 数据准备
+
+预测检测与训练检测来自同一分割流程；`--gt-h5` 只提供监督和评测真值。
 
 ```bash
-# ① 未训练模型时：走 §1.6 的 OT 规则（式23/24）+ 落盘图数据集
-python paperpipe/scripts/run_paper_pipeline.py \
-    --h5   data/interim/Fluo-N3DH-CE_01_pred_v2.h5 \
-    --gt-h5 data/interim/Fluo-N3DH-CE_01.h5 \
-    --seq 01 --exp-id P1_otrule_ce01 \
-    --dump-graphs data/interim/pg_graphs_01
+# 为已有预测实例重建多数覆盖映射；保留欠分割实例覆盖的全部 GT 身份。
+python scripts/relabel_detections.py --input pred.h5 --gt-h5 gt.h5 --out pred_v2.h5
 
-# ② 训练 §2.0.1 的 GNN（本地 CPU，分钟级）
-python paperpipe/scripts/train_paper_gnn.py \
-    --graphs data/interim/pg_graphs_01 --out paperpipe/runs/gnn_01 --epochs 60
-
-# ③ 端到端（GNN 决策）+ 导出 CTC 提交（会自动跑格式校验）
-python paperpipe/scripts/run_paper_pipeline.py \
-    --h5 ... --gt-h5 ... --seq 01 --exp-id P2_gnn_ce01 \
-    --ckpt paperpipe/runs/gnn_01/best.pt
-
-# ④ 加 --official 即在云端跑官方 DET/SEG/TRA（复用 scripts/cloud_eval.py）
+# 用现有 nnU-Net 冻结 encoder 提取特征，无需重训；逐帧、逐块、可断点续提。
+python scripts/nnunet/export_encoder_features.py --h5 pred_v2.h5 \
+  --images /path/imagesTs_eval --model /path/trained_model --seq 01 \
+  --out encoder01.npz --device cuda
 ```
 
-参数标定：
+侧车保存帧号、实例 label、预处理和模型指纹。相同实例数量不保证顺序一致，因此载入时
+按 label 对齐；旧侧车必须通过物理质心的一一匹配。缺失特征不允许静默回退。
+
+## 标定、建图、训练和推理
 
 ```bash
-python paperpipe/scripts/calibrate_params.py \
-    --h5 data/interim/Fluo-N3DH-CE_01_pred_v2.h5 \
-    --gt-h5 data/interim/Fluo-N3DH-CE_01.h5 --out paperpipe/calib/ce01.json
+# 先跑完整上游，记录 µm、µm³、C、原始 Γ、行列质量及候选真实边召回。
+python paperpipe/scripts/calibrate_params.py --h5 pred_v2.h5 --gt-h5 gt.h5 \
+  --config paperpipe/configs/paper_e2e_ce.yaml \
+  --set node.encoder_feat_path=encoder01.npz \
+  --cache-dir data/interim/calibration01 --out experiments/new_calibration/distributions.json \
+  --apply-out experiments/new_calibration/calibrated.yaml
+
+python scripts/run_ideas_pipeline.py --h5 pred_v2.h5 --gt-h5 gt.h5 --seq 01 \
+  --config experiments/new_calibration/calibrated.yaml --exp-id new_build01 \
+  --dump-graphs data/interim/new_graphs01 --build-only --cache-dir data/interim/new_cache01
+
+python paperpipe/scripts/train_paper_gnn.py --graphs data/interim/new_graphs01 \
+  --config experiments/new_calibration/calibrated.yaml --out experiments/new_model/artifacts/model \
+  --epochs 60 --device cuda
+
+python scripts/run_ideas_pipeline.py --h5 pred_v2.h5 --gt-h5 gt.h5 --seq 01 \
+  --config experiments/new_calibration/calibrated.yaml --exp-id new_eval01 \
+  --ckpt experiments/new_model/artifacts/model/best.pt --device cuda --official \
+  --official-tools /root/EvaluationSoftware/Linux --official-gt-dir /path/01_GT
 ```
 
-测试：`python -m pytest paperpipe/tests -q`（已并入仓库 pytest 的 `testpaths`）。
+seq02 使用同一组标定参数和 seq01 权重，只更换检测、GT、encoder 路径。权重会校验上游
+配置、检测来源、特征 schema 和 encoder 指纹。默认按时间块分训练/验证，并排除跨边界的
+重叠上下文。训练每轮保存优化器和随机状态；`--resume` 可续训。建图使用
+`--resume-graphs` 检查并补齐已有图。缓存不能跨配置或输入文件复用。
 
-## 3. 与端到端测试（云端 nnU-Net）的衔接
+`--official` 默认通过仓库的 `cloud_eval.py` 调用远端；在官方二进制所在机器上应同时设置
+`--official-tools` 与 `--official-gt-dir`，避免再通过 SSH 上传。格式失败、程序失败或指标
+缺失都返回失败。官方评测不允许 `--no-validate` 或部分帧。
 
-检测前端完全复用原仓库，不改：
+## 消融
 
+```bash
+python scripts/run_ideas_pipeline.py --list-modules
+python scripts/run_ideas_pipeline.py --config calibrated.yaml --list-modules
+
+# 只生成计划，不启动算力任务。
+python paperpipe/scripts/run_ablation_matrix.py --config calibrated.yaml \
+  --h5-01 pred01.h5 --h5-02 pred02.h5 --gt-01 gt01.h5 --gt-02 gt02.h5 \
+  --encoder01 encoder01.npz --encoder02 encoder02.npz \
+  --out experiments/new_matrix --ablations fgw motion multiscale tracklet gnn \
+  --seeds 20261008 20261009 --official
 ```
-云端 nnU-Net 推理 (*.nii.gz)
-  → scripts/predict_to_h5.py（实例拆分 + 强度统计 + gt_label 映射）
-  → paperpipe/scripts/run_paper_pipeline.py --h5 <pred.h5> --gt-h5 <GT.h5>
-  → experiments/<exp>/artifacts/submission/<seq>_RES/ → scripts/cloud_eval.py
+
+注册表在 `runtime/ablation.py`。默认开启项测关闭，默认关闭项测开启。每个变体独立建图、
+每个种子独立训练；关闭整个 OT 时一起关闭依赖质量的消费者。仅关闭 GNN 的变体直接用
+OT 重建，无可学习模块。`--execute` 顺序运行，`--resume` 按状态文件恢复。全序列任务必须
+在云端后台运行，启动前、训练中和结束后检查 GPU。
+
+绝对质量阈值随耦合机制变化。对会改变 OT 质量或代价的变体，使用 `--recalibrate`，
+在 seq01 重新测量分布并选择同一分位规则，seq02 沿用这些参数。`--skip-baseline`
+用于已有同配置双序列基准证据的后续矩阵。比较时同时报告机制开关与派生阈值，
+不能把基准的绝对阈值直接套到质量尺度不同的变体上。
+
+CTC 标签以标准 TIFF zlib 无损压缩逐帧落盘。压缩不改变像素值；仍须由官方程序
+实际读取并评测。已完成实验不会因为存储优化重新写入。
+
+## 工程适配与验证边界
+
+论文的原始质量乘积与绝对 Γ 阈值是默认形式。条件概率乘积、相对质量阈值、top-k 保底、
+自适应 ε、强度外观与残差 GNN 都明确作为可切换的工程对照。CTC `fill` 用平移的源实例
+补画空洞，仅写背景；无可用体素时报错。`split` 是显式拆段对照。
+
+```bash
+OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m pytest -q
 ```
 
-**R11（训练/测试检测来源同分布）**：建图脚本 `--dump-graphs` 与端到端推理必须用**同一个**
-`--h5`（预测实例），`--gt-h5` 只提供血缘与评测真值。
-
-## 4. 目前残留问题
-
-1. **空洞帧补画（`hole_policy`）**：CTC 格式不允许轨迹空洞，而论文 §2.0.1 要求轨迹不被
-   截断。默认 `fill`（平移复制源实例体素，无处可放时覆盖），备选 `split`（截断但绝对合法）。
-2. **θ_Γ / η_death / η_birth 的标定口径**：默认按"占源质量的比"定义（论文只给符号不给数值），
-   可用 `theta_gamma=<绝对値>` 回到原文的单一标量形式。
-
-详见 `FORMULA_MAP.md` §3 的 E-2/E-3/E-4。
-
-## 5. 已实测（合成 + 真实数据小范围冒烟，非结论）
-
-* 15/15 回归测试通过；仓库原有 89 项测试不回归；
-* CE seq01 预测实例、帧 120–130（11 帧）：两条决策路径都能产出**格式校验合法**的 CTC 提交；
-* 真实数据冒烟暴露并修掉 4 个问题：多尺度精度的 NaN/溢出与 16× 超时、tracklet 重编号后
-  轨迹 id 为 0（CTC 非法）、桥接边过度触发（537→22 个空洞）、空洞无处补画时的回退。
-* 这些数字只是"链路能跑通"的证据，**不是精度结论**（R4/R9：本地指标只判方向，
-  结论要用双序列 + 官方指标 + 噪声地板）。
-
-## 6. 端到端官方结果（2026-09-24，云端 nnU-Net 推理 + CTC 官方二进制）
-
-| 序列 | SEG | DET | **TRA** | 备注 |
-| --- | --- | --- | --- | --- |
-| CE 01 | 0.673196 | 0.938833 | **0.898249** | GNN 决策（seq01 训练，τ=0.35） |
-| CE 02 | 0.690867 | 0.938995 | **0.899119** | **留出序列**（GNN 只在 seq01 上训练） |
-
-同口径对照：OT 规则路径（无 GNN）seq01 TRA 0.871725；
-原项目真实检测档（in-sequence 训练 + 工程补充）0.905706/0.909340；
-GT 标记上界 0.996513/0.996369。
-
-跨序列边分类（seq01 训练 → seq02 评测）：P 0.937 / R 0.826 / F1 0.878。
-**瓶颈定性：边召回 0.83 → 每条长轨迹平均断约 5 次**，因此轨迹数远多于 GT（6408 vs 720）。
-细节见 `experiments/P4_final_gnn_ce01/notes.md` 与 `FORMULA_MAP.md` 的 E-11~E-14。
+测试验证公式、梯度、接口、失败模式和恢复行为。本地真实数据小样本验证不用于性能结论。
+新版本的效果须由双序列官方指标、多种子和当前设置的噪声地板决定。

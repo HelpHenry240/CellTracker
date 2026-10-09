@@ -1,0 +1,227 @@
+{
+  "counts": {
+    "true_detection_pairs": 727,
+    "within_physical_gate": 721,
+    "after_candidates": 669,
+    "all_candidate_pairs": 879,
+    "division_pairs": 68,
+    "division_candidates": 46,
+    "candidate_true_recall": 0.9202200825309491,
+    "division_pair_recall": 0.6764705882352942
+  },
+  "distributions": {
+    "true_gamma": {
+      "n": 727,
+      "min": 0.0,
+      "max": 0.36427878820386117,
+      "p1": 2.446332094045573e-05,
+      "p5": 0.002786362481650097,
+      "p50": 0.20373247247776333,
+      "p95": 0.2951619113874345,
+      "p99": 0.3163409083943435,
+      "p99.9": 0.3574560223625606
+    },
+    "true_cost": {
+      "n": 721,
+      "min": 0.03988269295653169,
+      "max": 236.34534090871674,
+      "p1": 0.19258169919195198,
+      "p5": 0.32326180360476975,
+      "p50": 1.8411442077019005,
+      "p95": 21.436189744807667,
+      "p99": 42.002273531974495,
+      "p99.9": 177.5700317992726
+    },
+    "true_displacement_um": {
+      "n": 727,
+      "min": 0.07278821313596358,
+      "max": 5.574067139928897,
+      "p1": 0.16133511880364745,
+      "p5": 0.28258241444325377,
+      "p50": 0.8144352265552295,
+      "p95": 3.1748693209090715,
+      "p99": 4.14489939505559,
+      "p99.9": 5.401118448104065
+    },
+    "live_out_mass": {
+      "n": 668,
+      "min": 8.083414283072871e-08,
+      "max": 0.4082167816067036,
+      "p1": 0.0037461562575596737,
+      "p5": 0.034284970642125386,
+      "p50": 0.22374100306294653,
+      "p95": 0.31250896478392765,
+      "p99": 0.36795851787131484,
+      "p99.9": 0.3925633369462146
+    },
+    "no_successor_out_mass": {
+      "n": 3,
+      "min": 0.23209917395615196,
+      "max": 0.4057290371289466,
+      "p1": 0.23254150249328132,
+      "p5": 0.23431081664179879,
+      "p50": 0.25421560081262035,
+      "p95": 0.39057769349731397,
+      "p99": 0.4026987684026201,
+      "p99.9": 0.405426010256314
+    },
+    "live_in_mass": {
+      "n": 703,
+      "min": 5.823530735072625e-12,
+      "max": 0.38548422071381894,
+      "p1": 0.00037023621431727483,
+      "p5": 0.012570373499689874,
+      "p50": 0.21849148529107396,
+      "p95": 0.3135804267612602,
+      "p99": 0.371725137950144,
+      "p99.9": 0.3832307629307101
+    },
+    "no_predecessor_in_mass": {
+      "n": 95,
+      "min": 0.002366136613559726,
+      "max": 0.3181398819181028,
+      "p1": 0.003117964473305258,
+      "p5": 0.017069399554209386,
+      "p50": 0.10844033056659418,
+      "p95": 0.24406600821779775,
+      "p99": 0.3032224501525197,
+      "p99.9": 0.31664813874154457
+    }
+  },
+  "suggestions": {
+    "theta_gamma": 2.446332094045573e-05,
+    "eta_death": 0.0037461562575596737,
+    "eta_birth": 0.00037023621431727483,
+    "r_max_required_p999_um": 5.401118448104065
+  },
+  "after_calibration": {
+    "true_detection_pairs": 727,
+    "within_physical_gate": 721,
+    "after_candidates": 669,
+    "all_candidate_pairs": 879,
+    "division_pairs": 68,
+    "division_candidates": 46,
+    "candidate_true_recall": 0.9202200825309491,
+    "division_pair_recall": 0.6764705882352942
+  },
+  "protocol": "真实预测实例前驱的 p1 质量阈值；部署值需双序列官方指标验证",
+  "physical_volume_um3": {
+    "n": 935,
+    "min": 3.3210002639293723,
+    "max": 151.33231202681088,
+    "p1": 5.934546471635351,
+    "p5": 12.042270957033654,
+    "p50": 47.862903803801615,
+    "p95": 94.95387754625571,
+    "p99": 115.58020518548885,
+    "p99.9": 146.92168347628635
+  },
+  "cost_C": {
+    "n": 1434,
+    "min": 0.03988269295653169,
+    "max": 1186.816989019679,
+    "p1": 0.22574278469616754,
+    "p5": 0.4661426509352306,
+    "p50": 7.234332218004184,
+    "p95": 41.61206243961783,
+    "p99": 358.4113398458042,
+    "p99.9": 1139.428560060393
+  },
+  "source_sha256": "62092302dfa80d50fe8f3a827be031bb07722bcdbd7b24da0431a4bbf4e5a481",
+  "input_contract": {
+    "signature": "eb522769a6e3a27533c38079036aff72ab752a2a6ea21ebf1da58b09fa6f7feb",
+    "definition": {
+      "measure": {
+        "mass_mode": "volume",
+        "knn_k": 6,
+        "sigma_x": null,
+        "sigma_f": null,
+        "spacing_zyx": [
+          1.0,
+          0.09,
+          0.09
+        ],
+        "structure_mode": "full"
+      },
+      "coupling": {
+        "enabled": true,
+        "alpha": 1.0,
+        "alpha_pred": 0.0,
+        "beta": 1.0,
+        "sigma_s": null,
+        "r_max": 4.3,
+        "eta": 0.3,
+        "eps_rel": 1.0,
+        "eps": null,
+        "tau_a": 1.0,
+        "tau_b": 1.0,
+        "sinkhorn_iters": 200,
+        "fgw_outer": 3
+      },
+      "motion": {
+        "enabled": true,
+        "alpha_pred": 1.0
+      },
+      "multiscale": {
+        "enabled": true,
+        "ks": [
+          2,
+          3,
+          5
+        ],
+        "lambda_temp": {
+          "2": 0.1,
+          "3": 0.05,
+          "5": 0.02
+        },
+        "n_rounds": 1,
+        "norm": "raw",
+        "line_search": true,
+        "jump_r_max_scale": 1.0
+      },
+      "graph": {
+        "theta_gamma_frac": null,
+        "theta_gamma": 0.0,
+        "theta_c": null,
+        "cand_topk": 0,
+        "ctx_window": 2,
+        "bridge": true,
+        "bridge_gap": 2,
+        "bridge_scope": "missing_only",
+        "intra_knn": 4,
+        "intra_enabled": true,
+        "context_enabled": true,
+        "use_ot_candidates": true,
+        "use_ot_features": true,
+        "use_intra_similarity": true
+      },
+      "node": {
+        "f_source": "intensity"
+      },
+      "motion_initialization": {
+        "theta_gamma_frac": null,
+        "theta_gamma": 0.0,
+        "theta_c": null,
+        "eta_death": 0.0,
+        "eta_birth": 0.0,
+        "mass_threshold_mode": "absolute",
+        "birth_death_enabled": true,
+        "death_veto": true,
+        "birth_veto": true,
+        "division_enabled": true,
+        "volume_conservation": true,
+        "div_ratio": 0.05,
+        "vol_tol": 0.5,
+        "max_children": 2,
+        "tau_edge": 0.5,
+        "hole_policy": "fill",
+        "filter_isolated": true,
+        "mark_uncertainty": true
+      },
+      "schema": "ideas-v2",
+      "detection_source": "nnunet_pred",
+      "label_mapping": "ctc_full_marker_majority_v2"
+    }
+  },
+  "candidate_warning": "真实边覆盖不足 99%；须扫描 R_max/epsilon/保底并记录分裂损失，不能直接冻结此配置"
+}

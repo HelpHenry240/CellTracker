@@ -45,6 +45,8 @@ def _frames_of(assignment: dict[int, np.ndarray]) -> dict[int, list[int]]:
     out: dict[int, list[int]] = {}
     for t in sorted(assignment):
         for tid in np.unique(assignment[t]):
+            if tid <= 0:
+                continue
             out.setdefault(int(tid), []).append(int(t))
     return {k: sorted(v) for k, v in out.items()}
 
@@ -60,7 +62,7 @@ def export_ctc(run: PipelineRun, h5_path: str | Path, out_dir: str | Path,
                gt_h5: str | Path | None = None, gt_seg_dir: str | Path | None = None):
     """流式写出 CTC 结果（mask###.tif + res_track.txt）并累计本地诊断。
 
-    **空洞帧补画（ENG_SUPP，需用户确认的口径点）**：CTC 官方格式要求轨迹在
+    **空洞帧补画（论文之外的 CTC 格式适配）**：CTC 官方格式要求轨迹在
     `[begin,end]` 内每帧都出现，而论文 §2.0.1 明确要求"帧 t 的 mask 仍为空，
     但整体轨迹不会被截断"。二者冲突时本函数按 `hole_policy="fill"` 把源帧实例的
     体素按质心插值位置**平移复制**到空洞帧（只写在当前为 0 的位置），
@@ -74,13 +76,13 @@ def export_ctc(run: PipelineRun, h5_path: str | Path, out_dir: str | Path,
     dets, result = run.dets, run.result
     ts = dets.t_range
     out_dir = Path(out_dir)
-    writer = ResultWriter(out_dir)
+    # 稀疏的 3D 标签用标准 TIFF 无损压缩；像素与轨迹不变，避免多次评测写满磁盘。
+    writer = ResultWriter(out_dir, num_digits=num_digits, compression="zlib")
     plan = (_hole_plan(result.assignment, dets)
             if run.config.reconstruct.hole_policy == "fill" else {})
     gt_path = Path(gt_h5) if gt_h5 else Path(h5_path)
 
     filled = 0
-    overwritten = 0
     unfilled = 0
     assignment = result.assignment
     with h5py.File(h5_path, "r") as f_det, h5py.File(gt_path, "r") as f_gt:
@@ -96,11 +98,10 @@ def export_ctc(run: PipelineRun, h5_path: str | Path, out_dir: str | Path,
                 status = _stamp_hole(res, f_det, dets, assignment, t, a, b, tid)
                 if status == "filled":
                     filled += 1
-                elif status == "overwritten":
-                    filled += 1
-                    overwritten += 1
                 else:
                     unfilled += 1
+                    raise ValueError(f"帧 {t} 无法补画轨迹 {tid}；不能覆盖其他实例。"
+                                     "请检查桥接，或显式用 hole_policy=split 导出对照")
             gt = np.asarray(f_gt[f"frames/{t:04d}/labels"]) if "frames" in f_gt else res
             writer.add(t, res)
             diag.add_frame(t, gt, res)
@@ -110,7 +111,7 @@ def export_ctc(run: PipelineRun, h5_path: str | Path, out_dir: str | Path,
     stats = diag.result()
     stats.update(diag.division_pr(result.tracks))
     stats.update({"n_tracks_pred": result.n_tracks(), "hole_frames_filled": filled,
-                  "hole_frames_overwritten": overwritten,
+                  "hole_frames_overwritten": 0,
                   "hole_frames_unfilled": unfilled,
                   "hole_policy": run.config.reconstruct.hole_policy,
                   "seq": seq})
@@ -126,14 +127,8 @@ def _stamp_hole(res: np.ndarray, f_det, dets: Detections,
                 t: int, a: int, b: int, tid: int) -> str:
     """把源帧 (a) 里该轨迹实例的体素按插值质心平移复制到空洞帧 (t)。
 
-    返回 `"filled"`（只写空闲体素）/ `"overwritten"`（无处可放，回退为覆盖）/
-    `"failed"`（源实例缺体素）。
-
-    ENG_SUPP 说明：CTC 官方格式要求轨迹在 [begin,end] 内每帧出现，而论文 §2.0.1
-    要求"轨迹不被截断"；当平移后的体素全被别的检测占满时（密集帧常见），
-    若坚持不覆盖就只能把轨迹拆断（退回 `hole_policy="split"`）。本实现选择
-    **覆盖**并把次数记进 `hole_frames_overwritten`，让提交保持格式合法；
-    该取舍需要用户确认（见 FORMULA_MAP.md 的 E-2）。
+    返回 filled 或 failed。仅写背景，不能抹掉已有实例；完全没有空闲体素
+    时由调用方报告格式适配失败，避免把错误隐藏在一份可评测的提交中。
     """
     k_src = _det_index_of(dets, a, tid, assignment)
     k_tgt = _det_index_of(dets, b, tid, assignment)
@@ -149,11 +144,13 @@ def _stamp_hole(res: np.ndarray, f_det, dets: Detections,
     coords = np.nonzero(lab_src == src_label)
     if not coords or coords[0].size == 0:
         return "failed"
-    dst = [np.clip(c + s, 0, res.shape[k] - 1)
-           for k, (c, s) in enumerate(zip(coords, shift))]
+    dst = [c+s for c,s in zip(coords,shift)]
+    inside = np.ones(len(dst[0]),dtype=bool)
+    for axis, positions in enumerate(dst):
+        inside &= (positions >= 0) & (positions < res.shape[axis])
+    dst = [positions[inside] for positions in dst]
     free = res[tuple(dst)] == 0
     if np.any(free):
         res[tuple(d[free] for d in dst)] = tid
         return "filled"
-    res[tuple(dst)] = tid          # 回退：覆盖（见 docstring 的取舍说明）
-    return "overwritten"
+    return "failed"

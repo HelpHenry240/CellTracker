@@ -1,6 +1,6 @@
 """§2.0.1 训练：式(29) 的边标签 + 式(34) 边级 BCE + 式(35) OT 一致性正则。
 
-原文（R1 抄录）
+论文公式
 --------------
 式(34)  L_edge = − Σ_{e ∈ E_time} [ y_e log ŷ_e + (1−y_e) log(1−ŷ_e) ]
 式(35)  L_OT-reg = Σ_{e ∈ E_time} ŷ_e C_e
@@ -24,6 +24,7 @@
 from __future__ import annotations
 
 import json
+import os
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -36,6 +37,7 @@ import torch.nn as nn
 from celltracker.gnn.data import collate
 
 from .model import EdgeGNN, ModelConfig
+from ..graph.build import EDGE_COST
 
 __all__ = ["TrainConfig", "train", "evaluate"]
 
@@ -58,6 +60,8 @@ class TrainConfig:
     seed: int = 20260923
     device: str = "cpu"
     out_dir: str = "paperpipe/runs/gnn"
+    purge_overlap: bool = True
+    resume: bool = False
 
 
 class GraphDataset:
@@ -68,12 +72,15 @@ class GraphDataset:
     """
 
     def __init__(self, root: str | Path, split: str = "train",
-                 val_fraction: float = 0.2, mode: str = "block", seed: int = 0):
+                 val_fraction: float = 0.2, mode: str = "block", seed: int = 0,
+                 purge_overlap: bool = True):
         self.root = Path(root)
         self.files = sorted(self.root.glob("pair_*.npz"))
         if not self.files:
             raise FileNotFoundError(f"{self.root} 里没有 pair_*.npz")
-        n_val = max(1, int(len(self.files) * float(val_fraction)))
+        if not 0 <= val_fraction < 1:
+            raise ValueError('val_fraction 须在 [0,1)')
+        n_val = max(1, int(len(self.files) * float(val_fraction))) if val_fraction > 0 else 0
         if mode == "random":
             rng = np.random.default_rng(seed)
             idx = rng.permutation(len(self.files))
@@ -83,16 +90,30 @@ class GraphDataset:
         elif mode == "block":
             cut = len(self.files) - n_val
             self.sel = (self.files[:cut] if split == "train" else self.files[cut:])
+            if split == "train" and n_val and purge_overlap:
+                with np.load(self.files[cut]) as first_validation:
+                    boundary = int(first_validation.get("support_start", first_validation["t"]))
+                kept = []
+                for path in self.sel:
+                    with np.load(path) as graph:
+                        if int(graph.get("support_end",int(graph["t"])+1)) < boundary:
+                            kept.append(path)
+                self.sel = kept
         else:
             raise ValueError(f"未知 split_mode: {mode!r}")
-        self.meta = {}
+        manifest = self.root / "manifest.json"
+        self.meta = json.loads(manifest.read_text()) if manifest.exists() else {}
+        self.cache = {}
 
     def __len__(self) -> int:
         return len(self.sel)
 
     def __getitem__(self, i: int) -> dict:
-        d = np.load(self.sel[i])
-        return {
+        if i in self.cache:
+            return self.cache[i]
+        with np.load(self.sel[i]) as stored:
+            d = {key:stored[key] for key in stored.files}
+        item = {
             "node_feat": torch.from_numpy(d["node_feat"]),
             "edge_index": torch.from_numpy(d["edge_index"].astype(np.int64)),
             "edge_feat": torch.from_numpy(d["edge_feat"]),
@@ -103,13 +124,15 @@ class GraphDataset:
             "meta": {"t": int(d["t"]), "n_src": int(d["n_src"]),
                      "n_dst": int(d["n_dst"])},
         }
+        self.cache[i] = item
+        return item
 
 
 def _pos_weight(ds, device) -> torch.Tensor | None:
     pos = neg = 0
-    for f in ds.files:
-        d = np.load(f)
-        y = d["label"]
+    for f in ds.sel:
+        with np.load(f) as d:
+            y = d["label"]
         pos += int((y > 0).sum())
         neg += int((y == 0).sum())
     pos, neg = max(pos, 1), max(neg, 1)
@@ -143,18 +166,27 @@ def evaluate(model: EdgeGNN, ds, device: str,
 def train(graph_root: str | Path, cfg: TrainConfig | None = None) -> dict:
     """式(34)(35) 的训练循环。图数据集由 `graph.build_dataset` 产出。"""
     cfg = cfg or TrainConfig()
+    os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
     torch.manual_seed(cfg.seed)
     np.random.seed(cfg.seed)
+    torch.use_deterministic_algorithms(True)
     out_dir = Path(cfg.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
+    if any(out_dir.glob('*.pt')) and not cfg.resume:
+        raise FileExistsError("训练输出已存在；恢复请显式设置 resume=True")
+    if cfg.resume and not (out_dir/'last.pt').exists():
+        raise FileNotFoundError('恢复训练需要 last.pt')
 
-    ds_kw = dict(val_fraction=cfg.val_fraction, mode=cfg.split_mode, seed=cfg.seed)
+    ds_kw = dict(val_fraction=cfg.val_fraction, mode=cfg.split_mode, seed=cfg.seed,
+                 purge_overlap=cfg.purge_overlap)
     train_ds = GraphDataset(graph_root, split="train", **ds_kw)
     val_ds = GraphDataset(graph_root, split="val", **ds_kw)
     if len(train_ds) == 0:
-        raise RuntimeError(f"{graph_root} 里没有 pair_*.npz 图数据集")
+        raise RuntimeError("排除重叠上下文后训练集为空；扩大数据范围，或仅冒烟时显式关闭验证划分")
     device = torch.device(cfg.device)
-    dims = np.load(train_ds.files[0])
+    if device.type == "cuda" and not torch.cuda.is_available():
+        raise RuntimeError("要求 CUDA 训练，但 GPU 不可用")
+    dims = np.load(train_ds.sel[0])
     mcfg = ModelConfig(node_dim=int(dims["node_feat"].shape[1]),
                        edge_dim=int(dims["edge_feat"].shape[1]),
                        hidden=cfg.hidden, layers=cfg.layers,
@@ -167,39 +199,73 @@ def train(graph_root: str | Path, cfg: TrainConfig | None = None) -> dict:
 
     history: list[dict] = []
     best = -1.0
+    first_epoch = 1
+    contract = train_ds.meta.get("input_contract")
+    if cfg.resume and (out_dir / "last.pt").exists():
+        saved = torch.load(out_dir / "last.pt",map_location=device,weights_only=False)
+        if saved.get("input_contract") != contract:
+            raise ValueError("恢复检查点的数据契约不匹配")
+        previous = saved['train_config']
+        for key,value in asdict(cfg).items():
+            if key not in {'resume','epochs','device','out_dir'} and previous.get(key) != value:
+                raise ValueError(f'恢复训练配置不一致：{key}')
+        model.load_state_dict(saved["model"])
+        opt.load_state_dict(saved["optimizer"])
+        first_epoch = saved["epoch"]+1
+        best = saved["best_f1"]
+        history = saved["history"]
+        np.random.set_state(saved["numpy_rng"])
+        torch.set_rng_state(saved["torch_rng"].cpu())
+        if device.type == "cuda" and saved.get("cuda_rng") is not None:
+            torch.cuda.set_rng_state_all(saved["cuda_rng"])
+    def checkpoint(epoch):
+        return {"model":model.state_dict(),"model_config":asdict(mcfg),"train_config":asdict(cfg),
+                "epoch":epoch,"input_contract":contract,"optimizer":opt.state_dict(),
+                "best_f1":best,"history":history,"numpy_rng":np.random.get_state(),
+                "torch_rng":torch.get_rng_state(),
+                "cuda_rng":torch.cuda.get_rng_state_all() if device.type=="cuda" else None}
     t0 = time.time()
-    for epoch in range(1, cfg.epochs + 1):
+    for epoch in range(first_epoch, cfg.epochs + 1):
         model.train()
+        order = np.random.permutation(len(train_ds))
+        epoch_loss, seen = 0.0, 0
         for start in range(0, len(train_ds), cfg.batch_pairs):
-            idx = np.random.permutation(len(train_ds))[start:start + cfg.batch_pairs]
+            idx = order[start:start + cfg.batch_pairs]
             batch = collate([train_ds[int(i)] for i in idx])
             node = batch["node_feat"].to(device)
             eidx = batch["edge_index"].to(device)
             efeat = batch["edge_feat"].to(device)
             logits = model(node, eidx, efeat)[batch["cand_mask"].to(device)]
             y = batch["label"].to(device).float()
+            if len(y) == 0:
+                continue
             loss = bce(logits, y)                                   # 式(34)
             if cfg.lambda_ot > 0:
                 prob = torch.sigmoid(logits)
-                cost = batch["cand_feat"][:, 0].to(device).clamp(min=0.0)
+                cost = batch["cand_feat"][:, EDGE_COST].to(device)
+                if torch.any(cost < 0):
+                    raise ValueError("原始特征代价 C 不应为负")
                 loss = loss + cfg.lambda_ot * (prob * cost).mean()  # 式(35)
             opt.zero_grad()
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)
             opt.step()
-        m = evaluate(model, val_ds, device, cfg.batch_pairs)
-        m.update({"epoch": epoch, "elapsed_s": time.time() - t0})
+            epoch_loss += float(loss.detach())*len(idx)
+            seen += len(idx)
+        m = evaluate(model, val_ds if len(val_ds) else train_ds, device, cfg.batch_pairs)
+        m['selection_split'] = 'validation' if len(val_ds) else 'train_smoke_only'
+        m.update({"epoch": epoch, "elapsed_s": time.time() - t0,
+                  "graphs_seen":seen,"train_loss":epoch_loss/max(seen,1)})
         history.append(m)
         print(f"[epoch {epoch:3d}] P={m['precision']:.4f} R={m['recall']:.4f} "
               f"F1={m['f1']:.4f}", flush=True)
         if m["f1"] > best:
             best = m["f1"]
-            torch.save({"model": model.state_dict(), "model_config": asdict(mcfg),
-                        "train_config": asdict(cfg), "epoch": epoch},
-                       out_dir / "best.pt")
-    torch.save({"model": model.state_dict(), "model_config": asdict(mcfg),
-                "train_config": asdict(cfg), "epoch": cfg.epochs},
-               out_dir / "last.pt")
+            torch.save(checkpoint(epoch),out_dir / "best.pt")
+        temporary = out_dir / "last.pending.pt"
+        torch.save(checkpoint(epoch),temporary)
+        temporary.replace(out_dir / "last.pt")
+        (out_dir / "history.json").write_text(json.dumps(history,indent=2))
     (out_dir / "history.json").write_text(json.dumps(history, indent=2))
     return {"history": history, "out_dir": str(out_dir), "best_f1": best,
             "node_dim": mcfg.node_dim, "edge_dim": mcfg.edge_dim,
@@ -216,7 +282,8 @@ def evaluate_graphs(checkpoint: str | Path, graph_root: str | Path,
 
     model = load_model(checkpoint, device)
     ds = GraphDataset(graph_root, split="train", val_fraction=0.0)
-    ds.sel = sorted(Path(graph_root).glob("pair_*.npz"))
+    from ..runtime.contracts import check_contract
+    check_contract(model.input_contract,ds.meta.get('input_contract'))
     out = evaluate(model, ds, device, batch_pairs, tau)
     out["n_graphs"] = len(ds)
     return out

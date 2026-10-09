@@ -1,27 +1,9 @@
-"""§1.2 帧内表示：经验测度与邻域图（ideas.pdf 式 1–7）。
+"""帧级经验测度与空间图（ideas.pdf §1.2，式1–7）。
 
-原文公式（逐字抄录，R1）
-------------------------
-式(1)  a_i^t = s_i^t / Σ_{k=1}^{n_t} s_k^t ,  μ^t = Σ_i a_i^t δ_{f_i^t}
-       "最简单（且与物理直觉一致）的方式是让质量与尺寸成正比。"
-式(2)  f_i^t = [x_i^t, s_i^t] ∈ R^{d+1}
-式(3)  a_j^{t+1} = s_j^{t+1} / Σ_ℓ s_ℓ^{t+1}
-式(4)  G^t = (V^t, E^t, W^t),  V^t = {1,...,n^t}
-式(5)  E^t = { (i,k) | x_k^t ∈ kNN(x_i^t) }
-式(6)  w_ik^t = exp( −‖x_i^t−x_k^t‖²/(2σ_x²) − ‖f_i^t−f_k^t‖²/(2σ_f²) ),  (i,k)∈E^t
-式(7)  D_ik^t = ‖x_i^t − x_k^t‖₂,  i,k ∈ V^t
-       "也可以选择图上的测地距离（例如最短路径长度）来更好地反映局部拓扑结构。"
-
-实现口径
---------
-* **式(1) 质量 ∝ 尺寸**：直接复用仓库里已与原文一致的 `celltracker.cost.features.masses`
-  （两种模式都归一到和为 1，对应式(1)(3) 的分母）。
-* **式(6) 的 W**：原仓库把 W 算出来又全部丢掉（`D, _ = gaussian_knn_graph(...)`），
-  导致"声称用了式(6) 实际没用"。本模块**真正产出并下游使用 W**（作为帧内边权重，
-  见 `graph.py` 的式(28) 边特征）。
-* **式(7)**：原文是全对距离；§1.7 明确允许"结合稀疏邻接（有限度地截断 D^t）来降低
-  复杂度"，故默认按 kNN 截断（`d_full=False` 可切回全对）。
-* **R3 单位**：所有距离按 `spacing_zyx` 换算成 **µm** 后再进入式(6)(7)(8)。
+式(1)/(3)：a_i=s_i/Σs_k；式(2)：f_i=[x_i,s_i]。
+式(5)：空间 kNN；式(6)：W_ik=exp(−‖Δx‖²/σ_x²−‖Δf‖²/σ_f²)。
+式(7)：D_ik=‖x_i−x_k‖。完整距离用于 FGW；局部截断是 §1.7 的计算近似。
+位置和体积先由体素间距换算为 µm、µm³。邻域相似度作为帧内边特征。
 """
 
 from __future__ import annotations
@@ -53,10 +35,10 @@ def masses(vol: np.ndarray | None, n: int, mode: str = "volume") -> np.ndarray:
 def resolve_spacing(cfg_spacing=None, h5_path: str | Path | None = None,
                     raw_image: str | Path | None = None,
                     z_default: float = 1.0) -> tuple[float, float, float] | None:
-    """解析体素物理间距 (z,y,x) µm（R3：物理量必须按 spacing 换算）。
+    """解析体素物理间距 (z,y,x) µm。
 
     优先级：显式配置 → h5 attrs(`spacing_zyx`) → 原始图像 TIFF 头（xy 分辨率，
-    z 用 `z_default`）→ None（调用方须警告"当前按体素单位"）。
+    z 用 `z_default`）→ None（主 pipeline 会拒绝缺少间距的输入）。
     CE 数据集实测 xy = 0.09 µm（TIFF XResolution=111111/cm）、z = 1.0 µm。
     """
     if cfg_spacing is not None:
@@ -95,21 +77,21 @@ def point_features(xy: np.ndarray, vol: np.ndarray | None,
                    spacing: tuple[float, ...] | None = None) -> np.ndarray:
     """式(2)：f_i^t = [x_i^t, s_i^t] ∈ R^{d+1}。
 
-    `x` 按 µm 表示（若给 spacing），`s` 取体积原值（式(6) 只用其差值的相对大小）。
+    `x` 按 µm 表示（若给 spacing），`s` 按 µm³ 表示。
     """
     xy = np.asarray(xy, dtype=float)
     if spacing is not None and xy.size:
         xy = xy * np.asarray(spacing, dtype=float)[None, :]
     if vol is None:
         return xy
-    return np.concatenate([xy, np.asarray(vol, dtype=float)[:, None]], axis=1)
+    volume = np.asarray(vol, dtype=float) * (float(np.prod(spacing)) if spacing is not None else 1.0)
+    return np.concatenate([xy, volume[:, None]], axis=1)
 
 
 def sigma_from(values: np.ndarray, given: float | None, positive: bool = True) -> float:
     """式(6) 的 σ_x / σ_f：论文未给数值 → 取"正距离中位数"（CALIBRATED）。
 
-    量纲依据：σ 是被 ‖·‖² 归一化的尺度量，取数据自身的中位尺度是唯一与
-    数据规模无关的选择（用固定常数会让核宽随数据尺度失配）。
+    量纲依据：σ 是被 ‖·‖² 归一化的尺度量，正距离中位数提供自适应的工程尺度，避免固定核宽随数据尺度失配。
     """
     if given is not None:
         return float(given)
@@ -129,8 +111,8 @@ def knn_structure(xy: np.ndarray, vol: np.ndarray | None, cfg: MeasureConfig,
 
     * `adj` (n,n) bool：kNN 邻接（对称化，对应式(5) 的 E^t）
     * `D`   (n,n)：式(7) 的帧内距离；`d_full=False`（默认）时只保留邻接项，
-      非邻接处为 0（= 结构项无贡献），这是 §1.7 允许的稀疏近似。
-    * `W`   (n,n)：式(6) 的高斯边权（空间项 × 特征项）。**本实现会真正使用它。**
+      非邻接距离截为 0，这是 §1.7 的局部近似；它不等价于把四重和的相应项删除。
+    * `W`   (n,n)：式(6) 的高斯边权（空间项 × 特征项）。用于图的帧内边特征。
     """
     xy = np.asarray(xy, dtype=float)
     n = xy.shape[0]
@@ -139,7 +121,7 @@ def knn_structure(xy: np.ndarray, vol: np.ndarray | None, cfg: MeasureConfig,
         return z, z, np.zeros((0, 0), dtype=bool)
 
     D_full = pairwise_distance(xy, xy, spacing)                 # 式(7) 全对距离
-    k_eff = min(int(cfg.knn_k), max(n - 1, 1))
+    k_eff = min(max(int(cfg.knn_k), 0), max(n - 1, 0))
     order = np.argsort(D_full, axis=1)
     adj = np.zeros((n, n), dtype=bool)
     rows = np.repeat(np.arange(n), k_eff)
@@ -148,12 +130,12 @@ def knn_structure(xy: np.ndarray, vol: np.ndarray | None, cfg: MeasureConfig,
     adj |= adj.T                                                # 对称化
 
     sx = sigma_from(D_full, cfg.sigma_x)
-    W = np.exp(-D_full ** 2 / (2.0 * sx ** 2))                  # 式(6) 空间项
+    W = np.exp(-D_full ** 2 / sx ** 2)                         # 式(6) 空间项
     feat = point_features(xy, vol, spacing)                     # 式(2) f = [x, s]
     if n > 1:
         Df = pairwise_distance(feat, feat)
         sf = sigma_from(Df, cfg.sigma_f)
-        W = W * np.exp(-Df ** 2 / (2.0 * sf ** 2))              # 式(6) 特征项
+        W = W * np.exp(-Df ** 2 / sf ** 2)                     # 式(6) 特征项
     W = np.where(adj, W, 0.0)
     D = D_full if d_full else np.where(adj, D_full, 0.0)
     return D, W, adj
@@ -194,6 +176,9 @@ def build_cost(src_xy: np.ndarray, dst_xy: np.ndarray,
     from ..config import CouplingConfig
 
     cfg = cfg or CouplingConfig()
+    voxel_volume = float(np.prod(spacing)) if spacing is not None else 1.0
+    src_vol = None if src_vol is None else np.asarray(src_vol, dtype=float) * voxel_volume
+    dst_vol = None if dst_vol is None else np.asarray(dst_vol, dtype=float) * voxel_volume
     d_cur = pairwise_distance(src_xy, dst_xy, spacing)
     C = cfg.alpha * d_cur ** 2
 

@@ -117,3 +117,12 @@ def test_cost_r_max_gate_uses_physical_units():
     C, _ = build_cost(src, dst, None, None, None,
                       CostConfig(r_max=0.5, spacing_zyx=(1.0, 0.09, 0.09)))
     assert not np.isfinite(C[0, 0])
+
+
+def test_balanced_infeasible_gate_cannot_silently_lose_mass():
+    C=np.array([[0.,np.inf],[np.inf,0.]])
+    with pytest.raises(ValueError,match='硬边际不可行'):
+        sinkhorn_log(C,np.array([.4,.6]),np.array([.5,.5]),eps=.1)
+    # 同一个支持集在 KL 松弛后合法，禁止边保持零。
+    P=sinkhorn_log(C,np.array([.4,.6]),np.array([.5,.5]),eps=.1,tau_a=1,tau_b=1)
+    assert np.isfinite(P).all() and P[0,1]==P[1,0]==0

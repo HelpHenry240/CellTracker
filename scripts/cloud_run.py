@@ -68,7 +68,15 @@ def parse_cred(which: str | None = None) -> tuple[str, str, str, str]:
     if not creds:
         sys.exit(f"无法从 {CRED} 解析任何 ssh 连接")
     sel = (which or os.environ.get("CT_CLOUD_CONN") or "primary").strip().lower()
-    if sel in ("backup", "b", "2"):
+    if sel in ('backup3','backup_3','备用3','d','4'):
+        if len(creds)<4:
+            sys.exit(f'{CRED} 中未找到备用3连接')
+        return creds[3]
+    if sel in ("backup2", "backup_2", "备用2", "c", "3"):
+        if len(creds) < 3:
+            sys.exit(f"{CRED} 中未找到备用2连接")
+        return creds[2]
+    if sel in ("backup", "backup1", "b", "2"):
         if len(creds) < 2:
             sys.exit(f"{CRED} 中未找到备用连接")
         return creds[1]
@@ -77,7 +85,7 @@ def parse_cred(which: str | None = None) -> tuple[str, str, str, str]:
     for c in creds:
         if sel in (c[1].lower(), c[0].lower()):
             return c
-    sys.exit(f"未知连接选择 {sel!r}（可用：primary/backup，或端口号/主机名）")
+    sys.exit(f"未知连接选择 {sel!r}（可用：primary/backup/backup2/backup3，或端口号/主机名）")
 
 
 def run(argv: list[str], echo: bool = True) -> int:

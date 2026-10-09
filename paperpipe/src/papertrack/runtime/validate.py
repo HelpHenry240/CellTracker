@@ -21,7 +21,8 @@ from celltracker.data.ctc import read_man_track
 __all__ = ["validate_ctc_dir"]
 
 
-def validate_ctc_dir(res_dir: str | Path, num_digits: int = 3) -> dict:
+def validate_ctc_dir(res_dir: str | Path, num_digits: int = 3,
+                     expected_frames: list[int] | None = None) -> dict:
     res_dir = Path(res_dir)
     tracks = read_man_track(res_dir / "res_track.txt")
     pat = re.compile(rf"mask(\d{{{num_digits}}})\.tif$", re.IGNORECASE)
@@ -34,6 +35,10 @@ def validate_ctc_dir(res_dir: str | Path, num_digits: int = 3) -> dict:
         frames[int(m.group(1))] = set(np.unique(lab).tolist()) - {0}
 
     errors: list[str] = []
+    if expected_frames is not None and set(frames) != set(expected_frames):
+        errors.append('输出掩码帧号与输入帧范围不一致')
+    if not frames:
+        errors.append('没有结果掩码')
     present: dict[int, set] = {lab: set() for lab in tracks}
     unknown = set()
     for t, labels in frames.items():

@@ -1,122 +1,124 @@
 #!/usr/bin/env python3
-"""严格论文口径 pipeline 的入口（paperpipe）。
-
-示例::
-
-    # ① 只用 OT 规则（式23/24）跑通链路 + 落盘图数据集（训练 GNN 用）
-    python paperpipe/scripts/run_paper_pipeline.py \
-        --h5 data/interim/Fluo-N3DH-CE_01_pred_v2.h5 \
-        --gt-h5 data/interim/Fluo-N3DH-CE_01.h5 \
-        --seq 01 --exp-id P1_otrule_ce01 \
-        --dump-graphs data/interim/pg_graphs_01
-
-    # ② 用训练好的 GNN（§2.0.1 式33）决策 + 导出 CTC 结果 + 官方指标
-    python paperpipe/scripts/run_paper_pipeline.py \
-        --h5 ... --gt-h5 ... --seq 01 --exp-id P2_gnn_ce01 \
-        --ckpt paperpipe/runs/gnn/best.pt --official
-
-产物：experiments/<exp-id>/ 八件套；`artifacts/submission/<seq>_RES/` 为 CTC 提交目录。
-"""
-
+"""ideas pipeline 主入口：完整推理、监督建图、消融配置和 CTC 导出。"""
 from __future__ import annotations
-
 import argparse
 import json
+import os
+import subprocess
 import sys
 from pathlib import Path
-
-# PKG = paperpipe 包根（仓库内 `<repo>/paperpipe`，单独解包后 `<解包目录>/paperpipe_<日期>`）；
-# ROOT = 外层仓库根（用于定位 data/、experiments/）。
 PKG = Path(__file__).resolve().parents[1]
 ROOT = PKG.parent
-sys.path.insert(0, str(PKG / "src"))
+sys.path.insert(0,str(PKG/'src'))
+import papertrack  # noqa: E402,F401
+from celltracker.experiment import Experiment
+from papertrack.config import load_config,override,save_config
+from papertrack.reconstruction import export_ctc
+from papertrack.runtime import run_pipeline
+from papertrack.runtime.ablation import describe,variant
+from papertrack.runtime.validate import validate_ctc_dir
 
-import papertrack  # noqa: E402,F401  —— 触发 _paths：把 vendor 里的 celltracker 副本加入 sys.path
 
-from celltracker.experiment import Experiment                        # noqa: E402  (vendor 副本)
-from papertrack.config import load_config, override, save_config     # noqa: E402
-from papertrack.reconstruction import export_ctc                     # noqa: E402
-from papertrack.runtime import run_pipeline                          # noqa: E402
-
-
-def main() -> None:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--h5", required=True, help="检测来源 h5（nnU-Net 预测实例）")
-    ap.add_argument("--gt-h5", default=None, help="GT h5（提供血缘与评测真值）")
-    ap.add_argument("--seq", required=True)
-    ap.add_argument("--dataset", default="Fluo-N3DH-CE")
-    ap.add_argument("--exp-id", required=True)
-    ap.add_argument("--config", default=str(PKG / "configs" / "paper_default.yaml"))
-    ap.add_argument("--set", nargs="*", default=[], help="覆盖配置：段.字段=值")
-    ap.add_argument("--ckpt", default=None, help="GNN 权重；不给则走 §1.6 OT 规则")
-    ap.add_argument("--frames", default=None, help="帧范围（冒烟用），如 120:190")
-    ap.add_argument("--dump-graphs", default=None, help="落盘图数据集目录（训练用）")
-    ap.add_argument("--device", default="cpu")
-    ap.add_argument("--official", action="store_true", help="云端官方 DET/SEG/TRA")
-    ap.add_argument("--cloud-gt-root", default=None)
-    ap.add_argument("--no-validate", action="store_true",
-                    help="跳过 CTC 提交格式校验（默认执行，E2 要求）")
-    args = ap.parse_args()
-
-    cfg = load_config(args.config)
-    if args.set:
-        cfg = override(cfg, args.set)
-
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--h5')
+    parser.add_argument('--gt-h5')
+    parser.add_argument('--seq')
+    parser.add_argument('--dataset',default='Fluo-N3DH-CE')
+    parser.add_argument('--exp-id')
+    parser.add_argument('--config',default=str(PKG/'configs/paper_default.yaml'))
+    parser.add_argument('--set',nargs='*',default=[])
+    parser.add_argument('--ablate',nargs='*',default=[])
+    parser.add_argument('--list-modules',action='store_true')
+    parser.add_argument('--ckpt')
+    parser.add_argument('--frames',help='小样本的闭区间，例如 120:130')
+    parser.add_argument('--dump-graphs')
+    parser.add_argument('--build-only',action='store_true')
+    parser.add_argument('--resume-graphs',action='store_true',help='检查已有图后补齐中断的建图任务')
+    parser.add_argument('--cache-dir',help='带配置与输入指纹的帧对缓存')
+    parser.add_argument('--device',default='cpu')
+    parser.add_argument('--official',action='store_true')
+    parser.add_argument('--official-tools',help='在当前机器调用已有官方二进制的目录')
+    parser.add_argument('--official-gt-dir',help='当前机器的 <seq>_GT 目录')
+    parser.add_argument('--cloud-gt-root')
+    parser.add_argument('--gt-seg-dir')
+    parser.add_argument('--no-validate',action='store_true',help='仅非官方调试可跳过校验')
+    args = parser.parse_args()
+    cfg = override(load_config(args.config),args.set)
+    changes = []
+    for name in args.ablate:
+        cfg,change = variant(cfg,name)
+        changes.append(change)
+    if args.list_modules:
+        print(json.dumps(describe(cfg),ensure_ascii=False,indent=2))
+        return
+    if not all([args.h5,args.seq,args.exp_id]):
+        parser.error('--h5、--seq、--exp-id 必须提供')
+    if args.build_only and not args.dump_graphs:
+        parser.error('--build-only 需要 --dump-graphs')
+    if args.official and (args.no_validate or args.frames or args.build_only):
+        parser.error('官方评测必须执行完整序列导出和格式校验')
+    if args.official_tools and not args.official_gt_dir:
+        parser.error('--official-tools 需要 --official-gt-dir')
     frames = None
     if args.frames:
-        lo, _, hi = args.frames.partition(":")
-        frames = list(range(int(lo), int(hi) + 1))
-
-    exp = Experiment(args.exp_id, purpose="paperpipe 严格论文口径 pipeline",
-                     params={"h5": args.h5, "gt_h5": args.gt_h5, "seq": args.seq,
-                             "ckpt": args.ckpt, "frames": args.frames,
-                             "overrides": args.set})
-    save_config(cfg, exp.dir / "pipeline_config.yaml")
-    exp.log("配置已存 pipeline_config.yaml")
-
-    run = run_pipeline(args.h5, cfg, gt_h5=args.gt_h5, ckpt=args.ckpt,
-                       frames=frames, artifacts_dir=exp.artifact_dir("pipeline"),
-                       dump_graphs=args.dump_graphs, device=args.device)
-    exp.log(f"pipeline info: {json.dumps(run.info, ensure_ascii=False, default=str)}")
-
-    # ---- 本地格式校验（E2：送官方评测前必须跑）----
-    res_dir = exp.artifact_dir("submission") / f"{args.seq}_RES"
-    stats = export_ctc(run, args.h5, res_dir, seq=args.seq,
-                       gt_h5=args.gt_h5,
-                       gt_seg_dir=(ROOT / "data" / "raw" / args.dataset /
-                                   f"{args.seq}_GT" / "SEG"))
-    exp.log(f"本地指标: {json.dumps(stats, ensure_ascii=False, default=str)}")
-
-    if not args.no_validate:
-        from papertrack.runtime.validate import validate_ctc_dir
-
-        check = validate_ctc_dir(res_dir)
-        stats["format_validation"] = check
-        exp.log(f"CTC 格式校验: {json.dumps(check, ensure_ascii=False)}")
-        if not check["ok"]:
-            exp.log("⚠️ 格式校验未通过 → 不送官方评测（先修数据格式问题）")
-            args.official = False
-    exp.save_metrics(stats)
-
-    if args.official:
-        import subprocess
-
-        cmd = [sys.executable, str(ROOT / "scripts" / "cloud_eval.py"),
-               "--res-dir", str(res_dir), "--dataset", args.dataset,
-               "--seq", args.seq,
-               "--out", str(exp.dir / f"metrics_official_{args.seq}.json")]
-        if args.cloud_gt_root:
-            cmd += ["--cloud-gt-root", args.cloud_gt_root]
-        exp.log("官方指标: " + " ".join(cmd))
-        proc = subprocess.run(cmd, capture_output=True, text=True)
-        exp.log((proc.stdout or "")[-1500:])
-        if proc.returncode != 0:
-            exp.log("官方指标失败: " + (proc.stderr or "")[-800:])
-
-    exp.finish(summary=f"tracks={run.result.n_tracks()} "
-                       f"decision={run.info.get('decision')} "
-                       f"holes={run.info['holes']['n_hole_frames']}")
+        low,separator,high = args.frames.partition(':')
+        if not separator:
+            parser.error('--frames 格式应为 start:end')
+        frames = list(range(int(low),int(high)+1))
+    exp = Experiment(args.exp_id,'ideas pipeline 重建链路',root=ROOT,resume=args.resume_graphs,
+                     params={**vars(args),'seed':cfg.seed,'ablations':changes})
+    save_config(cfg,exp.dir/'pipeline_config.yaml')
+    try:
+        run = run_pipeline(args.h5,cfg,gt_h5=args.gt_h5,ckpt=args.ckpt,frames=frames,
+            artifacts_dir=exp.artifact_dir('pipeline'),dump_graphs=args.dump_graphs,
+            device=args.device,cache_dir=args.cache_dir,resume_graphs=args.resume_graphs)
+        if args.build_only:
+            exp.save_metrics({'status':'graphs_built','pipeline':run.info})
+        else:
+            res_dir = exp.artifact_dir('submission')/f'{args.seq}_RES'
+            seg_dir = args.gt_seg_dir or ROOT/'data/raw'/args.dataset/f'{args.seq}_GT/SEG'
+            stats = export_ctc(run,args.h5,res_dir,seq=args.seq,gt_h5=args.gt_h5,gt_seg_dir=seg_dir)
+            if not args.no_validate:
+                check = validate_ctc_dir(res_dir,expected_frames=run.dets.t_range)
+                stats['format_validation'] = check
+                if not check['ok']:
+                    raise ValueError(f'CTC 格式校验失败：{check["errors"]}')
+            exp.save_metrics(stats)
+            if args.official:
+                official_path = exp.dir/f'metrics_official_{args.seq}.json'
+                if args.official_tools:
+                    from papertrack.runtime.official import evaluate_official
+                    official = evaluate_official(res_dir,args.official_gt_dir,args.official_tools,args.seq,official_path)
+                else:
+                    command = [os.environ.get('CT_CLOUD_PYTHON',sys.executable),str(ROOT/'scripts/cloud_eval.py'),
+                        '--res-dir',str(res_dir),'--dataset',args.dataset,'--seq',args.seq,'--out',str(official_path)]
+                    if args.cloud_gt_root:
+                        command += ['--cloud-gt-root',args.cloud_gt_root]
+                    process = subprocess.run(command,capture_output=True,text=True)
+                    exp.log(process.stdout[-3000:])
+                    if process.returncode:
+                        raise RuntimeError(f'云端官方评测失败：{process.stderr[-2000:]}')
+                    official = json.loads(official_path.read_text())
+                if any(official.get(key) is None for key in ['DET','SEG','TRA']):
+                    raise RuntimeError('官方结果缺少 DET/SEG/TRA，不能标记成功')
+        _write_overview(exp,run.info,changes)
+        exp.finish(summary=f'tracks={run.result.n_tracks()} decision={run.info["decision"]}')
+    except Exception as error:
+        exp.finish(status='failed',summary=str(error))
+        raise
 
 
-if __name__ == "__main__":
+def _write_overview(exp,info,changes):
+    lines = [f'{key}: {value:.3f}s' for key,value in info['stage_seconds'].items()]
+    svg = '<svg xmlns="http://www.w3.org/2000/svg" width="700" height="300"><rect width="100%" height="100%" fill="white"/>'
+    for index,line in enumerate(lines):
+        svg += f'<text x="20" y="{30+index*25}" font-family="monospace" font-size="15">{line}</text>'
+    (exp.dir/'figures/pipeline_stages.svg').write_text(svg+'</svg>')
+    (exp.dir/'notes.md').write_text('本实验用于验证 ideas pipeline。\n\n'
+        f'决策路径：{info["decision"]}；检测来源：{info["detection_source"]}。\n'
+        f'消融：{json.dumps(changes,ensure_ascii=False)}。\n'
+        '本地诊断只用于归因；方法效果须结合双序列官方指标和当前设置的噪声地板。\n')
+
+if __name__ == '__main__':
     main()

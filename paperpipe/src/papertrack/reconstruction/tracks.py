@@ -34,6 +34,8 @@ def frames_of(assignment: dict[int, np.ndarray]) -> dict[int, list[int]]:
     out: dict[int, list[int]] = {}
     for t in sorted(assignment):
         for tid in np.unique(assignment[t]):
+            if tid <= 0:
+                continue
             out.setdefault(int(tid), []).append(int(t))
     return {k: sorted(v) for k, v in out.items()}
 

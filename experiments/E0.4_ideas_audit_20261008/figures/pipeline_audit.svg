@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="330" viewBox="0 0 1040 330">
+<rect width="1040" height="330" fill="#f8fafc"/>
+<style>text{font-family:Arial,'Noto Sans CJK SC',sans-serif;fill:#0f172a}.title{font-size:23px;font-weight:bold}.label{font-size:17px;font-weight:bold}.detail{font-size:13px}.arrow{stroke:#64748b;stroke-width:2;marker-end:url(#tip)}</style>
+<defs><marker id="tip" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="#64748b"/></marker></defs>
+<text x="25" y="38" class="title">ideas → pipeline 审核：链路可运行，严格验收未通过</text>
+<rect x="25" y="66" width="210" height="82" rx="10" fill="#fee2e2"/>
+<text x="38" y="92" class="label">检测与监督</text><text x="38" y="116" class="detail">GT 重叠分母 / 空血缘标签错误</text><text x="38" y="136" class="detail">encoder 导出未完成</text>
+<rect x="280" y="66" width="210" height="82" rx="10" fill="#fee2e2"/>
+<text x="293" y="92" class="label">OT / FGW</text><text x="293" y="116" class="detail">结构项 D 正确</text><text x="293" y="136" class="detail">FGW 接受准则缺熵与 KL</text>
+<rect x="535" y="66" width="210" height="82" rx="10" fill="#fee2e2"/>
+<text x="548" y="92" class="label">多尺度精炼</text><text x="548" y="116" class="detail">熵符号 / 梯度错误</text><text x="548" y="136" class="detail">原始代价 C 被代理 G 覆盖</text>
+<rect x="790" y="66" width="220" height="82" rx="10" fill="#fee2e2"/>
+<text x="803" y="92" class="label">时间图 + GNN</text><text x="803" y="116" class="detail">消息网络和二分类头具备</text><text x="803" y="136" class="detail">历史帧与当前图断开</text>
+<path d="M235 106H278M490 106H533M745 106H788" class="arrow"/>
+<rect x="25" y="192" width="275" height="80" rx="10" fill="#fee2e2"/>
+<text x="38" y="218" class="label">重建 / 二层 tracklet</text><text x="38" y="242" class="detail">生死仅统计 / 孤立节点全保留</text><text x="38" y="262" class="detail">单位混用 / 父终末段映射错误</text>
+<rect x="352" y="192" width="275" height="80" rx="10" fill="#fef3c7"/>
+<text x="365" y="218" class="label">CTC 导出 / 校验</text><text x="365" y="242" class="detail">流式写出和格式校验具备</text><text x="365" y="262" class="detail">空洞补画为工程补充</text>
+<rect x="680" y="192" width="330" height="80" rx="10" fill="#dcfce7"/>
+<text x="693" y="218" class="label">已有测试 / 官方运行证据</text><text x="693" y="242" class="detail">89 + 16 项回归通过</text><text x="693" y="262" class="detail">运行成功不能证明公式/机制正确</text>
+<path d="M900 150V171H162V190M300 232H350M627 232H678" class="arrow"/>
+<text x="25" y="309" class="detail">红：已复现偏差或缺口　黄：工程路径及限制　绿：现有运行证据　审核源码 ee33622 · 2026-10-08</text>
+</svg>

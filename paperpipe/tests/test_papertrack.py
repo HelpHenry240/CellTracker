@@ -323,7 +323,8 @@ def test_gnn_forward_and_train_smoke(tmp_path):
     assert logits.shape == (g["edge_feat"].shape[0],)
 
     res = train(tmp_path / "graphs",
-                TrainConfig(epochs=2, batch_pairs=1, out_dir=str(tmp_path / "run")))
+                TrainConfig(epochs=2, batch_pairs=1, val_fraction=0.0,
+                            out_dir=str(tmp_path / "run")))
     assert (tmp_path / "run" / "best.pt").exists()
     assert res["history"][-1]["f1"] >= 0.0
 

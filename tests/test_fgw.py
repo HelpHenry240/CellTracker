@@ -5,7 +5,8 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from celltracker.ot.fgw import fgw_objective, fused_gw, structural_grad, structural_term
+from celltracker.ot.fgw import (fused_gw, regularized_objective,
+                                structural_grad, structural_term)
 
 
 def _geom(n=6, seed=0):
@@ -62,8 +63,11 @@ def test_fgw_reduces_objective_and_keeps_marginals():
     # 条件梯度应使目标单调不增
     hist = info["history"]
     assert all(hist[i + 1] <= hist[i] + 1e-9 for i in range(len(hist) - 1))
-    # 结构项确实被优化：最终解优于初始 Sinkhorn 解
+    # 式(12) 优化的是带熵的完整目标；单独的式(9) 可以随熵项改善而升高。
     from celltracker.ot import sinkhorn_log
 
     P0 = sinkhorn_log(C, a, b, eps=0.1)
-    assert fgw_objective(P, C, D, Dp, 0.5) <= fgw_objective(P0, C, D, Dp, 0.5) + 1e-9
+    final = regularized_objective(P, C, D, Dp, a, b, 0.5, 0.1)
+    initial = regularized_objective(P0, C, D, Dp, a, b, 0.5, 0.1)
+    assert final <= initial + 1e-9
+    assert info['objective'] == pytest.approx(final)

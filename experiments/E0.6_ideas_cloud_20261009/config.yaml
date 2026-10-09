@@ -1,0 +1,7 @@
+phase: ideas_pipeline_rebuild
+date: 2026-10-09
+cloud_connection: backup3
+cloud_root: /root/autodl-tmp/CellTracker_rebuild_20261008
+protocol: seq01 calibration_and_training, seq02 held_out
+seeds: [20261008, 20261009]
+status: running

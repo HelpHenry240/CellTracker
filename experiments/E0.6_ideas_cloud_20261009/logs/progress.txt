@@ -1,0 +1,4 @@
+Baseline matrix PID 1980 finished with failed final export: data disk full.
+Completed official results are preserved.
+Completed seed20261009 eval01 moved to /root/celltracker_results_20261009 with symlink; no data deleted.
+Rebuild source checks: 140 tests passed; compression round-trip test passed.

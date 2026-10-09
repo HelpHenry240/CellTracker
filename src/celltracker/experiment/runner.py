@@ -14,6 +14,7 @@ import os
 import platform
 import subprocess
 import sys
+import shlex
 import time
 from pathlib import Path
 
@@ -45,7 +46,7 @@ class Experiment:
             yaml.safe_dump(self.config, allow_unicode=True, sort_keys=False))
         (self.dir / "command.sh").write_text(
             "#!/usr/bin/env bash\nset -euo pipefail\ncd \"$(dirname \"$0\")/../..\"\n"
-            "# 复现命令（自动记录）\n" + " ".join(sys.argv) + "\n")
+            "# 复现命令（自动记录）\n" + shlex.join([sys.executable,*sys.argv]) + "\n")
         self._write_env()
         self._write_git()
         self.log_path = self.dir / "logs" / "run.log"
@@ -91,6 +92,10 @@ class Experiment:
         except Exception:  # noqa: BLE001
             commit, dirty = "unknown", ""
         flag = "dirty" if dirty else "clean"
+        if not commit and (self.root/'SOURCE_VERSION.json').is_file():
+            source=json.loads((self.root/'SOURCE_VERSION.json').read_text())
+            commit=source.get('git_commit','unknown')
+            flag='cloud source release '+source.get('source_sha256','unknown')
         (self.dir / "git_commit.txt").write_text(f"{commit}\n# {flag}\n")
 
     def log(self, msg: str) -> None:

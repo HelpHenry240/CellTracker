@@ -61,6 +61,9 @@ class Detections:
                 meta["shape"] = np.asarray([int(x) for x in f.attrs["shape"]], dtype=float)
             meta["name"] = str(f.attrs.get("name", ""))
             meta["seq"] = str(f.attrs.get("seq", ""))
+            for name in ("spacing_zyx", "detection_source", "label_mapping"):
+                if name in f.attrs:
+                    meta[name] = f.attrs[name]
             keys = sorted(f["frames"].keys())
             for key in keys:
                 t = int(key)
@@ -76,6 +79,9 @@ class Detections:
                 # 预测检测的 h5 额外带 `gt_label`（每个检测对应的 GT 轨迹 id）
                 if "gt_label" in g:
                     entry["gt_label"] = np.asarray(g["gt_label"], dtype=np.int64)
+                for name in ("intensity_std", "gt_ids"):
+                    if name in g:
+                        entry[name] = np.asarray(g[name])
                 out[t] = entry
         return cls(out, meta=meta)
 
@@ -262,6 +268,8 @@ def finalize_tracks(assignment: dict[int, np.ndarray],
     frames_of: dict[int, list[int]] = {}
     for t in sorted(assignment):
         for tid in np.unique(assignment[t]):
+            if tid <= 0:
+                continue
             frames_of.setdefault(int(tid), []).append(t)
 
     new_assignment = {t: arr.copy() for t, arr in assignment.items()}

@@ -1,0 +1,14 @@
+experiment_id: E0.5_ideas_rebuild_local_20261009
+date: '2026-10-09'
+purpose: 本地双序列小样本全链路验证；云端暂停
+params:
+  frames: 120:125
+  detection_source: nnunet_pred
+  seed: 20261009
+  appearance: intensity engineering smoke
+  official: paused
+argv:
+- /tmp/run_celltracker_local_smoke.py
+seed: 20261009
+status: done
+summary: 本地双序列小样本链路通过；云端全量实验暂停

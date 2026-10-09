@@ -44,17 +44,19 @@ def write_result(
 class ResultWriter:
     """流式写出结果：逐帧写 mask，最后写 res_track.txt（避免把整卷读进内存）。"""
 
-    def __init__(self, out_dir: str | Path, num_digits: int = 3):
+    def __init__(self, out_dir: str | Path, num_digits: int = 3,
+                 compression: str | None = None):
         self.out_dir = Path(out_dir)
         self.out_dir.mkdir(parents=True, exist_ok=True)
         self.num_digits = num_digits
+        self.compression = compression
         self.frames_written = 0
 
     def add(self, t: int, labels: np.ndarray) -> Path:
         lab = np.asarray(labels)
         dtype = np.uint16 if int(lab.max(initial=0)) < 65535 else np.uint32
         path = self.out_dir / f"mask{t:0{self.num_digits}d}.tif"
-        tifffile.imwrite(path, lab.astype(dtype, copy=False))
+        tifffile.imwrite(path, lab.astype(dtype, copy=False), compression=self.compression)
         self.frames_written += 1
         return path
 

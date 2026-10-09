@@ -2,10 +2,10 @@
 
 求解::
 
-    min_{P>=0}  <P, C> + eps * KL(P | K)
+    min_{P>=0}  <P, C> + eps * sum(P * (log(P) - 1))
                 + tau_a * KL(P 1 | a) + tau_b * KL(1^T P | b)
 
-其中 `K = exp(-C/eps)`。当 `tau_a = tau_b = None`（无穷）时退化为**平衡 OT**：
+其中 Gibbs 核为 `K = exp(-C/eps)`。当 `tau_a = tau_b = None`（无穷）时退化为**平衡 OT**：
 硬约束 `P1 = a`、`P^T 1 = b`；否则为**非平衡 OT**（KL 松弛，允许出生/死亡/分裂）。
 
 log-domain 迭代（数值稳定，允许 eps 很小）::
@@ -68,6 +68,27 @@ def sinkhorn_log(
         raise ValueError(f"边际形状不匹配: C{C.shape}, a{a.shape}, b{b.shape}")
     if eps <= 0:
         raise ValueError("eps 必须为正")
+    if not np.isfinite(eps) or np.isnan(C).any() or np.isneginf(C).any():
+        raise ValueError('代价不能为 NaN/负无穷，epsilon 必须有限')
+    if not np.isfinite(a).all() or not np.isfinite(b).all() or np.any(a<0) or np.any(b<0):
+        raise ValueError('边际必须为有限非负质量')
+    balanced = (tau_a is None and tau_b is None)
+    if balanced:
+        if not np.isclose(a.sum(),b.sum(),rtol=1e-9,atol=1e-12):
+            raise ValueError('平衡 OT 两侧总质量不相等')
+        # 禁止边把问题切成独立二部分量；每个分量也必须质量相等。
+        finite=np.isfinite(C)
+        if not finite.all() and n and m:
+            from scipy.sparse import bmat,csr_matrix
+            from scipy.sparse.csgraph import connected_components
+            support=csr_matrix(finite)
+            graph=bmat([[None,support],[support.T,None]],format='csr')
+            _,component=connected_components(graph,directed=False)
+            for group in np.unique(component):
+                source=a[component[:n]==group].sum()
+                target=b[component[n:]==group].sum()
+                if not np.isclose(source,target,rtol=1e-8,atol=1e-12):
+                    raise ValueError('平衡 OT 的禁止边造成分量质量不匹配，硬边际不可行；需调整支持或显式使用非平衡 OT')
 
     log_a = np.log(np.maximum(a, 1e-300))
     log_b = np.log(np.maximum(b, 1e-300))
@@ -81,7 +102,6 @@ def sinkhorn_log(
 
     err = np.inf
     marg_err = np.inf
-    balanced = (tau_a is None and tau_b is None)
     it = 0
     for it in range(n_iter):
         f_prev = f

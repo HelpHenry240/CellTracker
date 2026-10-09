@@ -31,6 +31,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
 from celltracker.data.ctc import object_table_from_labels  # noqa: E402
+from celltracker.detect.labels import match_gt_labels  # noqa: E402
 from celltracker.detect.instances import (InstanceSplitConfig,  # noqa: E402
                                           detection_recall_vs_markers,
                                           split_instances)
@@ -137,28 +138,17 @@ def main() -> None:
             gt_label = np.zeros(tab["label"].size, dtype=np.int32)
             if gt_markers is not None:
                 gt = gt_markers(t)
-                g_flat = gt.ravel()
-                l_flat = labels.ravel()
-                keep = (g_flat > 0) & (l_flat > 0)
-                if keep.any():
-                    gv, lv = g_flat[keep], l_flat[keep]
-                    n_lab = int(labels.max()) + 1
-                    key = lv.astype(np.int64) * (int(gt.max()) + 1) + gv
-                    uniq, cnt = np.unique(key, return_counts=True)
-                    pl = (uniq // (int(gt.max()) + 1)).astype(np.int64)
-                    gl = (uniq % (int(gt.max()) + 1)).astype(np.int64)
-                    g_areas = np.bincount(gv, minlength=int(gt.max()) + 1)
-                    order = np.argsort(-cnt)          # 每个实例取重叠最大的标记
-                    for idx in order:
-                        if cnt[idx] > 0.5 * g_areas[gl[idx]] and gt_label[pl[idx] - 1] == 0:
-                            gt_label[pl[idx] - 1] = gl[idx]
-                    assert n_lab > 0
+                gt_label, gt_ids = match_gt_labels(labels, gt, tab["label"])
 
             g = gf.create_group(f"{t:04d}")
             g.create_dataset("labels", data=labels.astype(np.uint16, copy=False),
                              compression="gzip", compression_opts=4)
             g.create_dataset("label", data=tab["label"].astype(np.int32))
             g.create_dataset("gt_label", data=gt_label)
+            if gt_markers is not None:
+                g.create_dataset("gt_ids", data=gt_ids)
+            f.attrs["label_mapping"] = "ctc_full_marker_majority_v2"
+            f.attrs["detection_source"] = "nnunet_pred"
             g.create_dataset("centroid", data=tab["centroid"].astype(np.float32))
             g.create_dataset("volume", data=tab["volume"].astype(np.int32))
             g.create_dataset("bbox_min", data=tab["bbox_min"].astype(np.int16))

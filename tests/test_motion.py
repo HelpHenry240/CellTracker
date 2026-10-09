@@ -60,7 +60,8 @@ def test_two_pass_changes_result_and_reports_metadata():
     """两遍式：第 2 遍应使用第 1 遍估出的速度，并给出可核查的元信息。"""
     dets = _moving_dets()
     # 用锐利计划（绝对 ε 小）并关掉分裂判定，以隔离"运动先验"本身的效果
-    cfg = OTTrackConfig(eps=1.0, eps_rel=None, eta=0.0, div_ratio=0.99,
+    # 数据有新增细胞，门控后的分量质量不守恒；用 KL 松弛而不是不可行的硬边际。
+    cfg = OTTrackConfig(eps=1.0, eps_rel=None, eta=0.0, div_ratio=0.99,tau_a=10.,tau_b=10.,
                         cost=_cost(alpha_pred=0.0))
     res, info = run_two_pass(dets, cfg, alpha_pred=1.0)
     assert info["passes"] == 2
@@ -72,7 +73,7 @@ def test_two_pass_changes_result_and_reports_metadata():
 def test_two_pass_with_zero_alpha_pred_equals_single_pass():
     """α′=0 时不应有第 2 遍（剪枝，保证消融对照干净）。"""
     dets = _moving_dets()
-    cfg = OTTrackConfig(eps=1.0, eps_rel=None, eta=0.0, div_ratio=0.99,
+    cfg = OTTrackConfig(eps=1.0, eps_rel=None, eta=0.0, div_ratio=0.99,tau_a=10.,tau_b=10.,
                         cost=_cost(0.0))
     res, info = run_two_pass(dets, cfg, alpha_pred=0.0)
     assert info["passes"] == 1

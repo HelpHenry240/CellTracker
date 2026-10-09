@@ -1,6 +1,6 @@
 """§1.5 运动先验与速度约束（ideas.pdf 式 20–22）——两遍式。
 
-原文（R1 抄录）
+论文公式
 --------------
 式(20)  v^t_i ≈ x^t_i − x^{t−1}_{p(i)}
         "假设已经通过**上一轮追踪**在帧 t−1 与帧 t 之间建立了硬关联 p(i)"
@@ -11,7 +11,7 @@
 --------
 式(20) 的实现（"用追踪结果的硬关联估速"）与原文完全一致，
 **直接复用** `celltracker.pipeline.motion.{estimate_velocity, attach_velocity,
-velocity_feature_is_live}`（原仓库少数严格按论文口径重建的模块）。
+velocity_feature_is_live}`。
 本文件只补两遍式的**驱动顺序**（第 1 遍 α′=0 → 估速 → 第 2 遍 α′>0）。
 """
 
@@ -28,13 +28,14 @@ __all__ = ["estimate_velocity", "attach_velocity", "velocity_feature_is_live",
            "velocity_report"]
 
 
-def velocity_report(dets: Detections) -> dict:
-    """验收检查（防止"速度特征恒为 0"的死特征，AGENTS.md 要求）。"""
+def velocity_report(dets: Detections, spacing=None) -> dict:
+    """统计有效速度的物理分布，帮助识别没有生效的运动先验。"""
     mags = []
     for t in dets.t_range:
         v = dets.frames[t].get("velocity")
         if v is not None and np.asarray(v).size:
-            mags.append(np.linalg.norm(np.asarray(v, dtype=float), axis=1))
+            physical = np.asarray(v, dtype=float) * (np.asarray(spacing) if spacing is not None else 1.0)
+            mags.append(np.linalg.norm(physical, axis=1))
     if not mags:
         return {"live": False, "n": 0}
     cat = np.concatenate(mags)
