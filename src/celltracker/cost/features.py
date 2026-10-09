@@ -84,8 +84,10 @@ def gaussian_knn_graph(xy: np.ndarray, k: int = 6, sigma_x: float | None = None,
     """帧内 kNN 图（式 (4)(5)(6)）。
 
     返回 (D, W)：
-      - `D` (n,n) 欧氏距离矩阵（式 (7)，非邻接处为 0 作为"无结构项贡献"）
+      - `D` (n,n) 局部截断距离矩阵；非邻接处为 0 是近似，不等价于删除 GW 四重和项
       - `W` (n,n) 边权（仅 kNN 边非零）
+
+    此历史核保留分母中的系数2；论文式(6)的字面实现位于 papertrack.representation.measure。
     """
     xy = np.asarray(xy, dtype=float)
     n = xy.shape[0]

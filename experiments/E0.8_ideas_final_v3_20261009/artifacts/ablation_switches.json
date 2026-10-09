@@ -1,0 +1,211 @@
+[
+  {
+    "module": "ot",
+    "direction": "off",
+    "changes": [
+      "coupling.enabled=false",
+      "graph.use_ot_candidates=false",
+      "graph.use_ot_features=false",
+      "motion.enabled=false",
+      "multiscale.enabled=false",
+      "tracklet.enabled=false",
+      "reconstruct.birth_death_enabled=false",
+      "gnn.lambda_ot=0"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "unbalanced",
+    "direction": "off",
+    "changes": [
+      "coupling.tau_a=null",
+      "coupling.tau_b=null"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "appearance",
+    "direction": "off",
+    "changes": [
+      "node.f_source=intensity",
+      "node.encoder_feat_path=null"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "mass",
+    "direction": "off",
+    "changes": [
+      "measure.mass_mode=uniform"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "structure",
+    "direction": "off",
+    "changes": [
+      "measure.structure_mode=knn"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "fgw",
+    "direction": "off",
+    "changes": [
+      "coupling.eta=0.0"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "motion",
+    "direction": "off",
+    "changes": [
+      "motion.enabled=false"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "multiscale",
+    "direction": "off",
+    "changes": [
+      "multiscale.enabled=false"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "tracklet",
+    "direction": "off",
+    "changes": [
+      "tracklet.enabled=false"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "ot_candidates",
+    "direction": "off",
+    "changes": [
+      "graph.use_ot_candidates=false"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "topk",
+    "direction": "on",
+    "changes": [
+      "graph.cand_topk=3"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "ot_features",
+    "direction": "off",
+    "changes": [
+      "graph.use_ot_features=false"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "intra",
+    "direction": "off",
+    "changes": [
+      "graph.intra_enabled=false"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "similarity",
+    "direction": "off",
+    "changes": [
+      "graph.use_intra_similarity=false"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "context",
+    "direction": "off",
+    "changes": [
+      "graph.context_enabled=false"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "bridge",
+    "direction": "off",
+    "changes": [
+      "graph.bridge=false"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "gnn",
+    "direction": "off",
+    "changes": [
+      "gnn.enabled=false"
+    ],
+    "independent_training": false
+  },
+  {
+    "module": "ot_loss",
+    "direction": "off",
+    "changes": [
+      "gnn.lambda_ot=0.0"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "division",
+    "direction": "off",
+    "changes": [
+      "reconstruct.division_enabled=false"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "volume",
+    "direction": "off",
+    "changes": [
+      "reconstruct.volume_conservation=false"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "birth_death",
+    "direction": "off",
+    "changes": [
+      "reconstruct.birth_death_enabled=false"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "isolated",
+    "direction": "off",
+    "changes": [
+      "reconstruct.filter_isolated=false"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "uncertainty",
+    "direction": "off",
+    "changes": [
+      "reconstruct.mark_uncertainty=false"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "line_search",
+    "direction": "off",
+    "changes": [
+      "multiscale.line_search=false"
+    ],
+    "independent_training": true
+  },
+  {
+    "module": "size_cost",
+    "direction": "off",
+    "changes": [
+      "coupling.beta=0.0"
+    ],
+    "independent_training": true
+  }
+]

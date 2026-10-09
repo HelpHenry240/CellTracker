@@ -1,0 +1,16 @@
+purpose: complete_frontend_by_isolation_factorial_comparison
+profiles:
+  paper_all_k0: {resplit_k: 0, filter_isolated: true}
+  conservative_k0: {resplit_k: 0, filter_isolated: false}
+  paper_all_k16: {resplit_k: 1.6, filter_isolated: true}
+  conservative_k16: {resplit_k: 1.6, filter_isolated: false}
+schema: ideas-v3
+seeds: [20261008, 20261009]
+epochs: 60
+lambda_ot: 0.001
+calibration: independently_on_seq01
+gnn_training: independently_on_seq01
+evaluation: both_complete_sequences_with_official_CTC
+noise_repeat: same_seed20261008_checkpoint_on_full_seq02_for_each_profile
+unet_training: false
+reason: avoid_selecting_node_filter_from_superseded_v2_screening
