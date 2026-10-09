@@ -43,6 +43,7 @@ def sinkhorn_log(
     tol_marg: float | None = 1e-6,
     check_every: int = 25,
     return_log: bool = False,
+    strict_marginals: bool = False,
 ):
     """求解（非平衡）熵正则 OT，返回传输计划 `P`。
 
@@ -59,6 +60,7 @@ def sinkhorn_log(
                目标 <P,C> 一致到 4 位小数；而下游阈值（θ_Γ≈0.02 的归一化质量）
                比这个误差大 4 个数量级，继续收紧只会徒增迭代。
     check_every : 每多少次迭代检查一次边际（检查本身需要一次 exp，约 10× 单步开销）
+    strict_marginals : 返回前强制核对硬边际；论文主链路启用，历史入口保留截断迭代行为。
     """
     C = np.asarray(C, dtype=np.float64)
     a = np.asarray(a, dtype=np.float64)
@@ -95,6 +97,15 @@ def sinkhorn_log(
     lam_a = 1.0 if tau_a is None else tau_a / (tau_a + eps)
     lam_b = 1.0 if tau_b is None else tau_b / (tau_b + eps)
 
+    if not n or not m:
+        # 式(10) 的硬边际不能把正质量送入空侧；式(14) 的软边际允许全部质量消失。
+        if (tau_a is None and a.sum() > 0) or (tau_b is None and b.sum() > 0):
+            raise ValueError('空侧无法满足正质量的硬边际约束')
+        empty = np.zeros((n, m))
+        info = {'f': np.zeros(n), 'g': np.zeros(m), 'iters': 0, 'err': 0.,
+                'marg_err': 0., 'lam_a': lam_a, 'lam_b': lam_b}
+        return (empty, info) if return_log else empty
+
     f = np.zeros(n)
     g = np.zeros(m)
     # 屏蔽禁止匹配：把 -inf 代价抬到有限大值，避免 nan
@@ -120,6 +131,13 @@ def sinkhorn_log(
     logP = (f[:, None] + g[None, :] - C_eff) / eps
     P = np.exp(logP)
     P = np.where(np.isfinite(C), P, 0.0)
+
+    # 分量质量一致只是必要条件，不能覆盖连通支持内的容量冲突。最终直接核对式(10)。
+    limit = float(tol_marg) if tol_marg is not None else 1e-6
+    for hard, actual, expected in ((tau_a is None, P.sum(axis=1), a),
+                                   (tau_b is None, P.sum(axis=0), b)):
+        if strict_marginals and hard and np.max(np.abs(actual - expected)) / max(float(np.max(expected)), 1e-12) > limit:
+            raise RuntimeError('Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合')
 
     if return_log:
         return P, {"f": f, "g": g, "iters": it + 1, "err": err,

@@ -36,6 +36,33 @@ def test_knn_excludes_self_when_centroids_coincide():
     assert weights[0, 1] == 1 and np.isfinite(weights).all()
 
 
+def test_empty_ot_preserves_soft_and_hard_constraint_semantics():
+    cost = np.empty((0, 1))
+    empty, info = sinkhorn_log(cost, np.empty(0), np.ones(1), tau_a=1., tau_b=1., return_log=True)
+    assert empty.shape == (0, 1) and info['iters'] == 0
+    with pytest.raises(ValueError):
+        sinkhorn_log(cost, np.empty(0), np.ones(1))
+    assert sinkhorn_log(np.empty((0, 0)), np.empty(0), np.empty(0)).shape == (0, 0)
+    from papertrack.config import CouplingConfig
+    placeholder = solve_coupling(np.empty((0, 3)), np.zeros((1, 3)),
+                                coupling_cfg=CouplingConfig(tau_a=None,tau_b=None))
+    assert placeholder.info['empty_detection_placeholder'] and placeholder.info['hard_constraints_bypassed']
+
+
+def test_connected_support_can_still_violate_hard_marginals():
+    # 源节点0只有目标0可用，但质量0.6超过其容量0.4；整个二部图仍然连通。
+    cost = np.array([[0., np.inf], [0., 0.]])
+    with pytest.raises(RuntimeError, match='硬边际'):
+        sinkhorn_log(cost, np.array([.6, .4]), np.array([.4, .6]), eps=.1, n_iter=100,strict_marginals=True)
+    from papertrack.config import CouplingConfig
+    # 在主链路中构造相同支持：源0只有目标0可达，不能把0.6压到容量0.4。
+    with pytest.raises(RuntimeError, match='硬边际'):
+        solve_coupling(np.array([[0.,0.,0.],[1.,0.,0.]]), np.array([[.5,0.,0.],[2.,0.,0.]]),
+            np.array([6.,4.]), np.array([4.,6.]),
+            coupling_cfg=CouplingConfig(eta=0.,beta=0.,eps=.1,r_max=1.1,tau_a=None,tau_b=None),
+            spacing=(1.,1.,1.))
+
+
 def test_legacy_knn_empty_singleton_and_coincident_nodes():
     from celltracker.cost.features import gaussian_knn_graph
     for count in (0, 1, 2):

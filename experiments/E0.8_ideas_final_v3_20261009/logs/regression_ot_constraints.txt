@@ -1,0 +1,2320 @@
+........................FF...........................FFFFF...F.......... [ 48%]
+FFFFF....FFF.............................F.F............................ [ 96%]
+.....                                                                    [100%]
+=================================== FAILURES ===================================
+_____________________ test_gnn_runner_plugs_into_pipeline ______________________
+
+fake_h5 = PosixPath('/tmp/pytest-of-henry/pytest-22/test_gnn_runner_plugs_into_pip0/fake.h5')
+ckpt = PosixPath('/tmp/pytest-of-henry/pytest-22/test_gnn_runner_plugs_into_pip0/model.pt')
+tmp_path = PosixPath('/tmp/pytest-of-henry/pytest-22/test_gnn_runner_plugs_into_pip0')
+
+    def test_gnn_runner_plugs_into_pipeline(fake_h5, ckpt, tmp_path):
+        """把 GNN 作为决策阶段接入 runner，应产出合法轨迹并落盘预测。"""
+        cfg = PipelineConfig(ot=OTConfig(r_max=30.0, eps_rel=0.1))
+        runner = make_gnn_runner(ckpt, InferConfig(tau_move=0.5, tau_div=0.5),
+                                 device="cpu", artifacts_dir=tmp_path / "gnn_art")
+>       run = run_pipeline(fake_h5, cfg, artifacts_dir=tmp_path / "art", gnn=runner)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_gnn_adapter.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/celltracker/pipeline/runner.py:180: in run_pipeline
+    couplings[pos] = compute_pairwise_plan(
+src/celltracker/pipeline/ot_stage.py:107: in compute_pairwise_plan
+    plan = sinkhorn_log(C, a, b, eps=eps_eff,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+C = array([[  4., 130., 436.,  inf,  inf,  inf],
+       [ 58.,   4., 130., 436.,  inf,  inf],
+       [292.,  58.,   4., 13...2.,  58.,   4., 130., 436.],
+       [ inf, 706., 292.,  58.,   4., 130.],
+       [ inf,  inf, 706., 292.,  58.,   4.]])
+a = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+b = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+eps = 13.0, tau_a = None, tau_b = None, n_iter = 1000, tol = 1e-10
+tol_marg = 1e-06, check_every = 25, return_log = False
+
+    def sinkhorn_log(
+        C: np.ndarray,
+        a: np.ndarray,
+        b: np.ndarray,
+        eps: float = 0.05,
+        tau_a: float | None = None,
+        tau_b: float | None = None,
+        n_iter: int = 1000,
+        tol: float = 1e-10,
+        tol_marg: float | None = 1e-6,
+        check_every: int = 25,
+        return_log: bool = False,
+    ):
+        """求解（非平衡）熵正则 OT，返回传输计划 `P`。
+    
+        参数
+        ----
+        C : (n, m) 代价矩阵（可用 `np.inf` 表示禁止匹配）
+        a, b : (n,), (m,) 边际质量（正数，未归一化也可）
+        eps : 熵正则强度
+        tau_a, tau_b : KL 惩罚系数；`None` 表示无穷 → 硬边际约束（平衡 OT）
+        tol : 对偶变量的收敛容差
+        tol_marg : **边际违反量的收敛容差**（相对值，仅平衡 OT 有意义）。
+                   只判对偶变量变化会把边际误差留在 1e-5 量级（ε 中等时明显）。
+                   默认取 1e-6 是工程折中：实测该精度下与 POT 的解最大差 ~1e-6、
+                   目标 <P,C> 一致到 4 位小数；而下游阈值（θ_Γ≈0.02 的归一化质量）
+                   比这个误差大 4 个数量级，继续收紧只会徒增迭代。
+        check_every : 每多少次迭代检查一次边际（检查本身需要一次 exp，约 10× 单步开销）
+        """
+        C = np.asarray(C, dtype=np.float64)
+        a = np.asarray(a, dtype=np.float64)
+        b = np.asarray(b, dtype=np.float64)
+        n, m = C.shape
+        if a.shape != (n,) or b.shape != (m,):
+            raise ValueError(f"边际形状不匹配: C{C.shape}, a{a.shape}, b{b.shape}")
+        if eps <= 0:
+            raise ValueError("eps 必须为正")
+        if not np.isfinite(eps) or np.isnan(C).any() or np.isneginf(C).any():
+            raise ValueError('代价不能为 NaN/负无穷，epsilon 必须有限')
+        if not np.isfinite(a).all() or not np.isfinite(b).all() or np.any(a<0) or np.any(b<0):
+            raise ValueError('边际必须为有限非负质量')
+        balanced = (tau_a is None and tau_b is None)
+        if balanced:
+            if not np.isclose(a.sum(),b.sum(),rtol=1e-9,atol=1e-12):
+                raise ValueError('平衡 OT 两侧总质量不相等')
+            # 禁止边把问题切成独立二部分量；每个分量也必须质量相等。
+            finite=np.isfinite(C)
+            if not finite.all() and n and m:
+                from scipy.sparse import bmat,csr_matrix
+                from scipy.sparse.csgraph import connected_components
+                support=csr_matrix(finite)
+                graph=bmat([[None,support],[support.T,None]],format='csr')
+                _,component=connected_components(graph,directed=False)
+                for group in np.unique(component):
+                    source=a[component[:n]==group].sum()
+                    target=b[component[n:]==group].sum()
+                    if not np.isclose(source,target,rtol=1e-8,atol=1e-12):
+                        raise ValueError('平衡 OT 的禁止边造成分量质量不匹配，硬边际不可行；需调整支持或显式使用非平衡 OT')
+    
+        log_a = np.log(np.maximum(a, 1e-300))
+        log_b = np.log(np.maximum(b, 1e-300))
+        lam_a = 1.0 if tau_a is None else tau_a / (tau_a + eps)
+        lam_b = 1.0 if tau_b is None else tau_b / (tau_b + eps)
+    
+        if not n or not m:
+            # 式(10) 的硬边际不能把正质量送入空侧；式(14) 的软边际允许全部质量消失。
+            if (tau_a is None and a.sum() > 0) or (tau_b is None and b.sum() > 0):
+                raise ValueError('空侧无法满足正质量的硬边际约束')
+            empty = np.zeros((n, m))
+            info = {'f': np.zeros(n), 'g': np.zeros(m), 'iters': 0, 'err': 0.,
+                    'marg_err': 0., 'lam_a': lam_a, 'lam_b': lam_b}
+            return (empty, info) if return_log else empty
+    
+        f = np.zeros(n)
+        g = np.zeros(m)
+        # 屏蔽禁止匹配：把 -inf 代价抬到有限大值，避免 nan
+        C_eff = np.where(np.isinf(C), 1e12, C)
+    
+        err = np.inf
+        marg_err = np.inf
+        it = 0
+        for it in range(n_iter):
+            f_prev = f
+            f = lam_a * eps * (log_a - _lse((g[None, :] - C_eff) / eps, axis=1))
+            g = lam_b * eps * (log_b - _lse((f[:, None] - C_eff) / eps, axis=0))
+            err = float(np.max(np.abs(f - f_prev)))
+            converged = err < tol * max(1.0, float(np.max(np.abs(f))))
+            if balanced and tol_marg is not None and (it % check_every == 0 or converged):
+                P = np.exp((f[:, None] + g[None, :] - C_eff) / eps)
+                marg_err = float(np.max(np.abs(P.sum(axis=1) - a)) / max(np.max(a), 1e-12))
+                converged = converged and marg_err < tol_marg
+            # 非平衡情形 f/g 不会收敛到不动点差值，用相对变化判断
+            if converged:
+                break
+    
+        logP = (f[:, None] + g[None, :] - C_eff) / eps
+        P = np.exp(logP)
+        P = np.where(np.isfinite(C), P, 0.0)
+    
+        # 分量质量一致只是必要条件，不能覆盖连通支持内的容量冲突。最终直接核对式(10)。
+        limit = float(tol_marg) if tol_marg is not None else 1e-6
+        for hard, actual, expected in ((tau_a is None, P.sum(axis=1), a),
+                                       (tau_b is None, P.sum(axis=0), b)):
+            if hard and np.max(np.abs(actual - expected)) / max(float(np.max(expected)), 1e-12) > limit:
+>               raise RuntimeError('Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合')
+E               RuntimeError: Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合
+
+src/celltracker/ot/sinkhorn.py:138: RuntimeError
+________________ test_gnn_ablation_switch_falls_back_to_ot_rule ________________
+
+fake_h5 = PosixPath('/tmp/pytest-of-henry/pytest-22/test_gnn_ablation_switch_falls0/fake.h5')
+ckpt = PosixPath('/tmp/pytest-of-henry/pytest-22/test_gnn_ablation_switch_falls0/model.pt')
+tmp_path = PosixPath('/tmp/pytest-of-henry/pytest-22/test_gnn_ablation_switch_falls0')
+
+    def test_gnn_ablation_switch_falls_back_to_ot_rule(fake_h5, ckpt, tmp_path):
+        """`--ablate gnn` 时必须回退到 §1.6 OT 规则路径（消融对照）。"""
+        from celltracker.pipeline import apply_ablation
+    
+        cfg = apply_ablation(PipelineConfig(ot=OTConfig(r_max=30.0, eps_rel=0.1)), {"gnn"})
+        runner = make_gnn_runner(ckpt, InferConfig(), device="cpu")
+>       run = run_pipeline(fake_h5, cfg, gnn=runner)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_gnn_adapter.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/celltracker/pipeline/runner.py:180: in run_pipeline
+    couplings[pos] = compute_pairwise_plan(
+src/celltracker/pipeline/ot_stage.py:107: in compute_pairwise_plan
+    plan = sinkhorn_log(C, a, b, eps=eps_eff,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+C = array([[  4., 130., 436.,  inf,  inf,  inf],
+       [ 58.,   4., 130., 436.,  inf,  inf],
+       [292.,  58.,   4., 13...2.,  58.,   4., 130., 436.],
+       [ inf, 706., 292.,  58.,   4., 130.],
+       [ inf,  inf, 706., 292.,  58.,   4.]])
+a = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+b = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+eps = 13.0, tau_a = None, tau_b = None, n_iter = 1000, tol = 1e-10
+tol_marg = 1e-06, check_every = 25, return_log = False
+
+    def sinkhorn_log(
+        C: np.ndarray,
+        a: np.ndarray,
+        b: np.ndarray,
+        eps: float = 0.05,
+        tau_a: float | None = None,
+        tau_b: float | None = None,
+        n_iter: int = 1000,
+        tol: float = 1e-10,
+        tol_marg: float | None = 1e-6,
+        check_every: int = 25,
+        return_log: bool = False,
+    ):
+        """求解（非平衡）熵正则 OT，返回传输计划 `P`。
+    
+        参数
+        ----
+        C : (n, m) 代价矩阵（可用 `np.inf` 表示禁止匹配）
+        a, b : (n,), (m,) 边际质量（正数，未归一化也可）
+        eps : 熵正则强度
+        tau_a, tau_b : KL 惩罚系数；`None` 表示无穷 → 硬边际约束（平衡 OT）
+        tol : 对偶变量的收敛容差
+        tol_marg : **边际违反量的收敛容差**（相对值，仅平衡 OT 有意义）。
+                   只判对偶变量变化会把边际误差留在 1e-5 量级（ε 中等时明显）。
+                   默认取 1e-6 是工程折中：实测该精度下与 POT 的解最大差 ~1e-6、
+                   目标 <P,C> 一致到 4 位小数；而下游阈值（θ_Γ≈0.02 的归一化质量）
+                   比这个误差大 4 个数量级，继续收紧只会徒增迭代。
+        check_every : 每多少次迭代检查一次边际（检查本身需要一次 exp，约 10× 单步开销）
+        """
+        C = np.asarray(C, dtype=np.float64)
+        a = np.asarray(a, dtype=np.float64)
+        b = np.asarray(b, dtype=np.float64)
+        n, m = C.shape
+        if a.shape != (n,) or b.shape != (m,):
+            raise ValueError(f"边际形状不匹配: C{C.shape}, a{a.shape}, b{b.shape}")
+        if eps <= 0:
+            raise ValueError("eps 必须为正")
+        if not np.isfinite(eps) or np.isnan(C).any() or np.isneginf(C).any():
+            raise ValueError('代价不能为 NaN/负无穷，epsilon 必须有限')
+        if not np.isfinite(a).all() or not np.isfinite(b).all() or np.any(a<0) or np.any(b<0):
+            raise ValueError('边际必须为有限非负质量')
+        balanced = (tau_a is None and tau_b is None)
+        if balanced:
+            if not np.isclose(a.sum(),b.sum(),rtol=1e-9,atol=1e-12):
+                raise ValueError('平衡 OT 两侧总质量不相等')
+            # 禁止边把问题切成独立二部分量；每个分量也必须质量相等。
+            finite=np.isfinite(C)
+            if not finite.all() and n and m:
+                from scipy.sparse import bmat,csr_matrix
+                from scipy.sparse.csgraph import connected_components
+                support=csr_matrix(finite)
+                graph=bmat([[None,support],[support.T,None]],format='csr')
+                _,component=connected_components(graph,directed=False)
+                for group in np.unique(component):
+                    source=a[component[:n]==group].sum()
+                    target=b[component[n:]==group].sum()
+                    if not np.isclose(source,target,rtol=1e-8,atol=1e-12):
+                        raise ValueError('平衡 OT 的禁止边造成分量质量不匹配，硬边际不可行；需调整支持或显式使用非平衡 OT')
+    
+        log_a = np.log(np.maximum(a, 1e-300))
+        log_b = np.log(np.maximum(b, 1e-300))
+        lam_a = 1.0 if tau_a is None else tau_a / (tau_a + eps)
+        lam_b = 1.0 if tau_b is None else tau_b / (tau_b + eps)
+    
+        if not n or not m:
+            # 式(10) 的硬边际不能把正质量送入空侧；式(14) 的软边际允许全部质量消失。
+            if (tau_a is None and a.sum() > 0) or (tau_b is None and b.sum() > 0):
+                raise ValueError('空侧无法满足正质量的硬边际约束')
+            empty = np.zeros((n, m))
+            info = {'f': np.zeros(n), 'g': np.zeros(m), 'iters': 0, 'err': 0.,
+                    'marg_err': 0., 'lam_a': lam_a, 'lam_b': lam_b}
+            return (empty, info) if return_log else empty
+    
+        f = np.zeros(n)
+        g = np.zeros(m)
+        # 屏蔽禁止匹配：把 -inf 代价抬到有限大值，避免 nan
+        C_eff = np.where(np.isinf(C), 1e12, C)
+    
+        err = np.inf
+        marg_err = np.inf
+        it = 0
+        for it in range(n_iter):
+            f_prev = f
+            f = lam_a * eps * (log_a - _lse((g[None, :] - C_eff) / eps, axis=1))
+            g = lam_b * eps * (log_b - _lse((f[:, None] - C_eff) / eps, axis=0))
+            err = float(np.max(np.abs(f - f_prev)))
+            converged = err < tol * max(1.0, float(np.max(np.abs(f))))
+            if balanced and tol_marg is not None and (it % check_every == 0 or converged):
+                P = np.exp((f[:, None] + g[None, :] - C_eff) / eps)
+                marg_err = float(np.max(np.abs(P.sum(axis=1) - a)) / max(np.max(a), 1e-12))
+                converged = converged and marg_err < tol_marg
+            # 非平衡情形 f/g 不会收敛到不动点差值，用相对变化判断
+            if converged:
+                break
+    
+        logP = (f[:, None] + g[None, :] - C_eff) / eps
+        P = np.exp(logP)
+        P = np.where(np.isfinite(C), P, 0.0)
+    
+        # 分量质量一致只是必要条件，不能覆盖连通支持内的容量冲突。最终直接核对式(10)。
+        limit = float(tol_marg) if tol_marg is not None else 1e-6
+        for hard, actual, expected in ((tau_a is None, P.sum(axis=1), a),
+                                       (tau_b is None, P.sum(axis=0), b)):
+            if hard and np.max(np.abs(actual - expected)) / max(float(np.max(expected)), 1e-12) > limit:
+>               raise RuntimeError('Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合')
+E               RuntimeError: Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合
+
+src/celltracker/ot/sinkhorn.py:138: RuntimeError
+__________________________ test_disabled_is_identity ___________________________
+
+    def test_disabled_is_identity():
+        """enabled=False 必须是完全恒等映射（消融对照要干净）。"""
+        dets = _chain_dets()
+>       base = _base_couplings(dets, OTConfig(eps_rel=0.1))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_multiscale_stage.py:38: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_multiscale_stage.py:29: in _base_couplings
+    out[i] = compute_pairwise_plan(dets.centroid(ts[i]), dets.centroid(ts[i + 1]),
+src/celltracker/pipeline/ot_stage.py:107: in compute_pairwise_plan
+    plan = sinkhorn_log(C, a, b, eps=eps_eff,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+C = array([[  4.        , 530.49195729, 187.53844802, 183.25722787,
+        253.10288848, 293.25772849],
+       [629.76140... , 424.82947479],
+       [367.06669916,  57.53859793, 119.92623233, 412.42364048,
+        533.90925975,   4.        ]])
+a = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+b = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+eps = 21.724215129797265, tau_a = None, tau_b = None, n_iter = 1000, tol = 1e-10
+tol_marg = 1e-06, check_every = 25, return_log = False
+
+    def sinkhorn_log(
+        C: np.ndarray,
+        a: np.ndarray,
+        b: np.ndarray,
+        eps: float = 0.05,
+        tau_a: float | None = None,
+        tau_b: float | None = None,
+        n_iter: int = 1000,
+        tol: float = 1e-10,
+        tol_marg: float | None = 1e-6,
+        check_every: int = 25,
+        return_log: bool = False,
+    ):
+        """求解（非平衡）熵正则 OT，返回传输计划 `P`。
+    
+        参数
+        ----
+        C : (n, m) 代价矩阵（可用 `np.inf` 表示禁止匹配）
+        a, b : (n,), (m,) 边际质量（正数，未归一化也可）
+        eps : 熵正则强度
+        tau_a, tau_b : KL 惩罚系数；`None` 表示无穷 → 硬边际约束（平衡 OT）
+        tol : 对偶变量的收敛容差
+        tol_marg : **边际违反量的收敛容差**（相对值，仅平衡 OT 有意义）。
+                   只判对偶变量变化会把边际误差留在 1e-5 量级（ε 中等时明显）。
+                   默认取 1e-6 是工程折中：实测该精度下与 POT 的解最大差 ~1e-6、
+                   目标 <P,C> 一致到 4 位小数；而下游阈值（θ_Γ≈0.02 的归一化质量）
+                   比这个误差大 4 个数量级，继续收紧只会徒增迭代。
+        check_every : 每多少次迭代检查一次边际（检查本身需要一次 exp，约 10× 单步开销）
+        """
+        C = np.asarray(C, dtype=np.float64)
+        a = np.asarray(a, dtype=np.float64)
+        b = np.asarray(b, dtype=np.float64)
+        n, m = C.shape
+        if a.shape != (n,) or b.shape != (m,):
+            raise ValueError(f"边际形状不匹配: C{C.shape}, a{a.shape}, b{b.shape}")
+        if eps <= 0:
+            raise ValueError("eps 必须为正")
+        if not np.isfinite(eps) or np.isnan(C).any() or np.isneginf(C).any():
+            raise ValueError('代价不能为 NaN/负无穷，epsilon 必须有限')
+        if not np.isfinite(a).all() or not np.isfinite(b).all() or np.any(a<0) or np.any(b<0):
+            raise ValueError('边际必须为有限非负质量')
+        balanced = (tau_a is None and tau_b is None)
+        if balanced:
+            if not np.isclose(a.sum(),b.sum(),rtol=1e-9,atol=1e-12):
+                raise ValueError('平衡 OT 两侧总质量不相等')
+            # 禁止边把问题切成独立二部分量；每个分量也必须质量相等。
+            finite=np.isfinite(C)
+            if not finite.all() and n and m:
+                from scipy.sparse import bmat,csr_matrix
+                from scipy.sparse.csgraph import connected_components
+                support=csr_matrix(finite)
+                graph=bmat([[None,support],[support.T,None]],format='csr')
+                _,component=connected_components(graph,directed=False)
+                for group in np.unique(component):
+                    source=a[component[:n]==group].sum()
+                    target=b[component[n:]==group].sum()
+                    if not np.isclose(source,target,rtol=1e-8,atol=1e-12):
+                        raise ValueError('平衡 OT 的禁止边造成分量质量不匹配，硬边际不可行；需调整支持或显式使用非平衡 OT')
+    
+        log_a = np.log(np.maximum(a, 1e-300))
+        log_b = np.log(np.maximum(b, 1e-300))
+        lam_a = 1.0 if tau_a is None else tau_a / (tau_a + eps)
+        lam_b = 1.0 if tau_b is None else tau_b / (tau_b + eps)
+    
+        if not n or not m:
+            # 式(10) 的硬边际不能把正质量送入空侧；式(14) 的软边际允许全部质量消失。
+            if (tau_a is None and a.sum() > 0) or (tau_b is None and b.sum() > 0):
+                raise ValueError('空侧无法满足正质量的硬边际约束')
+            empty = np.zeros((n, m))
+            info = {'f': np.zeros(n), 'g': np.zeros(m), 'iters': 0, 'err': 0.,
+                    'marg_err': 0., 'lam_a': lam_a, 'lam_b': lam_b}
+            return (empty, info) if return_log else empty
+    
+        f = np.zeros(n)
+        g = np.zeros(m)
+        # 屏蔽禁止匹配：把 -inf 代价抬到有限大值，避免 nan
+        C_eff = np.where(np.isinf(C), 1e12, C)
+    
+        err = np.inf
+        marg_err = np.inf
+        it = 0
+        for it in range(n_iter):
+            f_prev = f
+            f = lam_a * eps * (log_a - _lse((g[None, :] - C_eff) / eps, axis=1))
+            g = lam_b * eps * (log_b - _lse((f[:, None] - C_eff) / eps, axis=0))
+            err = float(np.max(np.abs(f - f_prev)))
+            converged = err < tol * max(1.0, float(np.max(np.abs(f))))
+            if balanced and tol_marg is not None and (it % check_every == 0 or converged):
+                P = np.exp((f[:, None] + g[None, :] - C_eff) / eps)
+                marg_err = float(np.max(np.abs(P.sum(axis=1) - a)) / max(np.max(a), 1e-12))
+                converged = converged and marg_err < tol_marg
+            # 非平衡情形 f/g 不会收敛到不动点差值，用相对变化判断
+            if converged:
+                break
+    
+        logP = (f[:, None] + g[None, :] - C_eff) / eps
+        P = np.exp(logP)
+        P = np.where(np.isfinite(C), P, 0.0)
+    
+        # 分量质量一致只是必要条件，不能覆盖连通支持内的容量冲突。最终直接核对式(10)。
+        limit = float(tol_marg) if tol_marg is not None else 1e-6
+        for hard, actual, expected in ((tau_a is None, P.sum(axis=1), a),
+                                       (tau_b is None, P.sum(axis=0), b)):
+            if hard and np.max(np.abs(actual - expected)) / max(float(np.max(expected)), 1e-12) > limit:
+>               raise RuntimeError('Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合')
+E               RuntimeError: Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合
+
+src/celltracker/ot/sinkhorn.py:138: RuntimeError
+_________________ test_enabled_refines_and_reports_regularizer _________________
+
+    def test_enabled_refines_and_reports_regularizer():
+        """enabled=True：应产出与原计划不同的耦合，并返回每轮时间正则值。"""
+        dets = _chain_dets()
+        ot_cfg = OTConfig(eps_rel=0.1, r_max=50.0)
+>       base = _base_couplings(dets, ot_cfg)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_multiscale_stage.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_multiscale_stage.py:29: in _base_couplings
+    out[i] = compute_pairwise_plan(dets.centroid(ts[i]), dets.centroid(ts[i + 1]),
+src/celltracker/pipeline/ot_stage.py:107: in compute_pairwise_plan
+    plan = sinkhorn_log(C, a, b, eps=eps_eff,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+C = array([[  4.        , 530.49195729, 187.53844802, 183.25722787,
+        253.10288848, 293.25772849],
+       [629.76140... , 424.82947479],
+       [367.06669916,  57.53859793, 119.92623233, 412.42364048,
+        533.90925975,   4.        ]])
+a = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+b = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+eps = 21.724215129797265, tau_a = None, tau_b = None, n_iter = 1000, tol = 1e-10
+tol_marg = 1e-06, check_every = 25, return_log = False
+
+    def sinkhorn_log(
+        C: np.ndarray,
+        a: np.ndarray,
+        b: np.ndarray,
+        eps: float = 0.05,
+        tau_a: float | None = None,
+        tau_b: float | None = None,
+        n_iter: int = 1000,
+        tol: float = 1e-10,
+        tol_marg: float | None = 1e-6,
+        check_every: int = 25,
+        return_log: bool = False,
+    ):
+        """求解（非平衡）熵正则 OT，返回传输计划 `P`。
+    
+        参数
+        ----
+        C : (n, m) 代价矩阵（可用 `np.inf` 表示禁止匹配）
+        a, b : (n,), (m,) 边际质量（正数，未归一化也可）
+        eps : 熵正则强度
+        tau_a, tau_b : KL 惩罚系数；`None` 表示无穷 → 硬边际约束（平衡 OT）
+        tol : 对偶变量的收敛容差
+        tol_marg : **边际违反量的收敛容差**（相对值，仅平衡 OT 有意义）。
+                   只判对偶变量变化会把边际误差留在 1e-5 量级（ε 中等时明显）。
+                   默认取 1e-6 是工程折中：实测该精度下与 POT 的解最大差 ~1e-6、
+                   目标 <P,C> 一致到 4 位小数；而下游阈值（θ_Γ≈0.02 的归一化质量）
+                   比这个误差大 4 个数量级，继续收紧只会徒增迭代。
+        check_every : 每多少次迭代检查一次边际（检查本身需要一次 exp，约 10× 单步开销）
+        """
+        C = np.asarray(C, dtype=np.float64)
+        a = np.asarray(a, dtype=np.float64)
+        b = np.asarray(b, dtype=np.float64)
+        n, m = C.shape
+        if a.shape != (n,) or b.shape != (m,):
+            raise ValueError(f"边际形状不匹配: C{C.shape}, a{a.shape}, b{b.shape}")
+        if eps <= 0:
+            raise ValueError("eps 必须为正")
+        if not np.isfinite(eps) or np.isnan(C).any() or np.isneginf(C).any():
+            raise ValueError('代价不能为 NaN/负无穷，epsilon 必须有限')
+        if not np.isfinite(a).all() or not np.isfinite(b).all() or np.any(a<0) or np.any(b<0):
+            raise ValueError('边际必须为有限非负质量')
+        balanced = (tau_a is None and tau_b is None)
+        if balanced:
+            if not np.isclose(a.sum(),b.sum(),rtol=1e-9,atol=1e-12):
+                raise ValueError('平衡 OT 两侧总质量不相等')
+            # 禁止边把问题切成独立二部分量；每个分量也必须质量相等。
+            finite=np.isfinite(C)
+            if not finite.all() and n and m:
+                from scipy.sparse import bmat,csr_matrix
+                from scipy.sparse.csgraph import connected_components
+                support=csr_matrix(finite)
+                graph=bmat([[None,support],[support.T,None]],format='csr')
+                _,component=connected_components(graph,directed=False)
+                for group in np.unique(component):
+                    source=a[component[:n]==group].sum()
+                    target=b[component[n:]==group].sum()
+                    if not np.isclose(source,target,rtol=1e-8,atol=1e-12):
+                        raise ValueError('平衡 OT 的禁止边造成分量质量不匹配，硬边际不可行；需调整支持或显式使用非平衡 OT')
+    
+        log_a = np.log(np.maximum(a, 1e-300))
+        log_b = np.log(np.maximum(b, 1e-300))
+        lam_a = 1.0 if tau_a is None else tau_a / (tau_a + eps)
+        lam_b = 1.0 if tau_b is None else tau_b / (tau_b + eps)
+    
+        if not n or not m:
+            # 式(10) 的硬边际不能把正质量送入空侧；式(14) 的软边际允许全部质量消失。
+            if (tau_a is None and a.sum() > 0) or (tau_b is None and b.sum() > 0):
+                raise ValueError('空侧无法满足正质量的硬边际约束')
+            empty = np.zeros((n, m))
+            info = {'f': np.zeros(n), 'g': np.zeros(m), 'iters': 0, 'err': 0.,
+                    'marg_err': 0., 'lam_a': lam_a, 'lam_b': lam_b}
+            return (empty, info) if return_log else empty
+    
+        f = np.zeros(n)
+        g = np.zeros(m)
+        # 屏蔽禁止匹配：把 -inf 代价抬到有限大值，避免 nan
+        C_eff = np.where(np.isinf(C), 1e12, C)
+    
+        err = np.inf
+        marg_err = np.inf
+        it = 0
+        for it in range(n_iter):
+            f_prev = f
+            f = lam_a * eps * (log_a - _lse((g[None, :] - C_eff) / eps, axis=1))
+            g = lam_b * eps * (log_b - _lse((f[:, None] - C_eff) / eps, axis=0))
+            err = float(np.max(np.abs(f - f_prev)))
+            converged = err < tol * max(1.0, float(np.max(np.abs(f))))
+            if balanced and tol_marg is not None and (it % check_every == 0 or converged):
+                P = np.exp((f[:, None] + g[None, :] - C_eff) / eps)
+                marg_err = float(np.max(np.abs(P.sum(axis=1) - a)) / max(np.max(a), 1e-12))
+                converged = converged and marg_err < tol_marg
+            # 非平衡情形 f/g 不会收敛到不动点差值，用相对变化判断
+            if converged:
+                break
+    
+        logP = (f[:, None] + g[None, :] - C_eff) / eps
+        P = np.exp(logP)
+        P = np.where(np.isfinite(C), P, 0.0)
+    
+        # 分量质量一致只是必要条件，不能覆盖连通支持内的容量冲突。最终直接核对式(10)。
+        limit = float(tol_marg) if tol_marg is not None else 1e-6
+        for hard, actual, expected in ((tau_a is None, P.sum(axis=1), a),
+                                       (tau_b is None, P.sum(axis=0), b)):
+            if hard and np.max(np.abs(actual - expected)) / max(float(np.max(expected)), 1e-12) > limit:
+>               raise RuntimeError('Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合')
+E               RuntimeError: Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合
+
+src/celltracker/ot/sinkhorn.py:138: RuntimeError
+_________________ test_regularizer_is_monotone_non_increasing __________________
+
+    def test_regularizer_is_monotone_non_increasing():
+        """加入回溯线搜索后，时间正则必须**单调不增**。
+    
+        历史问题：无线搜索时固定步长会把原本一致的解破坏掉
+        （合成长序列实测正则会从 0.0037 跳升到 2.32）。
+        现按"正则不增"回溯半砍步长，故应单调不增。
+        """
+        dets = _chain_dets(n_frames=6, n_cells=8, seed=3)
+        ot_cfg = OTConfig(eps_rel=0.1, r_max=50.0)
+>       base = _base_couplings(dets, ot_cfg)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_multiscale_stage.py:78: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_multiscale_stage.py:29: in _base_couplings
+    out[i] = compute_pairwise_plan(dets.centroid(ts[i]), dets.centroid(ts[i + 1]),
+src/celltracker/pipeline/ot_stage.py:107: in compute_pairwise_plan
+    plan = sinkhorn_log(C, a, b, eps=eps_eff,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+C = array([[  4.        , 204.68732694, 101.53368993,  48.47777196,
+        129.808815  , 387.06838477, 459.07449266, 486....4.75592159,  56.31060571, 140.67303662, 250.80171833,
+        183.56950877,  47.59593502,  51.6406004 ,   4.        ]])
+a = array([0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125])
+b = array([0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125])
+eps = 12.092100460610176, tau_a = None, tau_b = None, n_iter = 1000, tol = 1e-10
+tol_marg = 1e-06, check_every = 25, return_log = False
+
+    def sinkhorn_log(
+        C: np.ndarray,
+        a: np.ndarray,
+        b: np.ndarray,
+        eps: float = 0.05,
+        tau_a: float | None = None,
+        tau_b: float | None = None,
+        n_iter: int = 1000,
+        tol: float = 1e-10,
+        tol_marg: float | None = 1e-6,
+        check_every: int = 25,
+        return_log: bool = False,
+    ):
+        """求解（非平衡）熵正则 OT，返回传输计划 `P`。
+    
+        参数
+        ----
+        C : (n, m) 代价矩阵（可用 `np.inf` 表示禁止匹配）
+        a, b : (n,), (m,) 边际质量（正数，未归一化也可）
+        eps : 熵正则强度
+        tau_a, tau_b : KL 惩罚系数；`None` 表示无穷 → 硬边际约束（平衡 OT）
+        tol : 对偶变量的收敛容差
+        tol_marg : **边际违反量的收敛容差**（相对值，仅平衡 OT 有意义）。
+                   只判对偶变量变化会把边际误差留在 1e-5 量级（ε 中等时明显）。
+                   默认取 1e-6 是工程折中：实测该精度下与 POT 的解最大差 ~1e-6、
+                   目标 <P,C> 一致到 4 位小数；而下游阈值（θ_Γ≈0.02 的归一化质量）
+                   比这个误差大 4 个数量级，继续收紧只会徒增迭代。
+        check_every : 每多少次迭代检查一次边际（检查本身需要一次 exp，约 10× 单步开销）
+        """
+        C = np.asarray(C, dtype=np.float64)
+        a = np.asarray(a, dtype=np.float64)
+        b = np.asarray(b, dtype=np.float64)
+        n, m = C.shape
+        if a.shape != (n,) or b.shape != (m,):
+            raise ValueError(f"边际形状不匹配: C{C.shape}, a{a.shape}, b{b.shape}")
+        if eps <= 0:
+            raise ValueError("eps 必须为正")
+        if not np.isfinite(eps) or np.isnan(C).any() or np.isneginf(C).any():
+            raise ValueError('代价不能为 NaN/负无穷，epsilon 必须有限')
+        if not np.isfinite(a).all() or not np.isfinite(b).all() or np.any(a<0) or np.any(b<0):
+            raise ValueError('边际必须为有限非负质量')
+        balanced = (tau_a is None and tau_b is None)
+        if balanced:
+            if not np.isclose(a.sum(),b.sum(),rtol=1e-9,atol=1e-12):
+                raise ValueError('平衡 OT 两侧总质量不相等')
+            # 禁止边把问题切成独立二部分量；每个分量也必须质量相等。
+            finite=np.isfinite(C)
+            if not finite.all() and n and m:
+                from scipy.sparse import bmat,csr_matrix
+                from scipy.sparse.csgraph import connected_components
+                support=csr_matrix(finite)
+                graph=bmat([[None,support],[support.T,None]],format='csr')
+                _,component=connected_components(graph,directed=False)
+                for group in np.unique(component):
+                    source=a[component[:n]==group].sum()
+                    target=b[component[n:]==group].sum()
+                    if not np.isclose(source,target,rtol=1e-8,atol=1e-12):
+                        raise ValueError('平衡 OT 的禁止边造成分量质量不匹配，硬边际不可行；需调整支持或显式使用非平衡 OT')
+    
+        log_a = np.log(np.maximum(a, 1e-300))
+        log_b = np.log(np.maximum(b, 1e-300))
+        lam_a = 1.0 if tau_a is None else tau_a / (tau_a + eps)
+        lam_b = 1.0 if tau_b is None else tau_b / (tau_b + eps)
+    
+        if not n or not m:
+            # 式(10) 的硬边际不能把正质量送入空侧；式(14) 的软边际允许全部质量消失。
+            if (tau_a is None and a.sum() > 0) or (tau_b is None and b.sum() > 0):
+                raise ValueError('空侧无法满足正质量的硬边际约束')
+            empty = np.zeros((n, m))
+            info = {'f': np.zeros(n), 'g': np.zeros(m), 'iters': 0, 'err': 0.,
+                    'marg_err': 0., 'lam_a': lam_a, 'lam_b': lam_b}
+            return (empty, info) if return_log else empty
+    
+        f = np.zeros(n)
+        g = np.zeros(m)
+        # 屏蔽禁止匹配：把 -inf 代价抬到有限大值，避免 nan
+        C_eff = np.where(np.isinf(C), 1e12, C)
+    
+        err = np.inf
+        marg_err = np.inf
+        it = 0
+        for it in range(n_iter):
+            f_prev = f
+            f = lam_a * eps * (log_a - _lse((g[None, :] - C_eff) / eps, axis=1))
+            g = lam_b * eps * (log_b - _lse((f[:, None] - C_eff) / eps, axis=0))
+            err = float(np.max(np.abs(f - f_prev)))
+            converged = err < tol * max(1.0, float(np.max(np.abs(f))))
+            if balanced and tol_marg is not None and (it % check_every == 0 or converged):
+                P = np.exp((f[:, None] + g[None, :] - C_eff) / eps)
+                marg_err = float(np.max(np.abs(P.sum(axis=1) - a)) / max(np.max(a), 1e-12))
+                converged = converged and marg_err < tol_marg
+            # 非平衡情形 f/g 不会收敛到不动点差值，用相对变化判断
+            if converged:
+                break
+    
+        logP = (f[:, None] + g[None, :] - C_eff) / eps
+        P = np.exp(logP)
+        P = np.where(np.isfinite(C), P, 0.0)
+    
+        # 分量质量一致只是必要条件，不能覆盖连通支持内的容量冲突。最终直接核对式(10)。
+        limit = float(tol_marg) if tol_marg is not None else 1e-6
+        for hard, actual, expected in ((tau_a is None, P.sum(axis=1), a),
+                                       (tau_b is None, P.sum(axis=0), b)):
+            if hard and np.max(np.abs(actual - expected)) / max(float(np.max(expected)), 1e-12) > limit:
+>               raise RuntimeError('Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合')
+E               RuntimeError: Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合
+
+src/celltracker/ot/sinkhorn.py:138: RuntimeError
+____________________ test_refinement_actually_changes_plans ____________________
+
+    def test_refinement_actually_changes_plans():
+        """回归测试：精炼必须真的改变计划。
+    
+        历史 bug：梯度归一化用 `median|grad|`，而耦合矩阵在 log-domain Sinkhorn 下
+        是稀疏的（多数元素下溢为 0），median 恰为 0 → 扰动被静默跳过 → 计划完全不变
+        （表现为"正则值跨轮次恒定且严格线性于 λ_temp"）。改用 RMS 后修复。
+        """
+        dets = _chain_dets(n_frames=5, n_cells=6, seed=1)
+        ot_cfg = OTConfig(eps_rel=0.1, r_max=50.0)
+>       base = _base_couplings(dets, ot_cfg)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_multiscale_stage.py:97: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_multiscale_stage.py:29: in _base_couplings
+    out[i] = compute_pairwise_plan(dets.centroid(ts[i]), dets.centroid(ts[i + 1]),
+src/celltracker/pipeline/ot_stage.py:107: in compute_pairwise_plan
+    plan = sinkhorn_log(C, a, b, eps=eps_eff,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+C = array([[  4.        , 309.58775075, 252.12043739, 136.66814718,
+         23.31451682, 294.13545656],
+       [239.69529... , 195.31091686],
+       [303.46725419, 154.48926302, 128.8153255 , 203.28564183,
+        175.50832919,   4.        ]])
+a = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+b = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+eps = 16.49987961027041, tau_a = None, tau_b = None, n_iter = 1000, tol = 1e-10
+tol_marg = 1e-06, check_every = 25, return_log = False
+
+    def sinkhorn_log(
+        C: np.ndarray,
+        a: np.ndarray,
+        b: np.ndarray,
+        eps: float = 0.05,
+        tau_a: float | None = None,
+        tau_b: float | None = None,
+        n_iter: int = 1000,
+        tol: float = 1e-10,
+        tol_marg: float | None = 1e-6,
+        check_every: int = 25,
+        return_log: bool = False,
+    ):
+        """求解（非平衡）熵正则 OT，返回传输计划 `P`。
+    
+        参数
+        ----
+        C : (n, m) 代价矩阵（可用 `np.inf` 表示禁止匹配）
+        a, b : (n,), (m,) 边际质量（正数，未归一化也可）
+        eps : 熵正则强度
+        tau_a, tau_b : KL 惩罚系数；`None` 表示无穷 → 硬边际约束（平衡 OT）
+        tol : 对偶变量的收敛容差
+        tol_marg : **边际违反量的收敛容差**（相对值，仅平衡 OT 有意义）。
+                   只判对偶变量变化会把边际误差留在 1e-5 量级（ε 中等时明显）。
+                   默认取 1e-6 是工程折中：实测该精度下与 POT 的解最大差 ~1e-6、
+                   目标 <P,C> 一致到 4 位小数；而下游阈值（θ_Γ≈0.02 的归一化质量）
+                   比这个误差大 4 个数量级，继续收紧只会徒增迭代。
+        check_every : 每多少次迭代检查一次边际（检查本身需要一次 exp，约 10× 单步开销）
+        """
+        C = np.asarray(C, dtype=np.float64)
+        a = np.asarray(a, dtype=np.float64)
+        b = np.asarray(b, dtype=np.float64)
+        n, m = C.shape
+        if a.shape != (n,) or b.shape != (m,):
+            raise ValueError(f"边际形状不匹配: C{C.shape}, a{a.shape}, b{b.shape}")
+        if eps <= 0:
+            raise ValueError("eps 必须为正")
+        if not np.isfinite(eps) or np.isnan(C).any() or np.isneginf(C).any():
+            raise ValueError('代价不能为 NaN/负无穷，epsilon 必须有限')
+        if not np.isfinite(a).all() or not np.isfinite(b).all() or np.any(a<0) or np.any(b<0):
+            raise ValueError('边际必须为有限非负质量')
+        balanced = (tau_a is None and tau_b is None)
+        if balanced:
+            if not np.isclose(a.sum(),b.sum(),rtol=1e-9,atol=1e-12):
+                raise ValueError('平衡 OT 两侧总质量不相等')
+            # 禁止边把问题切成独立二部分量；每个分量也必须质量相等。
+            finite=np.isfinite(C)
+            if not finite.all() and n and m:
+                from scipy.sparse import bmat,csr_matrix
+                from scipy.sparse.csgraph import connected_components
+                support=csr_matrix(finite)
+                graph=bmat([[None,support],[support.T,None]],format='csr')
+                _,component=connected_components(graph,directed=False)
+                for group in np.unique(component):
+                    source=a[component[:n]==group].sum()
+                    target=b[component[n:]==group].sum()
+                    if not np.isclose(source,target,rtol=1e-8,atol=1e-12):
+                        raise ValueError('平衡 OT 的禁止边造成分量质量不匹配，硬边际不可行；需调整支持或显式使用非平衡 OT')
+    
+        log_a = np.log(np.maximum(a, 1e-300))
+        log_b = np.log(np.maximum(b, 1e-300))
+        lam_a = 1.0 if tau_a is None else tau_a / (tau_a + eps)
+        lam_b = 1.0 if tau_b is None else tau_b / (tau_b + eps)
+    
+        if not n or not m:
+            # 式(10) 的硬边际不能把正质量送入空侧；式(14) 的软边际允许全部质量消失。
+            if (tau_a is None and a.sum() > 0) or (tau_b is None and b.sum() > 0):
+                raise ValueError('空侧无法满足正质量的硬边际约束')
+            empty = np.zeros((n, m))
+            info = {'f': np.zeros(n), 'g': np.zeros(m), 'iters': 0, 'err': 0.,
+                    'marg_err': 0., 'lam_a': lam_a, 'lam_b': lam_b}
+            return (empty, info) if return_log else empty
+    
+        f = np.zeros(n)
+        g = np.zeros(m)
+        # 屏蔽禁止匹配：把 -inf 代价抬到有限大值，避免 nan
+        C_eff = np.where(np.isinf(C), 1e12, C)
+    
+        err = np.inf
+        marg_err = np.inf
+        it = 0
+        for it in range(n_iter):
+            f_prev = f
+            f = lam_a * eps * (log_a - _lse((g[None, :] - C_eff) / eps, axis=1))
+            g = lam_b * eps * (log_b - _lse((f[:, None] - C_eff) / eps, axis=0))
+            err = float(np.max(np.abs(f - f_prev)))
+            converged = err < tol * max(1.0, float(np.max(np.abs(f))))
+            if balanced and tol_marg is not None and (it % check_every == 0 or converged):
+                P = np.exp((f[:, None] + g[None, :] - C_eff) / eps)
+                marg_err = float(np.max(np.abs(P.sum(axis=1) - a)) / max(np.max(a), 1e-12))
+                converged = converged and marg_err < tol_marg
+            # 非平衡情形 f/g 不会收敛到不动点差值，用相对变化判断
+            if converged:
+                break
+    
+        logP = (f[:, None] + g[None, :] - C_eff) / eps
+        P = np.exp(logP)
+        P = np.where(np.isfinite(C), P, 0.0)
+    
+        # 分量质量一致只是必要条件，不能覆盖连通支持内的容量冲突。最终直接核对式(10)。
+        limit = float(tol_marg) if tol_marg is not None else 1e-6
+        for hard, actual, expected in ((tau_a is None, P.sum(axis=1), a),
+                                       (tau_b is None, P.sum(axis=0), b)):
+            if hard and np.max(np.abs(actual - expected)) / max(float(np.max(expected)), 1e-12) > limit:
+>               raise RuntimeError('Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合')
+E               RuntimeError: Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合
+
+src/celltracker/ot/sinkhorn.py:138: RuntimeError
+__________________ test_lambda_zero_keeps_plans_close_to_base __________________
+
+    def test_lambda_zero_keeps_plans_close_to_base():
+        """λ_temp=0 时正则项不参与，解应与初始解接近（等价性检查）。"""
+        dets = _chain_dets()
+        ot_cfg = OTConfig(eps_rel=0.1, r_max=50.0)
+>       base = _base_couplings(dets, ot_cfg)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_multiscale_stage.py:109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_multiscale_stage.py:29: in _base_couplings
+    out[i] = compute_pairwise_plan(dets.centroid(ts[i]), dets.centroid(ts[i + 1]),
+src/celltracker/pipeline/ot_stage.py:107: in compute_pairwise_plan
+    plan = sinkhorn_log(C, a, b, eps=eps_eff,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+C = array([[  4.        , 530.49195729, 187.53844802, 183.25722787,
+        253.10288848, 293.25772849],
+       [629.76140... , 424.82947479],
+       [367.06669916,  57.53859793, 119.92623233, 412.42364048,
+        533.90925975,   4.        ]])
+a = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+b = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+eps = 21.724215129797265, tau_a = None, tau_b = None, n_iter = 1000, tol = 1e-10
+tol_marg = 1e-06, check_every = 25, return_log = False
+
+    def sinkhorn_log(
+        C: np.ndarray,
+        a: np.ndarray,
+        b: np.ndarray,
+        eps: float = 0.05,
+        tau_a: float | None = None,
+        tau_b: float | None = None,
+        n_iter: int = 1000,
+        tol: float = 1e-10,
+        tol_marg: float | None = 1e-6,
+        check_every: int = 25,
+        return_log: bool = False,
+    ):
+        """求解（非平衡）熵正则 OT，返回传输计划 `P`。
+    
+        参数
+        ----
+        C : (n, m) 代价矩阵（可用 `np.inf` 表示禁止匹配）
+        a, b : (n,), (m,) 边际质量（正数，未归一化也可）
+        eps : 熵正则强度
+        tau_a, tau_b : KL 惩罚系数；`None` 表示无穷 → 硬边际约束（平衡 OT）
+        tol : 对偶变量的收敛容差
+        tol_marg : **边际违反量的收敛容差**（相对值，仅平衡 OT 有意义）。
+                   只判对偶变量变化会把边际误差留在 1e-5 量级（ε 中等时明显）。
+                   默认取 1e-6 是工程折中：实测该精度下与 POT 的解最大差 ~1e-6、
+                   目标 <P,C> 一致到 4 位小数；而下游阈值（θ_Γ≈0.02 的归一化质量）
+                   比这个误差大 4 个数量级，继续收紧只会徒增迭代。
+        check_every : 每多少次迭代检查一次边际（检查本身需要一次 exp，约 10× 单步开销）
+        """
+        C = np.asarray(C, dtype=np.float64)
+        a = np.asarray(a, dtype=np.float64)
+        b = np.asarray(b, dtype=np.float64)
+        n, m = C.shape
+        if a.shape != (n,) or b.shape != (m,):
+            raise ValueError(f"边际形状不匹配: C{C.shape}, a{a.shape}, b{b.shape}")
+        if eps <= 0:
+            raise ValueError("eps 必须为正")
+        if not np.isfinite(eps) or np.isnan(C).any() or np.isneginf(C).any():
+            raise ValueError('代价不能为 NaN/负无穷，epsilon 必须有限')
+        if not np.isfinite(a).all() or not np.isfinite(b).all() or np.any(a<0) or np.any(b<0):
+            raise ValueError('边际必须为有限非负质量')
+        balanced = (tau_a is None and tau_b is None)
+        if balanced:
+            if not np.isclose(a.sum(),b.sum(),rtol=1e-9,atol=1e-12):
+                raise ValueError('平衡 OT 两侧总质量不相等')
+            # 禁止边把问题切成独立二部分量；每个分量也必须质量相等。
+            finite=np.isfinite(C)
+            if not finite.all() and n and m:
+                from scipy.sparse import bmat,csr_matrix
+                from scipy.sparse.csgraph import connected_components
+                support=csr_matrix(finite)
+                graph=bmat([[None,support],[support.T,None]],format='csr')
+                _,component=connected_components(graph,directed=False)
+                for group in np.unique(component):
+                    source=a[component[:n]==group].sum()
+                    target=b[component[n:]==group].sum()
+                    if not np.isclose(source,target,rtol=1e-8,atol=1e-12):
+                        raise ValueError('平衡 OT 的禁止边造成分量质量不匹配，硬边际不可行；需调整支持或显式使用非平衡 OT')
+    
+        log_a = np.log(np.maximum(a, 1e-300))
+        log_b = np.log(np.maximum(b, 1e-300))
+        lam_a = 1.0 if tau_a is None else tau_a / (tau_a + eps)
+        lam_b = 1.0 if tau_b is None else tau_b / (tau_b + eps)
+    
+        if not n or not m:
+            # 式(10) 的硬边际不能把正质量送入空侧；式(14) 的软边际允许全部质量消失。
+            if (tau_a is None and a.sum() > 0) or (tau_b is None and b.sum() > 0):
+                raise ValueError('空侧无法满足正质量的硬边际约束')
+            empty = np.zeros((n, m))
+            info = {'f': np.zeros(n), 'g': np.zeros(m), 'iters': 0, 'err': 0.,
+                    'marg_err': 0., 'lam_a': lam_a, 'lam_b': lam_b}
+            return (empty, info) if return_log else empty
+    
+        f = np.zeros(n)
+        g = np.zeros(m)
+        # 屏蔽禁止匹配：把 -inf 代价抬到有限大值，避免 nan
+        C_eff = np.where(np.isinf(C), 1e12, C)
+    
+        err = np.inf
+        marg_err = np.inf
+        it = 0
+        for it in range(n_iter):
+            f_prev = f
+            f = lam_a * eps * (log_a - _lse((g[None, :] - C_eff) / eps, axis=1))
+            g = lam_b * eps * (log_b - _lse((f[:, None] - C_eff) / eps, axis=0))
+            err = float(np.max(np.abs(f - f_prev)))
+            converged = err < tol * max(1.0, float(np.max(np.abs(f))))
+            if balanced and tol_marg is not None and (it % check_every == 0 or converged):
+                P = np.exp((f[:, None] + g[None, :] - C_eff) / eps)
+                marg_err = float(np.max(np.abs(P.sum(axis=1) - a)) / max(np.max(a), 1e-12))
+                converged = converged and marg_err < tol_marg
+            # 非平衡情形 f/g 不会收敛到不动点差值，用相对变化判断
+            if converged:
+                break
+    
+        logP = (f[:, None] + g[None, :] - C_eff) / eps
+        P = np.exp(logP)
+        P = np.where(np.isfinite(C), P, 0.0)
+    
+        # 分量质量一致只是必要条件，不能覆盖连通支持内的容量冲突。最终直接核对式(10)。
+        limit = float(tol_marg) if tol_marg is not None else 1e-6
+        for hard, actual, expected in ((tau_a is None, P.sum(axis=1), a),
+                                       (tau_b is None, P.sum(axis=0), b)):
+            if hard and np.max(np.abs(actual - expected)) / max(float(np.max(expected)), 1e-12) > limit:
+>               raise RuntimeError('Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合')
+E               RuntimeError: Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合
+
+src/celltracker/ot/sinkhorn.py:138: RuntimeError
+____________________ test_matches_exact_emd_as_eps_to_zero _____________________
+
+    def test_matches_exact_emd_as_eps_to_zero():
+        """eps → 0 时熵正则解的费用应逼近精确 OT（用 POT 的 emd 作为参考）。"""
+        ot = pytest.importorskip("ot")
+        C, a, b = _random_problem(n=8, m=8, seed=3)
+        G = ot.emd(a, b, C)
+        cost_exact = float((G * C).sum())
+>       P = sinkhorn_log(C, a, b, eps=1e-3)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_ot.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+C = array([[0.20895001, 0.37591781, 0.54973563, 0.05121949, 0.77108521,
+        0.43653033, 0.22410378, 0.10459056],
+     ...147],
+       [0.30047781, 0.44202634, 0.54250354, 0.6056297 , 0.1613954 ,
+        0.10452267, 0.56269618, 0.88114289]])
+a = array([0.13798975, 0.17020882, 0.08408887, 0.13437385, 0.09490592,
+       0.1476516 , 0.14532202, 0.08545916])
+b = array([0.14520806, 0.12640205, 0.12914778, 0.1441368 , 0.10138928,
+       0.13743588, 0.15051388, 0.06576628])
+eps = 0.001, tau_a = None, tau_b = None, n_iter = 1000, tol = 1e-10
+tol_marg = 1e-06, check_every = 25, return_log = False
+
+    def sinkhorn_log(
+        C: np.ndarray,
+        a: np.ndarray,
+        b: np.ndarray,
+        eps: float = 0.05,
+        tau_a: float | None = None,
+        tau_b: float | None = None,
+        n_iter: int = 1000,
+        tol: float = 1e-10,
+        tol_marg: float | None = 1e-6,
+        check_every: int = 25,
+        return_log: bool = False,
+    ):
+        """求解（非平衡）熵正则 OT，返回传输计划 `P`。
+    
+        参数
+        ----
+        C : (n, m) 代价矩阵（可用 `np.inf` 表示禁止匹配）
+        a, b : (n,), (m,) 边际质量（正数，未归一化也可）
+        eps : 熵正则强度
+        tau_a, tau_b : KL 惩罚系数；`None` 表示无穷 → 硬边际约束（平衡 OT）
+        tol : 对偶变量的收敛容差
+        tol_marg : **边际违反量的收敛容差**（相对值，仅平衡 OT 有意义）。
+                   只判对偶变量变化会把边际误差留在 1e-5 量级（ε 中等时明显）。
+                   默认取 1e-6 是工程折中：实测该精度下与 POT 的解最大差 ~1e-6、
+                   目标 <P,C> 一致到 4 位小数；而下游阈值（θ_Γ≈0.02 的归一化质量）
+                   比这个误差大 4 个数量级，继续收紧只会徒增迭代。
+        check_every : 每多少次迭代检查一次边际（检查本身需要一次 exp，约 10× 单步开销）
+        """
+        C = np.asarray(C, dtype=np.float64)
+        a = np.asarray(a, dtype=np.float64)
+        b = np.asarray(b, dtype=np.float64)
+        n, m = C.shape
+        if a.shape != (n,) or b.shape != (m,):
+            raise ValueError(f"边际形状不匹配: C{C.shape}, a{a.shape}, b{b.shape}")
+        if eps <= 0:
+            raise ValueError("eps 必须为正")
+        if not np.isfinite(eps) or np.isnan(C).any() or np.isneginf(C).any():
+            raise ValueError('代价不能为 NaN/负无穷，epsilon 必须有限')
+        if not np.isfinite(a).all() or not np.isfinite(b).all() or np.any(a<0) or np.any(b<0):
+            raise ValueError('边际必须为有限非负质量')
+        balanced = (tau_a is None and tau_b is None)
+        if balanced:
+            if not np.isclose(a.sum(),b.sum(),rtol=1e-9,atol=1e-12):
+                raise ValueError('平衡 OT 两侧总质量不相等')
+            # 禁止边把问题切成独立二部分量；每个分量也必须质量相等。
+            finite=np.isfinite(C)
+            if not finite.all() and n and m:
+                from scipy.sparse import bmat,csr_matrix
+                from scipy.sparse.csgraph import connected_components
+                support=csr_matrix(finite)
+                graph=bmat([[None,support],[support.T,None]],format='csr')
+                _,component=connected_components(graph,directed=False)
+                for group in np.unique(component):
+                    source=a[component[:n]==group].sum()
+                    target=b[component[n:]==group].sum()
+                    if not np.isclose(source,target,rtol=1e-8,atol=1e-12):
+                        raise ValueError('平衡 OT 的禁止边造成分量质量不匹配，硬边际不可行；需调整支持或显式使用非平衡 OT')
+    
+        log_a = np.log(np.maximum(a, 1e-300))
+        log_b = np.log(np.maximum(b, 1e-300))
+        lam_a = 1.0 if tau_a is None else tau_a / (tau_a + eps)
+        lam_b = 1.0 if tau_b is None else tau_b / (tau_b + eps)
+    
+        if not n or not m:
+            # 式(10) 的硬边际不能把正质量送入空侧；式(14) 的软边际允许全部质量消失。
+            if (tau_a is None and a.sum() > 0) or (tau_b is None and b.sum() > 0):
+                raise ValueError('空侧无法满足正质量的硬边际约束')
+            empty = np.zeros((n, m))
+            info = {'f': np.zeros(n), 'g': np.zeros(m), 'iters': 0, 'err': 0.,
+                    'marg_err': 0., 'lam_a': lam_a, 'lam_b': lam_b}
+            return (empty, info) if return_log else empty
+    
+        f = np.zeros(n)
+        g = np.zeros(m)
+        # 屏蔽禁止匹配：把 -inf 代价抬到有限大值，避免 nan
+        C_eff = np.where(np.isinf(C), 1e12, C)
+    
+        err = np.inf
+        marg_err = np.inf
+        it = 0
+        for it in range(n_iter):
+            f_prev = f
+            f = lam_a * eps * (log_a - _lse((g[None, :] - C_eff) / eps, axis=1))
+            g = lam_b * eps * (log_b - _lse((f[:, None] - C_eff) / eps, axis=0))
+            err = float(np.max(np.abs(f - f_prev)))
+            converged = err < tol * max(1.0, float(np.max(np.abs(f))))
+            if balanced and tol_marg is not None and (it % check_every == 0 or converged):
+                P = np.exp((f[:, None] + g[None, :] - C_eff) / eps)
+                marg_err = float(np.max(np.abs(P.sum(axis=1) - a)) / max(np.max(a), 1e-12))
+                converged = converged and marg_err < tol_marg
+            # 非平衡情形 f/g 不会收敛到不动点差值，用相对变化判断
+            if converged:
+                break
+    
+        logP = (f[:, None] + g[None, :] - C_eff) / eps
+        P = np.exp(logP)
+        P = np.where(np.isfinite(C), P, 0.0)
+    
+        # 分量质量一致只是必要条件，不能覆盖连通支持内的容量冲突。最终直接核对式(10)。
+        limit = float(tol_marg) if tol_marg is not None else 1e-6
+        for hard, actual, expected in ((tau_a is None, P.sum(axis=1), a),
+                                       (tau_b is None, P.sum(axis=0), b)):
+            if hard and np.max(np.abs(actual - expected)) / max(float(np.max(expected)), 1e-12) > limit:
+>               raise RuntimeError('Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合')
+E               RuntimeError: Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合
+
+src/celltracker/ot/sinkhorn.py:138: RuntimeError
+_____________________ test_ot_stage_balanced_vs_unbalanced _____________________
+
+    def test_ot_stage_balanced_vs_unbalanced():
+        src, dst = _two_frame_pair()
+>       bal = compute_pairwise_plan(src, dst, OTConfig(eta=0.0, tau_a=None, tau_b=None))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pipeline_config.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/celltracker/pipeline/ot_stage.py:107: in compute_pairwise_plan
+    plan = sinkhorn_log(C, a, b, eps=eps_eff,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+C = array([[  5.09117993, 513.62913277, 162.84397888, 117.18713157,
+        213.19636706, 332.48105241],
+       [565.28625...1, 456.62729125],
+       [302.10126338,  71.70350889, 116.97546484, 288.3457373 ,
+        436.14387872,   1.85952899]])
+a = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+b = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+eps = 21.96425672112492, tau_a = None, tau_b = None, n_iter = 1000, tol = 1e-10
+tol_marg = 1e-06, check_every = 25, return_log = False
+
+    def sinkhorn_log(
+        C: np.ndarray,
+        a: np.ndarray,
+        b: np.ndarray,
+        eps: float = 0.05,
+        tau_a: float | None = None,
+        tau_b: float | None = None,
+        n_iter: int = 1000,
+        tol: float = 1e-10,
+        tol_marg: float | None = 1e-6,
+        check_every: int = 25,
+        return_log: bool = False,
+    ):
+        """求解（非平衡）熵正则 OT，返回传输计划 `P`。
+    
+        参数
+        ----
+        C : (n, m) 代价矩阵（可用 `np.inf` 表示禁止匹配）
+        a, b : (n,), (m,) 边际质量（正数，未归一化也可）
+        eps : 熵正则强度
+        tau_a, tau_b : KL 惩罚系数；`None` 表示无穷 → 硬边际约束（平衡 OT）
+        tol : 对偶变量的收敛容差
+        tol_marg : **边际违反量的收敛容差**（相对值，仅平衡 OT 有意义）。
+                   只判对偶变量变化会把边际误差留在 1e-5 量级（ε 中等时明显）。
+                   默认取 1e-6 是工程折中：实测该精度下与 POT 的解最大差 ~1e-6、
+                   目标 <P,C> 一致到 4 位小数；而下游阈值（θ_Γ≈0.02 的归一化质量）
+                   比这个误差大 4 个数量级，继续收紧只会徒增迭代。
+        check_every : 每多少次迭代检查一次边际（检查本身需要一次 exp，约 10× 单步开销）
+        """
+        C = np.asarray(C, dtype=np.float64)
+        a = np.asarray(a, dtype=np.float64)
+        b = np.asarray(b, dtype=np.float64)
+        n, m = C.shape
+        if a.shape != (n,) or b.shape != (m,):
+            raise ValueError(f"边际形状不匹配: C{C.shape}, a{a.shape}, b{b.shape}")
+        if eps <= 0:
+            raise ValueError("eps 必须为正")
+        if not np.isfinite(eps) or np.isnan(C).any() or np.isneginf(C).any():
+            raise ValueError('代价不能为 NaN/负无穷，epsilon 必须有限')
+        if not np.isfinite(a).all() or not np.isfinite(b).all() or np.any(a<0) or np.any(b<0):
+            raise ValueError('边际必须为有限非负质量')
+        balanced = (tau_a is None and tau_b is None)
+        if balanced:
+            if not np.isclose(a.sum(),b.sum(),rtol=1e-9,atol=1e-12):
+                raise ValueError('平衡 OT 两侧总质量不相等')
+            # 禁止边把问题切成独立二部分量；每个分量也必须质量相等。
+            finite=np.isfinite(C)
+            if not finite.all() and n and m:
+                from scipy.sparse import bmat,csr_matrix
+                from scipy.sparse.csgraph import connected_components
+                support=csr_matrix(finite)
+                graph=bmat([[None,support],[support.T,None]],format='csr')
+                _,component=connected_components(graph,directed=False)
+                for group in np.unique(component):
+                    source=a[component[:n]==group].sum()
+                    target=b[component[n:]==group].sum()
+                    if not np.isclose(source,target,rtol=1e-8,atol=1e-12):
+                        raise ValueError('平衡 OT 的禁止边造成分量质量不匹配，硬边际不可行；需调整支持或显式使用非平衡 OT')
+    
+        log_a = np.log(np.maximum(a, 1e-300))
+        log_b = np.log(np.maximum(b, 1e-300))
+        lam_a = 1.0 if tau_a is None else tau_a / (tau_a + eps)
+        lam_b = 1.0 if tau_b is None else tau_b / (tau_b + eps)
+    
+        if not n or not m:
+            # 式(10) 的硬边际不能把正质量送入空侧；式(14) 的软边际允许全部质量消失。
+            if (tau_a is None and a.sum() > 0) or (tau_b is None and b.sum() > 0):
+                raise ValueError('空侧无法满足正质量的硬边际约束')
+            empty = np.zeros((n, m))
+            info = {'f': np.zeros(n), 'g': np.zeros(m), 'iters': 0, 'err': 0.,
+                    'marg_err': 0., 'lam_a': lam_a, 'lam_b': lam_b}
+            return (empty, info) if return_log else empty
+    
+        f = np.zeros(n)
+        g = np.zeros(m)
+        # 屏蔽禁止匹配：把 -inf 代价抬到有限大值，避免 nan
+        C_eff = np.where(np.isinf(C), 1e12, C)
+    
+        err = np.inf
+        marg_err = np.inf
+        it = 0
+        for it in range(n_iter):
+            f_prev = f
+            f = lam_a * eps * (log_a - _lse((g[None, :] - C_eff) / eps, axis=1))
+            g = lam_b * eps * (log_b - _lse((f[:, None] - C_eff) / eps, axis=0))
+            err = float(np.max(np.abs(f - f_prev)))
+            converged = err < tol * max(1.0, float(np.max(np.abs(f))))
+            if balanced and tol_marg is not None and (it % check_every == 0 or converged):
+                P = np.exp((f[:, None] + g[None, :] - C_eff) / eps)
+                marg_err = float(np.max(np.abs(P.sum(axis=1) - a)) / max(np.max(a), 1e-12))
+                converged = converged and marg_err < tol_marg
+            # 非平衡情形 f/g 不会收敛到不动点差值，用相对变化判断
+            if converged:
+                break
+    
+        logP = (f[:, None] + g[None, :] - C_eff) / eps
+        P = np.exp(logP)
+        P = np.where(np.isfinite(C), P, 0.0)
+    
+        # 分量质量一致只是必要条件，不能覆盖连通支持内的容量冲突。最终直接核对式(10)。
+        limit = float(tol_marg) if tol_marg is not None else 1e-6
+        for hard, actual, expected in ((tau_a is None, P.sum(axis=1), a),
+                                       (tau_b is None, P.sum(axis=0), b)):
+            if hard and np.max(np.abs(actual - expected)) / max(float(np.max(expected)), 1e-12) > limit:
+>               raise RuntimeError('Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合')
+E               RuntimeError: Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合
+
+src/celltracker/ot/sinkhorn.py:138: RuntimeError
+__________________ test_ot_stage_fgw_runs_and_keeps_marginals __________________
+
+    def test_ot_stage_fgw_runs_and_keeps_marginals():
+        src, dst = _two_frame_pair()
+>       art = compute_pairwise_plan(src, dst, OTConfig(eta=0.5, tau_a=None, tau_b=None))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pipeline_config.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/celltracker/pipeline/ot_stage.py:104: in compute_pairwise_plan
+    plan, extra = fused_gw(C, a, b, D, Dp, eta=cfg.eta, eps=eps_eff,
+src/celltracker/ot/fgw.py:106: in fused_gw
+    S = sinkhorn_log(G, a, b, eps=eps, tau_a=tau_a, tau_b=tau_b, n_iter=inner_iterations)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+C = array([[ 14.08985145, 470.06219814, 163.32880875, 106.83554431,
+        202.82342193, 324.07290082],
+       [532.25516...7, 424.2377079 ],
+       [313.79162883,  70.86114116, 125.89667834, 299.50815507,
+        396.34798584,  11.42062686]])
+a = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+b = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+eps = 21.96425672112492, tau_a = None, tau_b = None, n_iter = 10000, tol = 1e-10
+tol_marg = 1e-06, check_every = 25, return_log = False
+
+    def sinkhorn_log(
+        C: np.ndarray,
+        a: np.ndarray,
+        b: np.ndarray,
+        eps: float = 0.05,
+        tau_a: float | None = None,
+        tau_b: float | None = None,
+        n_iter: int = 1000,
+        tol: float = 1e-10,
+        tol_marg: float | None = 1e-6,
+        check_every: int = 25,
+        return_log: bool = False,
+    ):
+        """求解（非平衡）熵正则 OT，返回传输计划 `P`。
+    
+        参数
+        ----
+        C : (n, m) 代价矩阵（可用 `np.inf` 表示禁止匹配）
+        a, b : (n,), (m,) 边际质量（正数，未归一化也可）
+        eps : 熵正则强度
+        tau_a, tau_b : KL 惩罚系数；`None` 表示无穷 → 硬边际约束（平衡 OT）
+        tol : 对偶变量的收敛容差
+        tol_marg : **边际违反量的收敛容差**（相对值，仅平衡 OT 有意义）。
+                   只判对偶变量变化会把边际误差留在 1e-5 量级（ε 中等时明显）。
+                   默认取 1e-6 是工程折中：实测该精度下与 POT 的解最大差 ~1e-6、
+                   目标 <P,C> 一致到 4 位小数；而下游阈值（θ_Γ≈0.02 的归一化质量）
+                   比这个误差大 4 个数量级，继续收紧只会徒增迭代。
+        check_every : 每多少次迭代检查一次边际（检查本身需要一次 exp，约 10× 单步开销）
+        """
+        C = np.asarray(C, dtype=np.float64)
+        a = np.asarray(a, dtype=np.float64)
+        b = np.asarray(b, dtype=np.float64)
+        n, m = C.shape
+        if a.shape != (n,) or b.shape != (m,):
+            raise ValueError(f"边际形状不匹配: C{C.shape}, a{a.shape}, b{b.shape}")
+        if eps <= 0:
+            raise ValueError("eps 必须为正")
+        if not np.isfinite(eps) or np.isnan(C).any() or np.isneginf(C).any():
+            raise ValueError('代价不能为 NaN/负无穷，epsilon 必须有限')
+        if not np.isfinite(a).all() or not np.isfinite(b).all() or np.any(a<0) or np.any(b<0):
+            raise ValueError('边际必须为有限非负质量')
+        balanced = (tau_a is None and tau_b is None)
+        if balanced:
+            if not np.isclose(a.sum(),b.sum(),rtol=1e-9,atol=1e-12):
+                raise ValueError('平衡 OT 两侧总质量不相等')
+            # 禁止边把问题切成独立二部分量；每个分量也必须质量相等。
+            finite=np.isfinite(C)
+            if not finite.all() and n and m:
+                from scipy.sparse import bmat,csr_matrix
+                from scipy.sparse.csgraph import connected_components
+                support=csr_matrix(finite)
+                graph=bmat([[None,support],[support.T,None]],format='csr')
+                _,component=connected_components(graph,directed=False)
+                for group in np.unique(component):
+                    source=a[component[:n]==group].sum()
+                    target=b[component[n:]==group].sum()
+                    if not np.isclose(source,target,rtol=1e-8,atol=1e-12):
+                        raise ValueError('平衡 OT 的禁止边造成分量质量不匹配，硬边际不可行；需调整支持或显式使用非平衡 OT')
+    
+        log_a = np.log(np.maximum(a, 1e-300))
+        log_b = np.log(np.maximum(b, 1e-300))
+        lam_a = 1.0 if tau_a is None else tau_a / (tau_a + eps)
+        lam_b = 1.0 if tau_b is None else tau_b / (tau_b + eps)
+    
+        if not n or not m:
+            # 式(10) 的硬边际不能把正质量送入空侧；式(14) 的软边际允许全部质量消失。
+            if (tau_a is None and a.sum() > 0) or (tau_b is None and b.sum() > 0):
+                raise ValueError('空侧无法满足正质量的硬边际约束')
+            empty = np.zeros((n, m))
+            info = {'f': np.zeros(n), 'g': np.zeros(m), 'iters': 0, 'err': 0.,
+                    'marg_err': 0., 'lam_a': lam_a, 'lam_b': lam_b}
+            return (empty, info) if return_log else empty
+    
+        f = np.zeros(n)
+        g = np.zeros(m)
+        # 屏蔽禁止匹配：把 -inf 代价抬到有限大值，避免 nan
+        C_eff = np.where(np.isinf(C), 1e12, C)
+    
+        err = np.inf
+        marg_err = np.inf
+        it = 0
+        for it in range(n_iter):
+            f_prev = f
+            f = lam_a * eps * (log_a - _lse((g[None, :] - C_eff) / eps, axis=1))
+            g = lam_b * eps * (log_b - _lse((f[:, None] - C_eff) / eps, axis=0))
+            err = float(np.max(np.abs(f - f_prev)))
+            converged = err < tol * max(1.0, float(np.max(np.abs(f))))
+            if balanced and tol_marg is not None and (it % check_every == 0 or converged):
+                P = np.exp((f[:, None] + g[None, :] - C_eff) / eps)
+                marg_err = float(np.max(np.abs(P.sum(axis=1) - a)) / max(np.max(a), 1e-12))
+                converged = converged and marg_err < tol_marg
+            # 非平衡情形 f/g 不会收敛到不动点差值，用相对变化判断
+            if converged:
+                break
+    
+        logP = (f[:, None] + g[None, :] - C_eff) / eps
+        P = np.exp(logP)
+        P = np.where(np.isfinite(C), P, 0.0)
+    
+        # 分量质量一致只是必要条件，不能覆盖连通支持内的容量冲突。最终直接核对式(10)。
+        limit = float(tol_marg) if tol_marg is not None else 1e-6
+        for hard, actual, expected in ((tau_a is None, P.sum(axis=1), a),
+                                       (tau_b is None, P.sum(axis=0), b)):
+            if hard and np.max(np.abs(actual - expected)) / max(float(np.max(expected)), 1e-12) > limit:
+>               raise RuntimeError('Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合')
+E               RuntimeError: Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合
+
+src/celltracker/ot/sinkhorn.py:138: RuntimeError
+___________________ test_ot_stage_motion_prior_changes_cost ____________________
+
+    def test_ot_stage_motion_prior_changes_cost():
+        """式(22)：给定时 x̂ 后，代价矩阵应发生变化（α′ 生效）。"""
+        src, dst = _two_frame_pair()
+        pred = src + 3.0                      # 与真实位移不同的外推
+>       no_prior = compute_pairwise_plan(src, dst, OTConfig(alpha_pred=0.0))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pipeline_config.py:101: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/celltracker/pipeline/ot_stage.py:107: in compute_pairwise_plan
+    plan = sinkhorn_log(C, a, b, eps=eps_eff,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+C = array([[  5.09117993, 513.62913277, 162.84397888, 117.18713157,
+        213.19636706, 332.48105241],
+       [565.28625...1, 456.62729125],
+       [302.10126338,  71.70350889, 116.97546484, 288.3457373 ,
+        436.14387872,   1.85952899]])
+a = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+b = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+eps = 21.96425672112492, tau_a = None, tau_b = None, n_iter = 1000, tol = 1e-10
+tol_marg = 1e-06, check_every = 25, return_log = False
+
+    def sinkhorn_log(
+        C: np.ndarray,
+        a: np.ndarray,
+        b: np.ndarray,
+        eps: float = 0.05,
+        tau_a: float | None = None,
+        tau_b: float | None = None,
+        n_iter: int = 1000,
+        tol: float = 1e-10,
+        tol_marg: float | None = 1e-6,
+        check_every: int = 25,
+        return_log: bool = False,
+    ):
+        """求解（非平衡）熵正则 OT，返回传输计划 `P`。
+    
+        参数
+        ----
+        C : (n, m) 代价矩阵（可用 `np.inf` 表示禁止匹配）
+        a, b : (n,), (m,) 边际质量（正数，未归一化也可）
+        eps : 熵正则强度
+        tau_a, tau_b : KL 惩罚系数；`None` 表示无穷 → 硬边际约束（平衡 OT）
+        tol : 对偶变量的收敛容差
+        tol_marg : **边际违反量的收敛容差**（相对值，仅平衡 OT 有意义）。
+                   只判对偶变量变化会把边际误差留在 1e-5 量级（ε 中等时明显）。
+                   默认取 1e-6 是工程折中：实测该精度下与 POT 的解最大差 ~1e-6、
+                   目标 <P,C> 一致到 4 位小数；而下游阈值（θ_Γ≈0.02 的归一化质量）
+                   比这个误差大 4 个数量级，继续收紧只会徒增迭代。
+        check_every : 每多少次迭代检查一次边际（检查本身需要一次 exp，约 10× 单步开销）
+        """
+        C = np.asarray(C, dtype=np.float64)
+        a = np.asarray(a, dtype=np.float64)
+        b = np.asarray(b, dtype=np.float64)
+        n, m = C.shape
+        if a.shape != (n,) or b.shape != (m,):
+            raise ValueError(f"边际形状不匹配: C{C.shape}, a{a.shape}, b{b.shape}")
+        if eps <= 0:
+            raise ValueError("eps 必须为正")
+        if not np.isfinite(eps) or np.isnan(C).any() or np.isneginf(C).any():
+            raise ValueError('代价不能为 NaN/负无穷，epsilon 必须有限')
+        if not np.isfinite(a).all() or not np.isfinite(b).all() or np.any(a<0) or np.any(b<0):
+            raise ValueError('边际必须为有限非负质量')
+        balanced = (tau_a is None and tau_b is None)
+        if balanced:
+            if not np.isclose(a.sum(),b.sum(),rtol=1e-9,atol=1e-12):
+                raise ValueError('平衡 OT 两侧总质量不相等')
+            # 禁止边把问题切成独立二部分量；每个分量也必须质量相等。
+            finite=np.isfinite(C)
+            if not finite.all() and n and m:
+                from scipy.sparse import bmat,csr_matrix
+                from scipy.sparse.csgraph import connected_components
+                support=csr_matrix(finite)
+                graph=bmat([[None,support],[support.T,None]],format='csr')
+                _,component=connected_components(graph,directed=False)
+                for group in np.unique(component):
+                    source=a[component[:n]==group].sum()
+                    target=b[component[n:]==group].sum()
+                    if not np.isclose(source,target,rtol=1e-8,atol=1e-12):
+                        raise ValueError('平衡 OT 的禁止边造成分量质量不匹配，硬边际不可行；需调整支持或显式使用非平衡 OT')
+    
+        log_a = np.log(np.maximum(a, 1e-300))
+        log_b = np.log(np.maximum(b, 1e-300))
+        lam_a = 1.0 if tau_a is None else tau_a / (tau_a + eps)
+        lam_b = 1.0 if tau_b is None else tau_b / (tau_b + eps)
+    
+        if not n or not m:
+            # 式(10) 的硬边际不能把正质量送入空侧；式(14) 的软边际允许全部质量消失。
+            if (tau_a is None and a.sum() > 0) or (tau_b is None and b.sum() > 0):
+                raise ValueError('空侧无法满足正质量的硬边际约束')
+            empty = np.zeros((n, m))
+            info = {'f': np.zeros(n), 'g': np.zeros(m), 'iters': 0, 'err': 0.,
+                    'marg_err': 0., 'lam_a': lam_a, 'lam_b': lam_b}
+            return (empty, info) if return_log else empty
+    
+        f = np.zeros(n)
+        g = np.zeros(m)
+        # 屏蔽禁止匹配：把 -inf 代价抬到有限大值，避免 nan
+        C_eff = np.where(np.isinf(C), 1e12, C)
+    
+        err = np.inf
+        marg_err = np.inf
+        it = 0
+        for it in range(n_iter):
+            f_prev = f
+            f = lam_a * eps * (log_a - _lse((g[None, :] - C_eff) / eps, axis=1))
+            g = lam_b * eps * (log_b - _lse((f[:, None] - C_eff) / eps, axis=0))
+            err = float(np.max(np.abs(f - f_prev)))
+            converged = err < tol * max(1.0, float(np.max(np.abs(f))))
+            if balanced and tol_marg is not None and (it % check_every == 0 or converged):
+                P = np.exp((f[:, None] + g[None, :] - C_eff) / eps)
+                marg_err = float(np.max(np.abs(P.sum(axis=1) - a)) / max(np.max(a), 1e-12))
+                converged = converged and marg_err < tol_marg
+            # 非平衡情形 f/g 不会收敛到不动点差值，用相对变化判断
+            if converged:
+                break
+    
+        logP = (f[:, None] + g[None, :] - C_eff) / eps
+        P = np.exp(logP)
+        P = np.where(np.isfinite(C), P, 0.0)
+    
+        # 分量质量一致只是必要条件，不能覆盖连通支持内的容量冲突。最终直接核对式(10)。
+        limit = float(tol_marg) if tol_marg is not None else 1e-6
+        for hard, actual, expected in ((tau_a is None, P.sum(axis=1), a),
+                                       (tau_b is None, P.sum(axis=0), b)):
+            if hard and np.max(np.abs(actual - expected)) / max(float(np.max(expected)), 1e-12) > limit:
+>               raise RuntimeError('Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合')
+E               RuntimeError: Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合
+
+src/celltracker/ot/sinkhorn.py:138: RuntimeError
+__________________________ test_eps_is_scale_adaptive __________________________
+
+    def test_eps_is_scale_adaptive():
+        """ε 应按代价尺度自适应：坐标放大 2 倍（代价 ×4）时 eps_eff 也应 ×4。
+    
+        注意 R_max 门限会破坏自相似性（放大会让远距离配对变成 +inf 被剔除），
+        所以这里同步放大 r_max 以隔离"ε 随代价尺度缩放"这一性质。
+        """
+        src, dst = _two_frame_pair()
+>       a = compute_pairwise_plan(src, dst, OTConfig(eps_rel=0.1, r_max=200.0))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pipeline_config.py:114: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/celltracker/pipeline/ot_stage.py:107: in compute_pairwise_plan
+    plan = sinkhorn_log(C, a, b, eps=eps_eff,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+C = array([[  5.09117993, 513.62913277, 162.84397888, 117.18713157,
+        213.19636706, 332.48105241],
+       [565.28625...1, 456.62729125],
+       [302.10126338,  71.70350889, 116.97546484, 288.3457373 ,
+        436.14387872,   1.85952899]])
+a = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+b = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+eps = 21.96425672112492, tau_a = None, tau_b = None, n_iter = 1000, tol = 1e-10
+tol_marg = 1e-06, check_every = 25, return_log = False
+
+    def sinkhorn_log(
+        C: np.ndarray,
+        a: np.ndarray,
+        b: np.ndarray,
+        eps: float = 0.05,
+        tau_a: float | None = None,
+        tau_b: float | None = None,
+        n_iter: int = 1000,
+        tol: float = 1e-10,
+        tol_marg: float | None = 1e-6,
+        check_every: int = 25,
+        return_log: bool = False,
+    ):
+        """求解（非平衡）熵正则 OT，返回传输计划 `P`。
+    
+        参数
+        ----
+        C : (n, m) 代价矩阵（可用 `np.inf` 表示禁止匹配）
+        a, b : (n,), (m,) 边际质量（正数，未归一化也可）
+        eps : 熵正则强度
+        tau_a, tau_b : KL 惩罚系数；`None` 表示无穷 → 硬边际约束（平衡 OT）
+        tol : 对偶变量的收敛容差
+        tol_marg : **边际违反量的收敛容差**（相对值，仅平衡 OT 有意义）。
+                   只判对偶变量变化会把边际误差留在 1e-5 量级（ε 中等时明显）。
+                   默认取 1e-6 是工程折中：实测该精度下与 POT 的解最大差 ~1e-6、
+                   目标 <P,C> 一致到 4 位小数；而下游阈值（θ_Γ≈0.02 的归一化质量）
+                   比这个误差大 4 个数量级，继续收紧只会徒增迭代。
+        check_every : 每多少次迭代检查一次边际（检查本身需要一次 exp，约 10× 单步开销）
+        """
+        C = np.asarray(C, dtype=np.float64)
+        a = np.asarray(a, dtype=np.float64)
+        b = np.asarray(b, dtype=np.float64)
+        n, m = C.shape
+        if a.shape != (n,) or b.shape != (m,):
+            raise ValueError(f"边际形状不匹配: C{C.shape}, a{a.shape}, b{b.shape}")
+        if eps <= 0:
+            raise ValueError("eps 必须为正")
+        if not np.isfinite(eps) or np.isnan(C).any() or np.isneginf(C).any():
+            raise ValueError('代价不能为 NaN/负无穷，epsilon 必须有限')
+        if not np.isfinite(a).all() or not np.isfinite(b).all() or np.any(a<0) or np.any(b<0):
+            raise ValueError('边际必须为有限非负质量')
+        balanced = (tau_a is None and tau_b is None)
+        if balanced:
+            if not np.isclose(a.sum(),b.sum(),rtol=1e-9,atol=1e-12):
+                raise ValueError('平衡 OT 两侧总质量不相等')
+            # 禁止边把问题切成独立二部分量；每个分量也必须质量相等。
+            finite=np.isfinite(C)
+            if not finite.all() and n and m:
+                from scipy.sparse import bmat,csr_matrix
+                from scipy.sparse.csgraph import connected_components
+                support=csr_matrix(finite)
+                graph=bmat([[None,support],[support.T,None]],format='csr')
+                _,component=connected_components(graph,directed=False)
+                for group in np.unique(component):
+                    source=a[component[:n]==group].sum()
+                    target=b[component[n:]==group].sum()
+                    if not np.isclose(source,target,rtol=1e-8,atol=1e-12):
+                        raise ValueError('平衡 OT 的禁止边造成分量质量不匹配，硬边际不可行；需调整支持或显式使用非平衡 OT')
+    
+        log_a = np.log(np.maximum(a, 1e-300))
+        log_b = np.log(np.maximum(b, 1e-300))
+        lam_a = 1.0 if tau_a is None else tau_a / (tau_a + eps)
+        lam_b = 1.0 if tau_b is None else tau_b / (tau_b + eps)
+    
+        if not n or not m:
+            # 式(10) 的硬边际不能把正质量送入空侧；式(14) 的软边际允许全部质量消失。
+            if (tau_a is None and a.sum() > 0) or (tau_b is None and b.sum() > 0):
+                raise ValueError('空侧无法满足正质量的硬边际约束')
+            empty = np.zeros((n, m))
+            info = {'f': np.zeros(n), 'g': np.zeros(m), 'iters': 0, 'err': 0.,
+                    'marg_err': 0., 'lam_a': lam_a, 'lam_b': lam_b}
+            return (empty, info) if return_log else empty
+    
+        f = np.zeros(n)
+        g = np.zeros(m)
+        # 屏蔽禁止匹配：把 -inf 代价抬到有限大值，避免 nan
+        C_eff = np.where(np.isinf(C), 1e12, C)
+    
+        err = np.inf
+        marg_err = np.inf
+        it = 0
+        for it in range(n_iter):
+            f_prev = f
+            f = lam_a * eps * (log_a - _lse((g[None, :] - C_eff) / eps, axis=1))
+            g = lam_b * eps * (log_b - _lse((f[:, None] - C_eff) / eps, axis=0))
+            err = float(np.max(np.abs(f - f_prev)))
+            converged = err < tol * max(1.0, float(np.max(np.abs(f))))
+            if balanced and tol_marg is not None and (it % check_every == 0 or converged):
+                P = np.exp((f[:, None] + g[None, :] - C_eff) / eps)
+                marg_err = float(np.max(np.abs(P.sum(axis=1) - a)) / max(np.max(a), 1e-12))
+                converged = converged and marg_err < tol_marg
+            # 非平衡情形 f/g 不会收敛到不动点差值，用相对变化判断
+            if converged:
+                break
+    
+        logP = (f[:, None] + g[None, :] - C_eff) / eps
+        P = np.exp(logP)
+        P = np.where(np.isfinite(C), P, 0.0)
+    
+        # 分量质量一致只是必要条件，不能覆盖连通支持内的容量冲突。最终直接核对式(10)。
+        limit = float(tol_marg) if tol_marg is not None else 1e-6
+        for hard, actual, expected in ((tau_a is None, P.sum(axis=1), a),
+                                       (tau_b is None, P.sum(axis=0), b)):
+            if hard and np.max(np.abs(actual - expected)) / max(float(np.max(expected)), 1e-12) > limit:
+>               raise RuntimeError('Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合')
+E               RuntimeError: Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合
+
+src/celltracker/ot/sinkhorn.py:138: RuntimeError
+___________________________ test_coupling_roundtrip ____________________________
+
+tmp_path = PosixPath('/tmp/pytest-of-henry/pytest-22/test_coupling_roundtrip0')
+
+    def test_coupling_roundtrip(tmp_path):
+        from celltracker.pipeline.ot_stage import load_coupling
+    
+        src, dst = _two_frame_pair()
+>       art = compute_pairwise_plan(src, dst, OTConfig(eta=0.0))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pipeline_config.py:124: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/celltracker/pipeline/ot_stage.py:107: in compute_pairwise_plan
+    plan = sinkhorn_log(C, a, b, eps=eps_eff,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+C = array([[  5.09117993, 513.62913277, 162.84397888, 117.18713157,
+        213.19636706, 332.48105241],
+       [565.28625...1, 456.62729125],
+       [302.10126338,  71.70350889, 116.97546484, 288.3457373 ,
+        436.14387872,   1.85952899]])
+a = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+b = array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+       0.16666667])
+eps = 21.96425672112492, tau_a = None, tau_b = None, n_iter = 1000, tol = 1e-10
+tol_marg = 1e-06, check_every = 25, return_log = False
+
+    def sinkhorn_log(
+        C: np.ndarray,
+        a: np.ndarray,
+        b: np.ndarray,
+        eps: float = 0.05,
+        tau_a: float | None = None,
+        tau_b: float | None = None,
+        n_iter: int = 1000,
+        tol: float = 1e-10,
+        tol_marg: float | None = 1e-6,
+        check_every: int = 25,
+        return_log: bool = False,
+    ):
+        """求解（非平衡）熵正则 OT，返回传输计划 `P`。
+    
+        参数
+        ----
+        C : (n, m) 代价矩阵（可用 `np.inf` 表示禁止匹配）
+        a, b : (n,), (m,) 边际质量（正数，未归一化也可）
+        eps : 熵正则强度
+        tau_a, tau_b : KL 惩罚系数；`None` 表示无穷 → 硬边际约束（平衡 OT）
+        tol : 对偶变量的收敛容差
+        tol_marg : **边际违反量的收敛容差**（相对值，仅平衡 OT 有意义）。
+                   只判对偶变量变化会把边际误差留在 1e-5 量级（ε 中等时明显）。
+                   默认取 1e-6 是工程折中：实测该精度下与 POT 的解最大差 ~1e-6、
+                   目标 <P,C> 一致到 4 位小数；而下游阈值（θ_Γ≈0.02 的归一化质量）
+                   比这个误差大 4 个数量级，继续收紧只会徒增迭代。
+        check_every : 每多少次迭代检查一次边际（检查本身需要一次 exp，约 10× 单步开销）
+        """
+        C = np.asarray(C, dtype=np.float64)
+        a = np.asarray(a, dtype=np.float64)
+        b = np.asarray(b, dtype=np.float64)
+        n, m = C.shape
+        if a.shape != (n,) or b.shape != (m,):
+            raise ValueError(f"边际形状不匹配: C{C.shape}, a{a.shape}, b{b.shape}")
+        if eps <= 0:
+            raise ValueError("eps 必须为正")
+        if not np.isfinite(eps) or np.isnan(C).any() or np.isneginf(C).any():
+            raise ValueError('代价不能为 NaN/负无穷，epsilon 必须有限')
+        if not np.isfinite(a).all() or not np.isfinite(b).all() or np.any(a<0) or np.any(b<0):
+            raise ValueError('边际必须为有限非负质量')
+        balanced = (tau_a is None and tau_b is None)
+        if balanced:
+            if not np.isclose(a.sum(),b.sum(),rtol=1e-9,atol=1e-12):
+                raise ValueError('平衡 OT 两侧总质量不相等')
+            # 禁止边把问题切成独立二部分量；每个分量也必须质量相等。
+            finite=np.isfinite(C)
+            if not finite.all() and n and m:
+                from scipy.sparse import bmat,csr_matrix
+                from scipy.sparse.csgraph import connected_components
+                support=csr_matrix(finite)
+                graph=bmat([[None,support],[support.T,None]],format='csr')
+                _,component=connected_components(graph,directed=False)
+                for group in np.unique(component):
+                    source=a[component[:n]==group].sum()
+                    target=b[component[n:]==group].sum()
+                    if not np.isclose(source,target,rtol=1e-8,atol=1e-12):
+                        raise ValueError('平衡 OT 的禁止边造成分量质量不匹配，硬边际不可行；需调整支持或显式使用非平衡 OT')
+    
+        log_a = np.log(np.maximum(a, 1e-300))
+        log_b = np.log(np.maximum(b, 1e-300))
+        lam_a = 1.0 if tau_a is None else tau_a / (tau_a + eps)
+        lam_b = 1.0 if tau_b is None else tau_b / (tau_b + eps)
+    
+        if not n or not m:
+            # 式(10) 的硬边际不能把正质量送入空侧；式(14) 的软边际允许全部质量消失。
+            if (tau_a is None and a.sum() > 0) or (tau_b is None and b.sum() > 0):
+                raise ValueError('空侧无法满足正质量的硬边际约束')
+            empty = np.zeros((n, m))
+            info = {'f': np.zeros(n), 'g': np.zeros(m), 'iters': 0, 'err': 0.,
+                    'marg_err': 0., 'lam_a': lam_a, 'lam_b': lam_b}
+            return (empty, info) if return_log else empty
+    
+        f = np.zeros(n)
+        g = np.zeros(m)
+        # 屏蔽禁止匹配：把 -inf 代价抬到有限大值，避免 nan
+        C_eff = np.where(np.isinf(C), 1e12, C)
+    
+        err = np.inf
+        marg_err = np.inf
+        it = 0
+        for it in range(n_iter):
+            f_prev = f
+            f = lam_a * eps * (log_a - _lse((g[None, :] - C_eff) / eps, axis=1))
+            g = lam_b * eps * (log_b - _lse((f[:, None] - C_eff) / eps, axis=0))
+            err = float(np.max(np.abs(f - f_prev)))
+            converged = err < tol * max(1.0, float(np.max(np.abs(f))))
+            if balanced and tol_marg is not None and (it % check_every == 0 or converged):
+                P = np.exp((f[:, None] + g[None, :] - C_eff) / eps)
+                marg_err = float(np.max(np.abs(P.sum(axis=1) - a)) / max(np.max(a), 1e-12))
+                converged = converged and marg_err < tol_marg
+            # 非平衡情形 f/g 不会收敛到不动点差值，用相对变化判断
+            if converged:
+                break
+    
+        logP = (f[:, None] + g[None, :] - C_eff) / eps
+        P = np.exp(logP)
+        P = np.where(np.isfinite(C), P, 0.0)
+    
+        # 分量质量一致只是必要条件，不能覆盖连通支持内的容量冲突。最终直接核对式(10)。
+        limit = float(tol_marg) if tol_marg is not None else 1e-6
+        for hard, actual, expected in ((tau_a is None, P.sum(axis=1), a),
+                                       (tau_b is None, P.sum(axis=0), b)):
+            if hard and np.max(np.abs(actual - expected)) / max(float(np.max(expected)), 1e-12) > limit:
+>               raise RuntimeError('Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合')
+E               RuntimeError: Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合
+
+src/celltracker/ot/sinkhorn.py:138: RuntimeError
+____________________________ test_runner_end_to_end ____________________________
+
+fake_h5 = PosixPath('/tmp/pytest-of-henry/pytest-22/test_runner_end_to_end0/fake.h5')
+tmp_path = PosixPath('/tmp/pytest-of-henry/pytest-22/test_runner_end_to_end0')
+
+    def test_runner_end_to_end(fake_h5, tmp_path):
+        """默认配置（GNN 关闭 → OT 规则）：应产出合法轨迹表与中间产物。"""
+        cfg = PipelineConfig(
+            measure=MeasureConfig(),
+            ot=OTConfig(r_max=30.0, eps_rel=0.1),
+            reconstruct=ReconstructConfig(tau_move=0.5, tau_div=0.5),
+            tracklet=TrackletConfig(enabled=False),
+        )
+>       run = run_pipeline(fake_h5, cfg, artifacts_dir=tmp_path / "art")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pipeline_runner.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/celltracker/pipeline/runner.py:180: in run_pipeline
+    couplings[pos] = compute_pairwise_plan(
+src/celltracker/pipeline/ot_stage.py:107: in compute_pairwise_plan
+    plan = sinkhorn_log(C, a, b, eps=eps_eff,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+C = array([[  4., 109., 360., 757.,  inf],
+       [ 45.,   4., 109., 360., 757.],
+       [232.,  45.,   4., 109., 360.],
+       [565., 232.,  45.,   4., 109.],
+       [ inf, 565., 232.,  45.,   4.]])
+a = array([0.2, 0.2, 0.2, 0.2, 0.2]), b = array([0.2, 0.2, 0.2, 0.2, 0.2])
+eps = 10.900000000000002, tau_a = None, tau_b = None, n_iter = 1000, tol = 1e-10
+tol_marg = 1e-06, check_every = 25, return_log = False
+
+    def sinkhorn_log(
+        C: np.ndarray,
+        a: np.ndarray,
+        b: np.ndarray,
+        eps: float = 0.05,
+        tau_a: float | None = None,
+        tau_b: float | None = None,
+        n_iter: int = 1000,
+        tol: float = 1e-10,
+        tol_marg: float | None = 1e-6,
+        check_every: int = 25,
+        return_log: bool = False,
+    ):
+        """求解（非平衡）熵正则 OT，返回传输计划 `P`。
+    
+        参数
+        ----
+        C : (n, m) 代价矩阵（可用 `np.inf` 表示禁止匹配）
+        a, b : (n,), (m,) 边际质量（正数，未归一化也可）
+        eps : 熵正则强度
+        tau_a, tau_b : KL 惩罚系数；`None` 表示无穷 → 硬边际约束（平衡 OT）
+        tol : 对偶变量的收敛容差
+        tol_marg : **边际违反量的收敛容差**（相对值，仅平衡 OT 有意义）。
+                   只判对偶变量变化会把边际误差留在 1e-5 量级（ε 中等时明显）。
+                   默认取 1e-6 是工程折中：实测该精度下与 POT 的解最大差 ~1e-6、
+                   目标 <P,C> 一致到 4 位小数；而下游阈值（θ_Γ≈0.02 的归一化质量）
+                   比这个误差大 4 个数量级，继续收紧只会徒增迭代。
+        check_every : 每多少次迭代检查一次边际（检查本身需要一次 exp，约 10× 单步开销）
+        """
+        C = np.asarray(C, dtype=np.float64)
+        a = np.asarray(a, dtype=np.float64)
+        b = np.asarray(b, dtype=np.float64)
+        n, m = C.shape
+        if a.shape != (n,) or b.shape != (m,):
+            raise ValueError(f"边际形状不匹配: C{C.shape}, a{a.shape}, b{b.shape}")
+        if eps <= 0:
+            raise ValueError("eps 必须为正")
+        if not np.isfinite(eps) or np.isnan(C).any() or np.isneginf(C).any():
+            raise ValueError('代价不能为 NaN/负无穷，epsilon 必须有限')
+        if not np.isfinite(a).all() or not np.isfinite(b).all() or np.any(a<0) or np.any(b<0):
+            raise ValueError('边际必须为有限非负质量')
+        balanced = (tau_a is None and tau_b is None)
+        if balanced:
+            if not np.isclose(a.sum(),b.sum(),rtol=1e-9,atol=1e-12):
+                raise ValueError('平衡 OT 两侧总质量不相等')
+            # 禁止边把问题切成独立二部分量；每个分量也必须质量相等。
+            finite=np.isfinite(C)
+            if not finite.all() and n and m:
+                from scipy.sparse import bmat,csr_matrix
+                from scipy.sparse.csgraph import connected_components
+                support=csr_matrix(finite)
+                graph=bmat([[None,support],[support.T,None]],format='csr')
+                _,component=connected_components(graph,directed=False)
+                for group in np.unique(component):
+                    source=a[component[:n]==group].sum()
+                    target=b[component[n:]==group].sum()
+                    if not np.isclose(source,target,rtol=1e-8,atol=1e-12):
+                        raise ValueError('平衡 OT 的禁止边造成分量质量不匹配，硬边际不可行；需调整支持或显式使用非平衡 OT')
+    
+        log_a = np.log(np.maximum(a, 1e-300))
+        log_b = np.log(np.maximum(b, 1e-300))
+        lam_a = 1.0 if tau_a is None else tau_a / (tau_a + eps)
+        lam_b = 1.0 if tau_b is None else tau_b / (tau_b + eps)
+    
+        if not n or not m:
+            # 式(10) 的硬边际不能把正质量送入空侧；式(14) 的软边际允许全部质量消失。
+            if (tau_a is None and a.sum() > 0) or (tau_b is None and b.sum() > 0):
+                raise ValueError('空侧无法满足正质量的硬边际约束')
+            empty = np.zeros((n, m))
+            info = {'f': np.zeros(n), 'g': np.zeros(m), 'iters': 0, 'err': 0.,
+                    'marg_err': 0., 'lam_a': lam_a, 'lam_b': lam_b}
+            return (empty, info) if return_log else empty
+    
+        f = np.zeros(n)
+        g = np.zeros(m)
+        # 屏蔽禁止匹配：把 -inf 代价抬到有限大值，避免 nan
+        C_eff = np.where(np.isinf(C), 1e12, C)
+    
+        err = np.inf
+        marg_err = np.inf
+        it = 0
+        for it in range(n_iter):
+            f_prev = f
+            f = lam_a * eps * (log_a - _lse((g[None, :] - C_eff) / eps, axis=1))
+            g = lam_b * eps * (log_b - _lse((f[:, None] - C_eff) / eps, axis=0))
+            err = float(np.max(np.abs(f - f_prev)))
+            converged = err < tol * max(1.0, float(np.max(np.abs(f))))
+            if balanced and tol_marg is not None and (it % check_every == 0 or converged):
+                P = np.exp((f[:, None] + g[None, :] - C_eff) / eps)
+                marg_err = float(np.max(np.abs(P.sum(axis=1) - a)) / max(np.max(a), 1e-12))
+                converged = converged and marg_err < tol_marg
+            # 非平衡情形 f/g 不会收敛到不动点差值，用相对变化判断
+            if converged:
+                break
+    
+        logP = (f[:, None] + g[None, :] - C_eff) / eps
+        P = np.exp(logP)
+        P = np.where(np.isfinite(C), P, 0.0)
+    
+        # 分量质量一致只是必要条件，不能覆盖连通支持内的容量冲突。最终直接核对式(10)。
+        limit = float(tol_marg) if tol_marg is not None else 1e-6
+        for hard, actual, expected in ((tau_a is None, P.sum(axis=1), a),
+                                       (tau_b is None, P.sum(axis=0), b)):
+            if hard and np.max(np.abs(actual - expected)) / max(float(np.max(expected)), 1e-12) > limit:
+>               raise RuntimeError('Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合')
+E               RuntimeError: Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合
+
+src/celltracker/ot/sinkhorn.py:138: RuntimeError
+_________________ test_runner_ablation_switches_are_effective __________________
+
+fake_h5 = PosixPath('/tmp/pytest-of-henry/pytest-22/test_runner_ablation_switches_0/fake.h5')
+tmp_path = PosixPath('/tmp/pytest-of-henry/pytest-22/test_runner_ablation_switches_0')
+
+    def test_runner_ablation_switches_are_effective(fake_h5, tmp_path):
+        """消融开关必须真的改变运行配置（fgw/unbalanced/motion/multiscale/tracklet）。"""
+        base = PipelineConfig(ot=OTConfig(r_max=30.0, eps_rel=0.1, eta=0.5,
+                                          tau_a=1.0, tau_b=1.0, alpha_pred=1.0))
+        ab = apply_ablation(base, {"fgw", "unbalanced", "motion"})
+        assert ab.ot.eta == 0.0 and ab.ot.tau_a is None and ab.ot.alpha_pred == 0.0
+    
+>       run = run_pipeline(fake_h5, ab, artifacts_dir=tmp_path / "art2")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pipeline_runner.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/celltracker/pipeline/runner.py:180: in run_pipeline
+    couplings[pos] = compute_pairwise_plan(
+src/celltracker/pipeline/ot_stage.py:107: in compute_pairwise_plan
+    plan = sinkhorn_log(C, a, b, eps=eps_eff,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+C = array([[  4., 109., 360., 757.,  inf],
+       [ 45.,   4., 109., 360., 757.],
+       [232.,  45.,   4., 109., 360.],
+       [565., 232.,  45.,   4., 109.],
+       [ inf, 565., 232.,  45.,   4.]])
+a = array([0.2, 0.2, 0.2, 0.2, 0.2]), b = array([0.2, 0.2, 0.2, 0.2, 0.2])
+eps = 10.900000000000002, tau_a = None, tau_b = None, n_iter = 1000, tol = 1e-10
+tol_marg = 1e-06, check_every = 25, return_log = False
+
+    def sinkhorn_log(
+        C: np.ndarray,
+        a: np.ndarray,
+        b: np.ndarray,
+        eps: float = 0.05,
+        tau_a: float | None = None,
+        tau_b: float | None = None,
+        n_iter: int = 1000,
+        tol: float = 1e-10,
+        tol_marg: float | None = 1e-6,
+        check_every: int = 25,
+        return_log: bool = False,
+    ):
+        """求解（非平衡）熵正则 OT，返回传输计划 `P`。
+    
+        参数
+        ----
+        C : (n, m) 代价矩阵（可用 `np.inf` 表示禁止匹配）
+        a, b : (n,), (m,) 边际质量（正数，未归一化也可）
+        eps : 熵正则强度
+        tau_a, tau_b : KL 惩罚系数；`None` 表示无穷 → 硬边际约束（平衡 OT）
+        tol : 对偶变量的收敛容差
+        tol_marg : **边际违反量的收敛容差**（相对值，仅平衡 OT 有意义）。
+                   只判对偶变量变化会把边际误差留在 1e-5 量级（ε 中等时明显）。
+                   默认取 1e-6 是工程折中：实测该精度下与 POT 的解最大差 ~1e-6、
+                   目标 <P,C> 一致到 4 位小数；而下游阈值（θ_Γ≈0.02 的归一化质量）
+                   比这个误差大 4 个数量级，继续收紧只会徒增迭代。
+        check_every : 每多少次迭代检查一次边际（检查本身需要一次 exp，约 10× 单步开销）
+        """
+        C = np.asarray(C, dtype=np.float64)
+        a = np.asarray(a, dtype=np.float64)
+        b = np.asarray(b, dtype=np.float64)
+        n, m = C.shape
+        if a.shape != (n,) or b.shape != (m,):
+            raise ValueError(f"边际形状不匹配: C{C.shape}, a{a.shape}, b{b.shape}")
+        if eps <= 0:
+            raise ValueError("eps 必须为正")
+        if not np.isfinite(eps) or np.isnan(C).any() or np.isneginf(C).any():
+            raise ValueError('代价不能为 NaN/负无穷，epsilon 必须有限')
+        if not np.isfinite(a).all() or not np.isfinite(b).all() or np.any(a<0) or np.any(b<0):
+            raise ValueError('边际必须为有限非负质量')
+        balanced = (tau_a is None and tau_b is None)
+        if balanced:
+            if not np.isclose(a.sum(),b.sum(),rtol=1e-9,atol=1e-12):
+                raise ValueError('平衡 OT 两侧总质量不相等')
+            # 禁止边把问题切成独立二部分量；每个分量也必须质量相等。
+            finite=np.isfinite(C)
+            if not finite.all() and n and m:
+                from scipy.sparse import bmat,csr_matrix
+                from scipy.sparse.csgraph import connected_components
+                support=csr_matrix(finite)
+                graph=bmat([[None,support],[support.T,None]],format='csr')
+                _,component=connected_components(graph,directed=False)
+                for group in np.unique(component):
+                    source=a[component[:n]==group].sum()
+                    target=b[component[n:]==group].sum()
+                    if not np.isclose(source,target,rtol=1e-8,atol=1e-12):
+                        raise ValueError('平衡 OT 的禁止边造成分量质量不匹配，硬边际不可行；需调整支持或显式使用非平衡 OT')
+    
+        log_a = np.log(np.maximum(a, 1e-300))
+        log_b = np.log(np.maximum(b, 1e-300))
+        lam_a = 1.0 if tau_a is None else tau_a / (tau_a + eps)
+        lam_b = 1.0 if tau_b is None else tau_b / (tau_b + eps)
+    
+        if not n or not m:
+            # 式(10) 的硬边际不能把正质量送入空侧；式(14) 的软边际允许全部质量消失。
+            if (tau_a is None and a.sum() > 0) or (tau_b is None and b.sum() > 0):
+                raise ValueError('空侧无法满足正质量的硬边际约束')
+            empty = np.zeros((n, m))
+            info = {'f': np.zeros(n), 'g': np.zeros(m), 'iters': 0, 'err': 0.,
+                    'marg_err': 0., 'lam_a': lam_a, 'lam_b': lam_b}
+            return (empty, info) if return_log else empty
+    
+        f = np.zeros(n)
+        g = np.zeros(m)
+        # 屏蔽禁止匹配：把 -inf 代价抬到有限大值，避免 nan
+        C_eff = np.where(np.isinf(C), 1e12, C)
+    
+        err = np.inf
+        marg_err = np.inf
+        it = 0
+        for it in range(n_iter):
+            f_prev = f
+            f = lam_a * eps * (log_a - _lse((g[None, :] - C_eff) / eps, axis=1))
+            g = lam_b * eps * (log_b - _lse((f[:, None] - C_eff) / eps, axis=0))
+            err = float(np.max(np.abs(f - f_prev)))
+            converged = err < tol * max(1.0, float(np.max(np.abs(f))))
+            if balanced and tol_marg is not None and (it % check_every == 0 or converged):
+                P = np.exp((f[:, None] + g[None, :] - C_eff) / eps)
+                marg_err = float(np.max(np.abs(P.sum(axis=1) - a)) / max(np.max(a), 1e-12))
+                converged = converged and marg_err < tol_marg
+            # 非平衡情形 f/g 不会收敛到不动点差值，用相对变化判断
+            if converged:
+                break
+    
+        logP = (f[:, None] + g[None, :] - C_eff) / eps
+        P = np.exp(logP)
+        P = np.where(np.isfinite(C), P, 0.0)
+    
+        # 分量质量一致只是必要条件，不能覆盖连通支持内的容量冲突。最终直接核对式(10)。
+        limit = float(tol_marg) if tol_marg is not None else 1e-6
+        for hard, actual, expected in ((tau_a is None, P.sum(axis=1), a),
+                                       (tau_b is None, P.sum(axis=0), b)):
+            if hard and np.max(np.abs(actual - expected)) / max(float(np.max(expected)), 1e-12) > limit:
+>               raise RuntimeError('Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合')
+E               RuntimeError: Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合
+
+src/celltracker/ot/sinkhorn.py:138: RuntimeError
+__________________ test_runner_multiscale_and_tracklet_paths ___________________
+
+fake_h5 = PosixPath('/tmp/pytest-of-henry/pytest-22/test_runner_multiscale_and_tra0/fake.h5')
+tmp_path = PosixPath('/tmp/pytest-of-henry/pytest-22/test_runner_multiscale_and_tra0')
+
+    def test_runner_multiscale_and_tracklet_paths(fake_h5, tmp_path):
+        """开启多尺度与 tracklet 阶段时应正常执行并记录信息。"""
+        from celltracker.pipeline.config import MultiscaleConfig
+    
+        cfg = PipelineConfig(
+            ot=OTConfig(r_max=30.0, eps_rel=0.1),
+            multiscale=MultiscaleConfig(enabled=True, ks=(2,), lambda_temp=0.1, n_rounds=1),
+            tracklet=TrackletConfig(enabled=True, max_gap=2),
+        )
+>       run = run_pipeline(fake_h5, cfg, artifacts_dir=tmp_path / "art3")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_pipeline_runner.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/celltracker/pipeline/runner.py:180: in run_pipeline
+    couplings[pos] = compute_pairwise_plan(
+src/celltracker/pipeline/ot_stage.py:107: in compute_pairwise_plan
+    plan = sinkhorn_log(C, a, b, eps=eps_eff,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+C = array([[  4., 109., 360., 757.,  inf],
+       [ 45.,   4., 109., 360., 757.],
+       [232.,  45.,   4., 109., 360.],
+       [565., 232.,  45.,   4., 109.],
+       [ inf, 565., 232.,  45.,   4.]])
+a = array([0.2, 0.2, 0.2, 0.2, 0.2]), b = array([0.2, 0.2, 0.2, 0.2, 0.2])
+eps = 10.900000000000002, tau_a = None, tau_b = None, n_iter = 1000, tol = 1e-10
+tol_marg = 1e-06, check_every = 25, return_log = False
+
+    def sinkhorn_log(
+        C: np.ndarray,
+        a: np.ndarray,
+        b: np.ndarray,
+        eps: float = 0.05,
+        tau_a: float | None = None,
+        tau_b: float | None = None,
+        n_iter: int = 1000,
+        tol: float = 1e-10,
+        tol_marg: float | None = 1e-6,
+        check_every: int = 25,
+        return_log: bool = False,
+    ):
+        """求解（非平衡）熵正则 OT，返回传输计划 `P`。
+    
+        参数
+        ----
+        C : (n, m) 代价矩阵（可用 `np.inf` 表示禁止匹配）
+        a, b : (n,), (m,) 边际质量（正数，未归一化也可）
+        eps : 熵正则强度
+        tau_a, tau_b : KL 惩罚系数；`None` 表示无穷 → 硬边际约束（平衡 OT）
+        tol : 对偶变量的收敛容差
+        tol_marg : **边际违反量的收敛容差**（相对值，仅平衡 OT 有意义）。
+                   只判对偶变量变化会把边际误差留在 1e-5 量级（ε 中等时明显）。
+                   默认取 1e-6 是工程折中：实测该精度下与 POT 的解最大差 ~1e-6、
+                   目标 <P,C> 一致到 4 位小数；而下游阈值（θ_Γ≈0.02 的归一化质量）
+                   比这个误差大 4 个数量级，继续收紧只会徒增迭代。
+        check_every : 每多少次迭代检查一次边际（检查本身需要一次 exp，约 10× 单步开销）
+        """
+        C = np.asarray(C, dtype=np.float64)
+        a = np.asarray(a, dtype=np.float64)
+        b = np.asarray(b, dtype=np.float64)
+        n, m = C.shape
+        if a.shape != (n,) or b.shape != (m,):
+            raise ValueError(f"边际形状不匹配: C{C.shape}, a{a.shape}, b{b.shape}")
+        if eps <= 0:
+            raise ValueError("eps 必须为正")
+        if not np.isfinite(eps) or np.isnan(C).any() or np.isneginf(C).any():
+            raise ValueError('代价不能为 NaN/负无穷，epsilon 必须有限')
+        if not np.isfinite(a).all() or not np.isfinite(b).all() or np.any(a<0) or np.any(b<0):
+            raise ValueError('边际必须为有限非负质量')
+        balanced = (tau_a is None and tau_b is None)
+        if balanced:
+            if not np.isclose(a.sum(),b.sum(),rtol=1e-9,atol=1e-12):
+                raise ValueError('平衡 OT 两侧总质量不相等')
+            # 禁止边把问题切成独立二部分量；每个分量也必须质量相等。
+            finite=np.isfinite(C)
+            if not finite.all() and n and m:
+                from scipy.sparse import bmat,csr_matrix
+                from scipy.sparse.csgraph import connected_components
+                support=csr_matrix(finite)
+                graph=bmat([[None,support],[support.T,None]],format='csr')
+                _,component=connected_components(graph,directed=False)
+                for group in np.unique(component):
+                    source=a[component[:n]==group].sum()
+                    target=b[component[n:]==group].sum()
+                    if not np.isclose(source,target,rtol=1e-8,atol=1e-12):
+                        raise ValueError('平衡 OT 的禁止边造成分量质量不匹配，硬边际不可行；需调整支持或显式使用非平衡 OT')
+    
+        log_a = np.log(np.maximum(a, 1e-300))
+        log_b = np.log(np.maximum(b, 1e-300))
+        lam_a = 1.0 if tau_a is None else tau_a / (tau_a + eps)
+        lam_b = 1.0 if tau_b is None else tau_b / (tau_b + eps)
+    
+        if not n or not m:
+            # 式(10) 的硬边际不能把正质量送入空侧；式(14) 的软边际允许全部质量消失。
+            if (tau_a is None and a.sum() > 0) or (tau_b is None and b.sum() > 0):
+                raise ValueError('空侧无法满足正质量的硬边际约束')
+            empty = np.zeros((n, m))
+            info = {'f': np.zeros(n), 'g': np.zeros(m), 'iters': 0, 'err': 0.,
+                    'marg_err': 0., 'lam_a': lam_a, 'lam_b': lam_b}
+            return (empty, info) if return_log else empty
+    
+        f = np.zeros(n)
+        g = np.zeros(m)
+        # 屏蔽禁止匹配：把 -inf 代价抬到有限大值，避免 nan
+        C_eff = np.where(np.isinf(C), 1e12, C)
+    
+        err = np.inf
+        marg_err = np.inf
+        it = 0
+        for it in range(n_iter):
+            f_prev = f
+            f = lam_a * eps * (log_a - _lse((g[None, :] - C_eff) / eps, axis=1))
+            g = lam_b * eps * (log_b - _lse((f[:, None] - C_eff) / eps, axis=0))
+            err = float(np.max(np.abs(f - f_prev)))
+            converged = err < tol * max(1.0, float(np.max(np.abs(f))))
+            if balanced and tol_marg is not None and (it % check_every == 0 or converged):
+                P = np.exp((f[:, None] + g[None, :] - C_eff) / eps)
+                marg_err = float(np.max(np.abs(P.sum(axis=1) - a)) / max(np.max(a), 1e-12))
+                converged = converged and marg_err < tol_marg
+            # 非平衡情形 f/g 不会收敛到不动点差值，用相对变化判断
+            if converged:
+                break
+    
+        logP = (f[:, None] + g[None, :] - C_eff) / eps
+        P = np.exp(logP)
+        P = np.where(np.isfinite(C), P, 0.0)
+    
+        # 分量质量一致只是必要条件，不能覆盖连通支持内的容量冲突。最终直接核对式(10)。
+        limit = float(tol_marg) if tol_marg is not None else 1e-6
+        for hard, actual, expected in ((tau_a is None, P.sum(axis=1), a),
+                                       (tau_b is None, P.sum(axis=0), b)):
+            if hard and np.max(np.abs(actual - expected)) / max(float(np.max(expected)), 1e-12) > limit:
+>               raise RuntimeError('Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合')
+E               RuntimeError: Sinkhorn 未满足硬边际约束：支持不可行或迭代不足，不能返回为有效耦合
+
+src/celltracker/ot/sinkhorn.py:138: RuntimeError
+__________________________ test_end_to_end_synthetic ___________________________
+
+tmp_path = PosixPath('/tmp/pytest-of-henry/pytest-22/test_end_to_end_synthetic0')
+
+    def test_end_to_end_synthetic(tmp_path):
+        from papertrack.config import PipelineConfig as PC
+        from papertrack.reconstruction import export_ctc
+        from papertrack.runtime import run_pipeline
+        from papertrack.runtime.validate import validate_ctc_dir
+    
+        dets = _dets(volumes=[[100.0], [], [100.0]],
+                     cents=[[[4, 5, 5]], [], [[4, 9, 9]]])
+        h5 = _write_h5(tmp_path / "seq.h5", dets)
+        cfg = PC()
+        cfg.detection_source = "synthetic"
+        cfg.measure = _mcfg()
+        cfg.coupling = _ccfg(r_max=6.0)
+        cfg.multiscale.enabled = False
+        cfg.tracklet.enabled = False
+        cfg.motion.enabled = False
+        cfg.graph.theta_gamma_frac = 0.0
+    
+>       run = run_pipeline(h5, cfg)
+              ^^^^^^^^^^^^^^^^^^^^^
+
+paperpipe/tests/test_papertrack.py:379: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+paperpipe/src/papertrack/runtime/pipeline.py:123: in run_pipeline
+    couplings = _solve_all(dets,ccfg,cfg.measure,spacing,pred_xy,cache,'adjacent')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+paperpipe/src/papertrack/runtime/pipeline.py:244: in _solve_all
+    output[pos] = solve_coupling(dets.centroid(t),dets.centroid(tn),dets.volume(t),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+src_xy = array([[4., 5., 5.]]), dst_xy = array([], shape=(0, 3), dtype=float64)
+src_vol = array([100.]), dst_vol = array([], dtype=float64), pred_xy = None
+coupling_cfg = CouplingConfig(enabled=True, alpha=1.0, alpha_pred=0.0, beta=0.0, sigma_s=None, r_max=6.0, eta=0.0, eps_rel=None, eps=0.1, tau_a=None, tau_b=None, sinkhorn_iters=1000, fgw_outer=10)
+measure_cfg = MeasureConfig(mass_mode='volume', knn_k=2, sigma_x=None, sigma_f=None, spacing_zyx=(1.0, 1.0, 1.0), structure_mode='full')
+spacing = (1.0, 1.0, 1.0), eps = None, r_max_scale = 1.0
+
+    def solve_coupling(src_xy: np.ndarray, dst_xy: np.ndarray,
+                       src_vol: np.ndarray | None = None,
+                       dst_vol: np.ndarray | None = None,
+                       pred_xy: np.ndarray | None = None,
+                       coupling_cfg: CouplingConfig | None = None,
+                       measure_cfg: MeasureConfig | None = None,
+                       spacing: tuple[float, ...] | None = None,
+                       eps: float | None = None,
+                       r_max_scale: float = 1.0) -> PairCoupling:
+        """求解式(9)(12)(14)：一对帧之间的（FGW / 非平衡）熵正则 OT。
+    
+        `pred_xy` 给定时启用式(22) 的运动先验项 α′；
+        `r_max_scale` 供跳帧耦合（式18/19 的 Γ^{t,t+k}_direct）按 gap 放宽 R_max。
+        """
+        from dataclasses import replace as _replace
+    
+        ccfg = coupling_cfg or CouplingConfig()
+        mcfg = measure_cfg or MeasureConfig()
+        if r_max_scale != 1.0:
+            ccfg = _replace(ccfg, r_max=ccfg.r_max * float(r_max_scale))
+    
+        n_src, n_dst = int(np.asarray(src_xy).shape[0]), int(np.asarray(dst_xy).shape[0])
+        if n_src == 0 or n_dst == 0:
+            if ccfg.enabled and ((n_src and ccfg.tau_a is None) or (n_dst and ccfg.tau_b is None)):
+>               raise ValueError('空帧不能满足正质量硬边际；漏检恢复需显式使用非平衡 OT')
+E               ValueError: 空帧不能满足正质量硬边际；漏检恢复需显式使用非平衡 OT
+
+paperpipe/src/papertrack/coupling/pairwise.py:119: ValueError
+----------------------------- Captured stdout call -----------------------------
+[load] 3 帧；检测=synthetic；外观=intensity (0.0s)
+[motion] 运动先验初始化完成 (0.0s)
+__________ test_empty_ot_preserves_soft_and_hard_constraint_semantics __________
+
+    def test_empty_ot_preserves_soft_and_hard_constraint_semantics():
+        cost = np.empty((0, 1))
+        empty, info = sinkhorn_log(cost, np.empty(0), np.ones(1), tau_a=1., tau_b=1., return_log=True)
+        assert empty.shape == (0, 1) and info['iters'] == 0
+        with pytest.raises(ValueError):
+            sinkhorn_log(cost, np.empty(0), np.ones(1))
+        assert sinkhorn_log(np.empty((0, 0)), np.empty(0), np.empty(0)).shape == (0, 0)
+        from papertrack.config import CouplingConfig
+>       with pytest.raises(ValueError, match='硬边际'):
+E       Failed: DID NOT RAISE ValueError
+
+paperpipe/tests/test_rebuild_regressions.py:47: Failed
+=========================== short test summary info ============================
+FAILED tests/test_gnn_adapter.py::test_gnn_runner_plugs_into_pipeline - Runti...
+FAILED tests/test_gnn_adapter.py::test_gnn_ablation_switch_falls_back_to_ot_rule
+FAILED tests/test_multiscale_stage.py::test_disabled_is_identity - RuntimeErr...
+FAILED tests/test_multiscale_stage.py::test_enabled_refines_and_reports_regularizer
+FAILED tests/test_multiscale_stage.py::test_regularizer_is_monotone_non_increasing
+FAILED tests/test_multiscale_stage.py::test_refinement_actually_changes_plans
+FAILED tests/test_multiscale_stage.py::test_lambda_zero_keeps_plans_close_to_base
+FAILED tests/test_ot.py::test_matches_exact_emd_as_eps_to_zero - RuntimeError...
+FAILED tests/test_pipeline_config.py::test_ot_stage_balanced_vs_unbalanced - ...
+FAILED tests/test_pipeline_config.py::test_ot_stage_fgw_runs_and_keeps_marginals
+FAILED tests/test_pipeline_config.py::test_ot_stage_motion_prior_changes_cost
+FAILED tests/test_pipeline_config.py::test_eps_is_scale_adaptive - RuntimeErr...
+FAILED tests/test_pipeline_config.py::test_coupling_roundtrip - RuntimeError:...
+FAILED tests/test_pipeline_runner.py::test_runner_end_to_end - RuntimeError: ...
+FAILED tests/test_pipeline_runner.py::test_runner_ablation_switches_are_effective
+FAILED tests/test_pipeline_runner.py::test_runner_multiscale_and_tracklet_paths
+FAILED paperpipe/tests/test_papertrack.py::test_end_to_end_synthetic - ValueE...
+FAILED paperpipe/tests/test_rebuild_regressions.py::test_empty_ot_preserves_soft_and_hard_constraint_semantics
+18 failed, 131 passed in 8.10s

@@ -82,7 +82,8 @@ def fused_gw(C: np.ndarray, a: np.ndarray, b: np.ndarray,
              D: np.ndarray, Dp: np.ndarray, eta: float = 0.3,
              eps: float = 0.05, tau_a: float | None = None,
              tau_b: float | None = None, n_outer: int = 40,
-             tol: float = 1e-7, n_inner: int = 1000) -> tuple[np.ndarray, dict]:
+             tol: float = 1e-7, n_inner: int = 1000,
+             strict_marginals: bool = False) -> tuple[np.ndarray, dict]:
     """广义条件梯度求解式(12)/(14)，在完整目标上回溯。
 
     只线性化光滑的特征/结构项，熵和边际 KL 留在 Sinkhorn 子问题中。
@@ -94,7 +95,7 @@ def fused_gw(C: np.ndarray, a: np.ndarray, b: np.ndarray,
     # 硬边际在近置换计划上收敛较慢，给平衡子问题足够迭代预算。
     inner_iterations = max(n_inner, 10000) if tau_a is None and tau_b is None else n_inner
     initial_cost = np.where(finite, (1.0 - eta) * np.where(finite, C, 0.0), np.inf)
-    P = sinkhorn_log(initial_cost, a, b, eps=eps, tau_a=tau_a, tau_b=tau_b, n_iter=inner_iterations)
+    P = sinkhorn_log(initial_cost, a, b, eps=eps, tau_a=tau_a, tau_b=tau_b, n_iter=inner_iterations, strict_marginals=strict_marginals)
     def objective(plan):
         return regularized_objective(plan, C, D, Dp, a, b, eta, eps, tau_a, tau_b)
     obj = objective(P)
@@ -103,7 +104,7 @@ def fused_gw(C: np.ndarray, a: np.ndarray, b: np.ndarray,
         G = (1.0 - eta) * np.where(np.isfinite(C), C, 0.0) \
             + eta * structural_grad(P, D, Dp)
         G = np.where(np.isfinite(C), G, np.inf)
-        S = sinkhorn_log(G, a, b, eps=eps, tau_a=tau_a, tau_b=tau_b, n_iter=inner_iterations)
+        S = sinkhorn_log(G, a, b, eps=eps, tau_a=tau_a, tau_b=tau_b, n_iter=inner_iterations, strict_marginals=strict_marginals)
 
         gamma, improved = 1.0, False
         for _ls in range(20):

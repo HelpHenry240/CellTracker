@@ -131,7 +131,7 @@ def refine_couplings(couplings, ts, frame_xy, frame_vol, cfg, ccfg, mcfg,
                 G += weights.get(k, 0) * gradients[i-start]
             G = np.where(finite, G, np.inf)
             S = sinkhorn_log(G, art.mass_a, art.mass_b, eps=art.eps_eff,
-                             tau_a=ccfg.tau_a, tau_b=ccfg.tau_b, n_iter=ccfg.sinkhorn_iters)
+                             tau_a=ccfg.tau_a, tau_b=ccfg.tau_b, n_iter=max(ccfg.sinkhorn_iters,10000) if ccfg.tau_a is None or ccfg.tau_b is None else ccfg.sinkhorn_iters, strict_marginals=True)
             if not np.isfinite(S).all():
                 continue
             before = local_objective(i, plans)
@@ -159,5 +159,5 @@ def refine_couplings(couplings, ts, frame_xy, frame_vol, cfg, ccfg, mcfg,
 def resolve_with_cost(art, G, ccfg, Ds=None):
     """求解线性化子问题；代理 G 不覆盖外部可见的原始特征代价 C。"""
     plan = sinkhorn_log(G, art.mass_a, art.mass_b, eps=art.eps_eff,
-                       tau_a=ccfg.tau_a, tau_b=ccfg.tau_b, n_iter=ccfg.sinkhorn_iters)
+                       tau_a=ccfg.tau_a, tau_b=ccfg.tau_b, n_iter=max(ccfg.sinkhorn_iters,10000) if ccfg.tau_a is None or ccfg.tau_b is None else ccfg.sinkhorn_iters, strict_marginals=True)
     return replace(art, plan=plan) if np.isfinite(plan).all() else None

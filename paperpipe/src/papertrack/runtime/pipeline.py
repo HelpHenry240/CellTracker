@@ -221,6 +221,9 @@ def _prepare_cache(root,info,cfg):
                 'measure':asdict(cfg.measure),'coupling':asdict(cfg.coupling),
                 'motion':asdict(cfg.motion),'reconstruct':asdict(cfg.reconstruct),
                 'multiscale':asdict(cfg.multiscale),'bridge_gap':cfg.graph.bridge_gap}
+    if cfg.coupling.enabled and (cfg.coupling.tau_a is None or cfg.coupling.tau_b is None):
+        # 新硬边际校验不能被历史截断迭代缓存绕过；软边际算例的数值路径保持相同。
+        identity['hard_constraint_validation'] = 'sinkhorn_final_marginals_v1'
     # JSON 往返统一 tuple/list 以及数值字典键。
     identity = json.loads(json.dumps(identity))
     manifest = root/'cache_manifest.json'

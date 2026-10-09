@@ -115,13 +115,16 @@ def solve_coupling(src_xy: np.ndarray, dst_xy: np.ndarray,
 
     n_src, n_dst = int(np.asarray(src_xy).shape[0]), int(np.asarray(dst_xy).shape[0])
     if n_src == 0 or n_dst == 0:
-        # 空帧：没有可传输的质量（对应"整帧漏检/序列边界"），返回空计划。
+        # 论文之外的输入适配：整帧漏检的测度不可观测，返回空占位并由跨帧桥接恢复。
+        # 这不是式(10)的可行硬边际耦合，元数据明确标注，不能作为有效质量流报告。
         empty = np.zeros((n_src, n_dst))
         return PairCoupling(plan=empty, cost=np.full((n_src, n_dst), np.inf),
                             mass_a=masses(src_vol, n_src, mcfg.mass_mode),
                             mass_b=masses(dst_vol, n_dst, mcfg.mass_mode),
                             d_cur=np.zeros((n_src, n_dst)), eps_eff=float(eps or 1.0),
-                            info={"empty_frame": True, "n_src": n_src, "n_dst": n_dst})
+                            info={"empty_frame": True, "n_src": n_src, "n_dst": n_dst,
+                                  "empty_detection_placeholder": True,
+                                  "hard_constraints_bypassed": ccfg.tau_a is None or ccfg.tau_b is None})
 
     C, d_cur, cinfo = build_cost(src_xy, dst_xy, src_vol, dst_vol, pred_xy,
                                  ccfg, spacing)
@@ -139,12 +142,15 @@ def solve_coupling(src_xy: np.ndarray, dst_xy: np.ndarray,
         Dp, _, _ = knn_structure(dst_xy, dst_vol, mcfg, spacing, d_full=mcfg.structure_mode == "full")
         plan, extra = fused_gw(C, a, b, D, Dp, eta=ccfg.eta, eps=eps_eff,
                                tau_a=ccfg.tau_a, tau_b=ccfg.tau_b,
-                               n_outer=int(ccfg.fgw_outer), n_inner=ccfg.sinkhorn_iters)
+                               n_outer=int(ccfg.fgw_outer), n_inner=ccfg.sinkhorn_iters,
+                               strict_marginals=True)
         extra["structural_term"] = structural_term(plan, D, Dp)
     else:
         # 式(12)（τ=None ⇒ 平衡）或式(14)（τ 有限 ⇒ 非平衡）
         plan = sinkhorn_log(C, a, b, eps=eps_eff, tau_a=ccfg.tau_a,
-                            tau_b=ccfg.tau_b, n_iter=ccfg.sinkhorn_iters)
+                            tau_b=ccfg.tau_b,
+                            n_iter=max(ccfg.sinkhorn_iters,10000) if ccfg.tau_a is None or ccfg.tau_b is None else ccfg.sinkhorn_iters,
+                            strict_marginals=True)
 
     info = {"eta": float(ccfg.eta), "tau_a": ccfg.tau_a, "tau_b": ccfg.tau_b,
             "alpha": float(ccfg.alpha), "alpha_pred": float(ccfg.alpha_pred),
