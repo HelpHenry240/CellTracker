@@ -1,0 +1,8 @@
+# 中间耦合缓存保留在本地/云端；入库只保存实验留痕，完整归档散列另记。
+**/cache/
+**/calibration_cache/
+**/calibration_cache*/
+**/*.pt
+# 原始逐边列表留在完整归档；入库摘要保留全部标量、来源契约和统计。
+**/artifacts/pipeline/run_info.json
+experiments/*_build01/metrics.json

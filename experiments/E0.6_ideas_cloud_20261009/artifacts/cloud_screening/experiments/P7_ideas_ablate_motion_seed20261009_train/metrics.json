@@ -1,0 +1,19 @@
+{
+  "out_dir": "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/motion/seed20261009",
+  "best_f1": 0.9065550906555091,
+  "node_dim": 133,
+  "edge_dim": 10,
+  "split_mode": "block",
+  "n_train": 152,
+  "n_val": 38,
+  "checkpoints": {
+    "best.pt": {
+      "bytes": 1173726,
+      "sha256": "7045bc74090331583c273093f4df907fc6013893a6556b6be2eb174412c4f302"
+    },
+    "last.pt": {
+      "bytes": 1184958,
+      "sha256": "f10c31acb69f1e79a756cd0ed36ac01537ea27d5be5501fbfd665da62c4f96fb"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "schema": "ideas-ablation-v1",
+  "dataset": "Fluo-N3DH-CE",
+  "protocol": "seq01 train / seq02 held out",
+  "seeds": [
+    20261008,
+    20261009
+  ],
+  "variants": [
+    {
+      "module": "baseline",
+      "direction": "baseline"
+    }
+  ],
+  "official": true,
+  "jobs": [
+    {
+      "id": "P7_ideas_full_baseline_seed20261009_eval02_retry1",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_02_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_02.h5",
+        "--seq",
+        "02",
+        "--exp-id",
+        "P7_ideas_full_baseline_seed20261009_eval02_retry1",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/configs/baseline_02.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/cache/baseline/02",
+        "--device",
+        "cuda",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/models/baseline/seed20261009/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_full_baseline_seed20261009_eval02_retry1/metrics_official_02.json"
+      ],
+      "kind": "evaluate",
+      "depends": []
+    }
+  ],
+  "cloud_note": "\u4e91\u7aef\u957f\u4efb\u52a1\u987b nohup \u540e\u53f0\uff1b\u542f\u52a8\u524d/\u8bad\u7ec3\u4e2d/\u7ed3\u675f\u540e\u68c0\u67e5 nvidia-smi",
+  "performance_conclusion": "\u9700\u53cc\u5e8f\u5217\u5b98\u65b9 DET/SEG/TRA \u4e0e\u5f53\u524d\u8bbe\u7f6e\u91cd\u590d\u5b9e\u9a8c\u566a\u58f0\u5730\u677f",
+  "recovery_of": "P7_ideas_full_baseline_seed20261009_eval02",
+  "reason": "disk full during uncompressed export; completed results retained"
+}

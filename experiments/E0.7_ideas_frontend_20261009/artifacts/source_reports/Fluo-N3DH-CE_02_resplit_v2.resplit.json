@@ -1,0 +1,1346 @@
+{
+  "input": "data/interim/Fluo-N3DH-CE_02_rebuild.h5",
+  "output": "data/interim/Fluo-N3DH-CE_02_resplit_v2.h5",
+  "k": 1.6,
+  "identity": {
+    "gt_sha256": "d5e454b4ac7accb1dfdb68f640224ed48ee5ede65c015a51a172efa47c229513",
+    "img_dir": "/root/autodl-tmp/ctc/Fluo-N3DH-CE/02",
+    "input_sha256": "014b8639187ff8a6e9ec36f144bbae7aa4ca3d771d37841a0aad8ae9038a63da",
+    "k": 1.6,
+    "version": "resplit-background-v2"
+  },
+  "frames": [
+    {
+      "frame": 0,
+      "before": 2,
+      "after": 2,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 1,
+      "before": 2,
+      "after": 2,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 2,
+      "before": 3,
+      "after": 3,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 3,
+      "before": 114,
+      "after": 134,
+      "foreground_removed": 1619,
+      "multi_identity": 0
+    },
+    {
+      "frame": 4,
+      "before": 7,
+      "after": 7,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 5,
+      "before": 4,
+      "after": 4,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 6,
+      "before": 4,
+      "after": 4,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 7,
+      "before": 5,
+      "after": 5,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 8,
+      "before": 4,
+      "after": 4,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 9,
+      "before": 4,
+      "after": 4,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 10,
+      "before": 4,
+      "after": 4,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 11,
+      "before": 4,
+      "after": 4,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 12,
+      "before": 5,
+      "after": 5,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 13,
+      "before": 5,
+      "after": 5,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 14,
+      "before": 5,
+      "after": 5,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 15,
+      "before": 9,
+      "after": 9,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 16,
+      "before": 9,
+      "after": 9,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 17,
+      "before": 9,
+      "after": 9,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 18,
+      "before": 9,
+      "after": 9,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 19,
+      "before": 11,
+      "after": 11,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 20,
+      "before": 9,
+      "after": 9,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 21,
+      "before": 9,
+      "after": 9,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 22,
+      "before": 8,
+      "after": 8,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 23,
+      "before": 8,
+      "after": 8,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 24,
+      "before": 8,
+      "after": 8,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 25,
+      "before": 8,
+      "after": 8,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 26,
+      "before": 8,
+      "after": 8,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 27,
+      "before": 12,
+      "after": 12,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 28,
+      "before": 13,
+      "after": 13,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 29,
+      "before": 14,
+      "after": 14,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 30,
+      "before": 14,
+      "after": 14,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 31,
+      "before": 17,
+      "after": 17,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 32,
+      "before": 16,
+      "after": 16,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 33,
+      "before": 17,
+      "after": 17,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 34,
+      "before": 17,
+      "after": 17,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 35,
+      "before": 15,
+      "after": 15,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 36,
+      "before": 17,
+      "after": 17,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 37,
+      "before": 16,
+      "after": 16,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 38,
+      "before": 18,
+      "after": 18,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 39,
+      "before": 17,
+      "after": 17,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 40,
+      "before": 16,
+      "after": 16,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 41,
+      "before": 25,
+      "after": 25,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 42,
+      "before": 24,
+      "after": 24,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 43,
+      "before": 32,
+      "after": 32,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 44,
+      "before": 28,
+      "after": 28,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 45,
+      "before": 27,
+      "after": 27,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 46,
+      "before": 26,
+      "after": 26,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 47,
+      "before": 28,
+      "after": 28,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 48,
+      "before": 27,
+      "after": 27,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 49,
+      "before": 27,
+      "after": 27,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 50,
+      "before": 28,
+      "after": 28,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 51,
+      "before": 29,
+      "after": 29,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 52,
+      "before": 30,
+      "after": 30,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 53,
+      "before": 29,
+      "after": 29,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 54,
+      "before": 32,
+      "after": 32,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 55,
+      "before": 28,
+      "after": 28,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 56,
+      "before": 29,
+      "after": 29,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 57,
+      "before": 28,
+      "after": 28,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 58,
+      "before": 29,
+      "after": 29,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 59,
+      "before": 28,
+      "after": 28,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 60,
+      "before": 30,
+      "after": 30,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 61,
+      "before": 30,
+      "after": 30,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 62,
+      "before": 34,
+      "after": 34,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 63,
+      "before": 37,
+      "after": 37,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 64,
+      "before": 42,
+      "after": 42,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 65,
+      "before": 50,
+      "after": 50,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 66,
+      "before": 48,
+      "after": 49,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 67,
+      "before": 55,
+      "after": 55,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 68,
+      "before": 53,
+      "after": 53,
+      "foreground_removed": 0,
+      "multi_identity": 1
+    },
+    {
+      "frame": 69,
+      "before": 52,
+      "after": 52,
+      "foreground_removed": 0,
+      "multi_identity": 1
+    },
+    {
+      "frame": 70,
+      "before": 57,
+      "after": 57,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 71,
+      "before": 59,
+      "after": 59,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 72,
+      "before": 58,
+      "after": 58,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 73,
+      "before": 57,
+      "after": 57,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 74,
+      "before": 56,
+      "after": 56,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 75,
+      "before": 58,
+      "after": 58,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 76,
+      "before": 58,
+      "after": 59,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 77,
+      "before": 62,
+      "after": 62,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 78,
+      "before": 65,
+      "after": 65,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 79,
+      "before": 60,
+      "after": 60,
+      "foreground_removed": 0,
+      "multi_identity": 1
+    },
+    {
+      "frame": 80,
+      "before": 60,
+      "after": 60,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 81,
+      "before": 63,
+      "after": 63,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 82,
+      "before": 62,
+      "after": 62,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 83,
+      "before": 62,
+      "after": 62,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 84,
+      "before": 60,
+      "after": 60,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 85,
+      "before": 63,
+      "after": 63,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 86,
+      "before": 62,
+      "after": 63,
+      "foreground_removed": 0,
+      "multi_identity": 1
+    },
+    {
+      "frame": 87,
+      "before": 63,
+      "after": 63,
+      "foreground_removed": 0,
+      "multi_identity": 1
+    },
+    {
+      "frame": 88,
+      "before": 70,
+      "after": 71,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 89,
+      "before": 76,
+      "after": 80,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 90,
+      "before": 92,
+      "after": 93,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 91,
+      "before": 114,
+      "after": 122,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 92,
+      "before": 108,
+      "after": 111,
+      "foreground_removed": 258,
+      "multi_identity": 0
+    },
+    {
+      "frame": 93,
+      "before": 112,
+      "after": 112,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 94,
+      "before": 109,
+      "after": 109,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 95,
+      "before": 100,
+      "after": 102,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 96,
+      "before": 111,
+      "after": 112,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 97,
+      "before": 115,
+      "after": 118,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 98,
+      "before": 112,
+      "after": 116,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 99,
+      "before": 103,
+      "after": 111,
+      "foreground_removed": 0,
+      "multi_identity": 1
+    },
+    {
+      "frame": 100,
+      "before": 106,
+      "after": 106,
+      "foreground_removed": 0,
+      "multi_identity": 1
+    },
+    {
+      "frame": 101,
+      "before": 116,
+      "after": 116,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 102,
+      "before": 112,
+      "after": 112,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 103,
+      "before": 111,
+      "after": 112,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 104,
+      "before": 113,
+      "after": 113,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 105,
+      "before": 112,
+      "after": 112,
+      "foreground_removed": 0,
+      "multi_identity": 1
+    },
+    {
+      "frame": 106,
+      "before": 113,
+      "after": 113,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 107,
+      "before": 109,
+      "after": 109,
+      "foreground_removed": 0,
+      "multi_identity": 2
+    },
+    {
+      "frame": 108,
+      "before": 108,
+      "after": 108,
+      "foreground_removed": 0,
+      "multi_identity": 1
+    },
+    {
+      "frame": 109,
+      "before": 110,
+      "after": 114,
+      "foreground_removed": 153,
+      "multi_identity": 1
+    },
+    {
+      "frame": 110,
+      "before": 109,
+      "after": 111,
+      "foreground_removed": 0,
+      "multi_identity": 2
+    },
+    {
+      "frame": 111,
+      "before": 123,
+      "after": 124,
+      "foreground_removed": 0,
+      "multi_identity": 1
+    },
+    {
+      "frame": 112,
+      "before": 112,
+      "after": 112,
+      "foreground_removed": 0,
+      "multi_identity": 2
+    },
+    {
+      "frame": 113,
+      "before": 119,
+      "after": 120,
+      "foreground_removed": 0,
+      "multi_identity": 2
+    },
+    {
+      "frame": 114,
+      "before": 113,
+      "after": 118,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 115,
+      "before": 117,
+      "after": 118,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 116,
+      "before": 122,
+      "after": 123,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 117,
+      "before": 132,
+      "after": 133,
+      "foreground_removed": 0,
+      "multi_identity": 1
+    },
+    {
+      "frame": 118,
+      "before": 126,
+      "after": 130,
+      "foreground_removed": 0,
+      "multi_identity": 3
+    },
+    {
+      "frame": 119,
+      "before": 139,
+      "after": 147,
+      "foreground_removed": 0,
+      "multi_identity": 3
+    },
+    {
+      "frame": 120,
+      "before": 149,
+      "after": 160,
+      "foreground_removed": 0,
+      "multi_identity": 1
+    },
+    {
+      "frame": 121,
+      "before": 148,
+      "after": 154,
+      "foreground_removed": 0,
+      "multi_identity": 4
+    },
+    {
+      "frame": 122,
+      "before": 162,
+      "after": 170,
+      "foreground_removed": 0,
+      "multi_identity": 2
+    },
+    {
+      "frame": 123,
+      "before": 172,
+      "after": 188,
+      "foreground_removed": 0,
+      "multi_identity": 2
+    },
+    {
+      "frame": 124,
+      "before": 176,
+      "after": 189,
+      "foreground_removed": 0,
+      "multi_identity": 5
+    },
+    {
+      "frame": 125,
+      "before": 177,
+      "after": 193,
+      "foreground_removed": 294,
+      "multi_identity": 4
+    },
+    {
+      "frame": 126,
+      "before": 182,
+      "after": 200,
+      "foreground_removed": 0,
+      "multi_identity": 5
+    },
+    {
+      "frame": 127,
+      "before": 187,
+      "after": 199,
+      "foreground_removed": 0,
+      "multi_identity": 4
+    },
+    {
+      "frame": 128,
+      "before": 189,
+      "after": 207,
+      "foreground_removed": 0,
+      "multi_identity": 5
+    },
+    {
+      "frame": 129,
+      "before": 195,
+      "after": 214,
+      "foreground_removed": 0,
+      "multi_identity": 0
+    },
+    {
+      "frame": 130,
+      "before": 193,
+      "after": 208,
+      "foreground_removed": 0,
+      "multi_identity": 4
+    },
+    {
+      "frame": 131,
+      "before": 195,
+      "after": 206,
+      "foreground_removed": 0,
+      "multi_identity": 6
+    },
+    {
+      "frame": 132,
+      "before": 201,
+      "after": 215,
+      "foreground_removed": 0,
+      "multi_identity": 4
+    },
+    {
+      "frame": 133,
+      "before": 199,
+      "after": 209,
+      "foreground_removed": 0,
+      "multi_identity": 4
+    },
+    {
+      "frame": 134,
+      "before": 204,
+      "after": 205,
+      "foreground_removed": 0,
+      "multi_identity": 4
+    },
+    {
+      "frame": 135,
+      "before": 190,
+      "after": 198,
+      "foreground_removed": 0,
+      "multi_identity": 7
+    },
+    {
+      "frame": 136,
+      "before": 204,
+      "after": 207,
+      "foreground_removed": 0,
+      "multi_identity": 6
+    },
+    {
+      "frame": 137,
+      "before": 208,
+      "after": 215,
+      "foreground_removed": 0,
+      "multi_identity": 4
+    },
+    {
+      "frame": 138,
+      "before": 188,
+      "after": 202,
+      "foreground_removed": 0,
+      "multi_identity": 5
+    },
+    {
+      "frame": 139,
+      "before": 201,
+      "after": 216,
+      "foreground_removed": 0,
+      "multi_identity": 3
+    },
+    {
+      "frame": 140,
+      "before": 210,
+      "after": 216,
+      "foreground_removed": 0,
+      "multi_identity": 1
+    },
+    {
+      "frame": 141,
+      "before": 200,
+      "after": 203,
+      "foreground_removed": 0,
+      "multi_identity": 5
+    },
+    {
+      "frame": 142,
+      "before": 202,
+      "after": 210,
+      "foreground_removed": 0,
+      "multi_identity": 3
+    },
+    {
+      "frame": 143,
+      "before": 206,
+      "after": 214,
+      "foreground_removed": 0,
+      "multi_identity": 5
+    },
+    {
+      "frame": 144,
+      "before": 206,
+      "after": 213,
+      "foreground_removed": 0,
+      "multi_identity": 3
+    },
+    {
+      "frame": 145,
+      "before": 196,
+      "after": 206,
+      "foreground_removed": 0,
+      "multi_identity": 7
+    },
+    {
+      "frame": 146,
+      "before": 210,
+      "after": 218,
+      "foreground_removed": 33,
+      "multi_identity": 5
+    },
+    {
+      "frame": 147,
+      "before": 200,
+      "after": 209,
+      "foreground_removed": 0,
+      "multi_identity": 6
+    },
+    {
+      "frame": 148,
+      "before": 193,
+      "after": 204,
+      "foreground_removed": 0,
+      "multi_identity": 6
+    },
+    {
+      "frame": 149,
+      "before": 198,
+      "after": 213,
+      "foreground_removed": 0,
+      "multi_identity": 9
+    },
+    {
+      "frame": 150,
+      "before": 207,
+      "after": 215,
+      "foreground_removed": 0,
+      "multi_identity": 10
+    },
+    {
+      "frame": 151,
+      "before": 204,
+      "after": 209,
+      "foreground_removed": 0,
+      "multi_identity": 9
+    },
+    {
+      "frame": 152,
+      "before": 217,
+      "after": 231,
+      "foreground_removed": 266,
+      "multi_identity": 8
+    },
+    {
+      "frame": 153,
+      "before": 214,
+      "after": 238,
+      "foreground_removed": 0,
+      "multi_identity": 7
+    },
+    {
+      "frame": 154,
+      "before": 220,
+      "after": 241,
+      "foreground_removed": 10,
+      "multi_identity": 6
+    },
+    {
+      "frame": 155,
+      "before": 222,
+      "after": 250,
+      "foreground_removed": 144,
+      "multi_identity": 7
+    },
+    {
+      "frame": 156,
+      "before": 247,
+      "after": 271,
+      "foreground_removed": 0,
+      "multi_identity": 3
+    },
+    {
+      "frame": 157,
+      "before": 246,
+      "after": 270,
+      "foreground_removed": 247,
+      "multi_identity": 10
+    },
+    {
+      "frame": 158,
+      "before": 256,
+      "after": 287,
+      "foreground_removed": 45,
+      "multi_identity": 9
+    },
+    {
+      "frame": 159,
+      "before": 266,
+      "after": 292,
+      "foreground_removed": 0,
+      "multi_identity": 5
+    },
+    {
+      "frame": 160,
+      "before": 266,
+      "after": 289,
+      "foreground_removed": 0,
+      "multi_identity": 13
+    },
+    {
+      "frame": 161,
+      "before": 274,
+      "after": 296,
+      "foreground_removed": 0,
+      "multi_identity": 15
+    },
+    {
+      "frame": 162,
+      "before": 289,
+      "after": 309,
+      "foreground_removed": 77,
+      "multi_identity": 14
+    },
+    {
+      "frame": 163,
+      "before": 318,
+      "after": 344,
+      "foreground_removed": 151,
+      "multi_identity": 10
+    },
+    {
+      "frame": 164,
+      "before": 321,
+      "after": 352,
+      "foreground_removed": 136,
+      "multi_identity": 12
+    },
+    {
+      "frame": 165,
+      "before": 319,
+      "after": 346,
+      "foreground_removed": 285,
+      "multi_identity": 11
+    },
+    {
+      "frame": 166,
+      "before": 324,
+      "after": 371,
+      "foreground_removed": 815,
+      "multi_identity": 12
+    },
+    {
+      "frame": 167,
+      "before": 338,
+      "after": 372,
+      "foreground_removed": 379,
+      "multi_identity": 19
+    },
+    {
+      "frame": 168,
+      "before": 317,
+      "after": 376,
+      "foreground_removed": 70,
+      "multi_identity": 14
+    },
+    {
+      "frame": 169,
+      "before": 335,
+      "after": 371,
+      "foreground_removed": 0,
+      "multi_identity": 19
+    },
+    {
+      "frame": 170,
+      "before": 330,
+      "after": 368,
+      "foreground_removed": 223,
+      "multi_identity": 26
+    },
+    {
+      "frame": 171,
+      "before": 343,
+      "after": 390,
+      "foreground_removed": 633,
+      "multi_identity": 19
+    },
+    {
+      "frame": 172,
+      "before": 349,
+      "after": 373,
+      "foreground_removed": 0,
+      "multi_identity": 16
+    },
+    {
+      "frame": 173,
+      "before": 360,
+      "after": 386,
+      "foreground_removed": 66,
+      "multi_identity": 19
+    },
+    {
+      "frame": 174,
+      "before": 366,
+      "after": 398,
+      "foreground_removed": 233,
+      "multi_identity": 13
+    },
+    {
+      "frame": 175,
+      "before": 344,
+      "after": 382,
+      "foreground_removed": 169,
+      "multi_identity": 21
+    },
+    {
+      "frame": 176,
+      "before": 380,
+      "after": 401,
+      "foreground_removed": 0,
+      "multi_identity": 19
+    },
+    {
+      "frame": 177,
+      "before": 380,
+      "after": 404,
+      "foreground_removed": 0,
+      "multi_identity": 20
+    },
+    {
+      "frame": 178,
+      "before": 358,
+      "after": 403,
+      "foreground_removed": 458,
+      "multi_identity": 20
+    },
+    {
+      "frame": 179,
+      "before": 381,
+      "after": 407,
+      "foreground_removed": 466,
+      "multi_identity": 17
+    },
+    {
+      "frame": 180,
+      "before": 366,
+      "after": 400,
+      "foreground_removed": 297,
+      "multi_identity": 18
+    },
+    {
+      "frame": 181,
+      "before": 362,
+      "after": 400,
+      "foreground_removed": 0,
+      "multi_identity": 23
+    },
+    {
+      "frame": 182,
+      "before": 363,
+      "after": 388,
+      "foreground_removed": 0,
+      "multi_identity": 19
+    },
+    {
+      "frame": 183,
+      "before": 366,
+      "after": 395,
+      "foreground_removed": 0,
+      "multi_identity": 17
+    },
+    {
+      "frame": 184,
+      "before": 371,
+      "after": 403,
+      "foreground_removed": 360,
+      "multi_identity": 21
+    },
+    {
+      "frame": 185,
+      "before": 374,
+      "after": 402,
+      "foreground_removed": 0,
+      "multi_identity": 24
+    },
+    {
+      "frame": 186,
+      "before": 365,
+      "after": 400,
+      "foreground_removed": 0,
+      "multi_identity": 15
+    },
+    {
+      "frame": 187,
+      "before": 377,
+      "after": 405,
+      "foreground_removed": 513,
+      "multi_identity": 15
+    },
+    {
+      "frame": 188,
+      "before": 383,
+      "after": 409,
+      "foreground_removed": 0,
+      "multi_identity": 17
+    },
+    {
+      "frame": 189,
+      "before": 388,
+      "after": 417,
+      "foreground_removed": 733,
+      "multi_identity": 18
+    }
+  ],
+  "output_sha256": "54fdfd79cda6fea982c4e0d5387974c1a4cecf6f5c1318a051c536313e9f978e",
+  "elapsed_s": 247.47
+}

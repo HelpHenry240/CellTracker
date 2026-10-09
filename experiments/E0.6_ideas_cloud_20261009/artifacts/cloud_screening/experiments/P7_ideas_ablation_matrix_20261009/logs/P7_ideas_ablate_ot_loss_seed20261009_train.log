@@ -1,0 +1,82 @@
+[14:17:48] experiment P7_ideas_ablate_ot_loss_seed20261009_train start: ideas GNN 独立训练
+[epoch   1] P=0.8180 R=0.8560 F1=0.8366
+[epoch   2] P=0.8215 R=0.8554 F1=0.8381
+[epoch   3] P=0.7772 R=0.9078 F1=0.8374
+[epoch   4] P=0.8013 R=0.9039 F1=0.8495
+[epoch   5] P=0.9193 R=0.7929 F1=0.8514
+[epoch   6] P=0.9187 R=0.8165 F1=0.8646
+[epoch   7] P=0.9159 R=0.8276 F1=0.8695
+[epoch   8] P=0.9562 R=0.7998 F1=0.8711
+[epoch   9] P=0.9619 R=0.7979 F1=0.8723
+[epoch  10] P=0.9535 R=0.8315 F1=0.8883
+[epoch  11] P=0.9642 R=0.7967 F1=0.8725
+[epoch  12] P=0.9043 R=0.8834 F1=0.8937
+[epoch  13] P=0.9213 R=0.8845 F1=0.9025
+[epoch  14] P=0.9714 R=0.7931 F1=0.8733
+[epoch  15] P=0.9423 R=0.8479 F1=0.8926
+[epoch  16] P=0.9545 R=0.8298 F1=0.8878
+[epoch  17] P=0.9618 R=0.8324 F1=0.8924
+[epoch  18] P=0.9046 R=0.8888 F1=0.8966
+[epoch  19] P=0.9686 R=0.8222 F1=0.8894
+[epoch  20] P=0.9164 R=0.8776 F1=0.8966
+[epoch  21] P=0.9622 R=0.8276 F1=0.8898
+[epoch  22] P=0.9244 R=0.8440 F1=0.8824
+[epoch  23] P=0.9591 R=0.8489 F1=0.9007
+[epoch  24] P=0.9353 R=0.8783 F1=0.9059
+[epoch  25] P=0.9727 R=0.8015 F1=0.8789
+[epoch  26] P=0.9396 R=0.8799 F1=0.9087
+[epoch  27] P=0.9607 R=0.8580 F1=0.9064
+[epoch  28] P=0.9479 R=0.8347 F1=0.8877
+[epoch  29] P=0.9463 R=0.8617 F1=0.9020
+[epoch  30] P=0.9487 R=0.8617 F1=0.9032
+[epoch  31] P=0.9173 R=0.9138 F1=0.9155
+[epoch  32] P=0.9780 R=0.7932 F1=0.8760
+[epoch  33] P=0.9371 R=0.8664 F1=0.9004
+[epoch  34] P=0.9463 R=0.8635 F1=0.9030
+[epoch  35] P=0.9488 R=0.8776 F1=0.9118
+[epoch  36] P=0.9337 R=0.8674 F1=0.8993
+[epoch  37] P=0.9379 R=0.8984 F1=0.9177
+[epoch  38] P=0.9581 R=0.8571 F1=0.9048
+[epoch  39] P=0.9615 R=0.8401 F1=0.8967
+[epoch  40] P=0.9620 R=0.8502 F1=0.9026
+[epoch  41] P=0.9304 R=0.9004 F1=0.9152
+[epoch  42] P=0.9434 R=0.8617 F1=0.9007
+[epoch  43] P=0.9687 R=0.8255 F1=0.8914
+[epoch  44] P=0.9488 R=0.8622 F1=0.9034
+[epoch  45] P=0.9542 R=0.8463 F1=0.8970
+[epoch  46] P=0.9478 R=0.8465 F1=0.8943
+[epoch  47] P=0.9433 R=0.8755 F1=0.9081
+[epoch  48] P=0.9651 R=0.8355 F1=0.8956
+[epoch  49] P=0.9232 R=0.9058 F1=0.9144
+[epoch  50] P=0.9664 R=0.8438 F1=0.9010
+[epoch  51] P=0.9567 R=0.8527 F1=0.9017
+[epoch  52] P=0.9428 R=0.8854 F1=0.9132
+[epoch  53] P=0.9656 R=0.8323 F1=0.8940
+[epoch  54] P=0.9574 R=0.8567 F1=0.9043
+[epoch  55] P=0.9613 R=0.8336 F1=0.8929
+[epoch  56] P=0.9596 R=0.8299 F1=0.8901
+[epoch  57] P=0.9497 R=0.8715 F1=0.9089
+[epoch  58] P=0.9546 R=0.8531 F1=0.9010
+[epoch  59] P=0.9415 R=0.8798 F1=0.9096
+[epoch  60] P=0.9553 R=0.8526 F1=0.9010
+[14:18:29] metrics -> /root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_ot_loss_seed20261009_train/metrics.json
+[14:18:29] experiment P7_ideas_ablate_ot_loss_seed20261009_train finished: done
+{
+  "out_dir": "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/ot_loss/seed20261009",
+  "best_f1": 0.9177120162735506,
+  "node_dim": 133,
+  "edge_dim": 10,
+  "split_mode": "block",
+  "n_train": 152,
+  "n_val": 38,
+  "checkpoints": {
+    "best.pt": {
+      "bytes": 1173022,
+      "sha256": "3135469ca8fb9bbb5601af64a71fabfe6752feb963d60bbb6f1550eb42e72ba7"
+    },
+    "last.pt": {
+      "bytes": 1185470,
+      "sha256": "afa8005c35ce7eec2f6e9eac0dc13d7c7a2a5f420ff8a8e886e2ebe7fdc5b900"
+    }
+  }
+}

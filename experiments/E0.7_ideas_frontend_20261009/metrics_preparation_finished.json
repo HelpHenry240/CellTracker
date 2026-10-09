@@ -1,0 +1,86 @@
+{
+  "status": "frontend_and_frozen_encoder_complete",
+  "source_counts": {
+    "01_rebuild": {
+      "gt_nodes": 23802,
+      "pred_nodes": 23972,
+      "covered_gt_nodes": 23715,
+      "unmatched_pred_nodes": 2456,
+      "multi_identity_pred_nodes": 1946,
+      "merged_identity_excess": 2199,
+      "missing_gt_nodes": 87,
+      "gt_identity_coverage": 0.9963448449710108
+    },
+    "01_resplit_v2": {
+      "gt_nodes": 23802,
+      "pred_nodes": 25491,
+      "covered_gt_nodes": 23688,
+      "unmatched_pred_nodes": 3068,
+      "multi_identity_pred_nodes": 1199,
+      "merged_identity_excess": 1265,
+      "missing_gt_nodes": 114,
+      "gt_identity_coverage": 0.9952104865137383
+    },
+    "02_rebuild": {
+      "gt_nodes": 22418,
+      "pred_nodes": 24537,
+      "covered_gt_nodes": 22210,
+      "unmatched_pred_nodes": 3833,
+      "multi_identity_pred_nodes": 1386,
+      "merged_identity_excess": 1506,
+      "missing_gt_nodes": 208,
+      "gt_identity_coverage": 0.9907217414577572
+    },
+    "02_resplit_v2": {
+      "gt_nodes": 22418,
+      "pred_nodes": 26099,
+      "covered_gt_nodes": 22180,
+      "unmatched_pred_nodes": 4678,
+      "multi_identity_pred_nodes": 745,
+      "merged_identity_excess": 759,
+      "missing_gt_nodes": 238,
+      "gt_identity_coverage": 0.9893835310910876
+    }
+  },
+  "frozen_model": {
+    "before_sha256": "f5388fb1eb4159b26f6976882f2204072378e7c15938a6a68f00aa0d95defdfd",
+    "after_sha256": "f5388fb1eb4159b26f6976882f2204072378e7c15938a6a68f00aa0d95defdfd",
+    "unchanged": true,
+    "unet_retrained": false
+  },
+  "encoders": {
+    "01": {
+      "schema": "encoder_centroid_v1",
+      "model_sha256": "f5388fb1eb4159b26f6976882f2204072378e7c15938a6a68f00aa0d95defdfd",
+      "detection_sha256": "9fd49114e96a50b72008a2cd7b19ea2020beddeee489c97233423602c171a603",
+      "stage": 2,
+      "seq": "01",
+      "aggregation": "mean_of_overlapping_tile_centroid_samples",
+      "feature_dim": 128
+    },
+    "02": {
+      "schema": "encoder_centroid_v1",
+      "model_sha256": "f5388fb1eb4159b26f6976882f2204072378e7c15938a6a68f00aa0d95defdfd",
+      "detection_sha256": "54fdfd79cda6fea982c4e0d5387974c1a4cecf6f5c1318a051c536313e9f978e",
+      "stage": 2,
+      "seq": "02",
+      "aggregation": "mean_of_overlapping_tile_centroid_samples",
+      "feature_dim": 128
+    }
+  },
+  "resplit": {
+    "01": {
+      "n_frames": 195,
+      "elapsed_s": 280.0,
+      "output_sha256": "9fd49114e96a50b72008a2cd7b19ea2020beddeee489c97233423602c171a603",
+      "foreground_removed_total": 6509
+    },
+    "02": {
+      "n_frames": 190,
+      "elapsed_s": 247.47,
+      "output_sha256": "54fdfd79cda6fea982c4e0d5387974c1a4cecf6f5c1318a051c536313e9f978e",
+      "foreground_removed_total": 9133
+    }
+  },
+  "official_comparison": "E0.8 metrics_final.json; not inferred from these diagnostics"
+}

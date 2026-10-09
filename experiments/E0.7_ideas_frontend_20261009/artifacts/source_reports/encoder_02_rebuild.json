@@ -1,0 +1,9 @@
+{
+  "schema": "encoder_centroid_v1",
+  "model_sha256": "f5388fb1eb4159b26f6976882f2204072378e7c15938a6a68f00aa0d95defdfd",
+  "detection_sha256": "014b8639187ff8a6e9ec36f144bbae7aa4ca3d771d37841a0aad8ae9038a63da",
+  "stage": 2,
+  "seq": "02",
+  "aggregation": "mean_of_overlapping_tile_centroid_samples",
+  "feature_dim": 128
+}

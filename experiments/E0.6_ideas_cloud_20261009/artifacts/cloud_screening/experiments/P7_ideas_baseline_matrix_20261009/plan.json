@@ -1,0 +1,243 @@
+{
+  "schema": "ideas-ablation-v1",
+  "dataset": "Fluo-N3DH-CE",
+  "protocol": "seq01 train / seq02 held out",
+  "seeds": [
+    20261008,
+    20261009
+  ],
+  "variants": [
+    {
+      "module": "baseline",
+      "direction": "baseline"
+    }
+  ],
+  "official": true,
+  "jobs": [
+    {
+      "id": "P7_ideas_full_baseline_build01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_full_baseline_build01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/configs/baseline_01.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/cache/baseline/01",
+        "--device",
+        "cuda",
+        "--dump-graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/graphs/baseline",
+        "--build-only"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/graphs/baseline/manifest.json"
+      ],
+      "kind": "build",
+      "depends": []
+    },
+    {
+      "id": "P7_ideas_full_baseline_seed20261008_train",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/train_paper_gnn.py",
+        "--graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/graphs/baseline",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/models/baseline/seed20261008",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/configs/baseline_01.yaml",
+        "--epochs",
+        "60",
+        "--seed",
+        "20261008",
+        "--device",
+        "cuda"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/models/baseline/seed20261008/best.pt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/models/baseline/seed20261008/train_summary.json"
+      ],
+      "kind": "train",
+      "depends": [
+        "P7_ideas_full_baseline_build01"
+      ]
+    },
+    {
+      "id": "P7_ideas_full_baseline_seed20261008_eval01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_full_baseline_seed20261008_eval01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/configs/baseline_01.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/cache/baseline/01",
+        "--device",
+        "cuda",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/models/baseline/seed20261008/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/01_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_full_baseline_seed20261008_eval01/metrics_official_01.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_full_baseline_seed20261008_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_full_baseline_seed20261008_eval02",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_02_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_02.h5",
+        "--seq",
+        "02",
+        "--exp-id",
+        "P7_ideas_full_baseline_seed20261008_eval02",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/configs/baseline_02.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/cache/baseline/02",
+        "--device",
+        "cuda",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/models/baseline/seed20261008/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_full_baseline_seed20261008_eval02/metrics_official_02.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_full_baseline_seed20261008_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_full_baseline_seed20261009_train",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/train_paper_gnn.py",
+        "--graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/graphs/baseline",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/models/baseline/seed20261009",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/configs/baseline_01.yaml",
+        "--epochs",
+        "60",
+        "--seed",
+        "20261009",
+        "--device",
+        "cuda"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/models/baseline/seed20261009/best.pt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/models/baseline/seed20261009/train_summary.json"
+      ],
+      "kind": "train",
+      "depends": [
+        "P7_ideas_full_baseline_build01"
+      ]
+    },
+    {
+      "id": "P7_ideas_full_baseline_seed20261009_eval01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_full_baseline_seed20261009_eval01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/configs/baseline_01.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/cache/baseline/01",
+        "--device",
+        "cuda",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/models/baseline/seed20261009/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/01_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_full_baseline_seed20261009_eval01/metrics_official_01.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_full_baseline_seed20261009_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_full_baseline_seed20261009_eval02",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_02_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_02.h5",
+        "--seq",
+        "02",
+        "--exp-id",
+        "P7_ideas_full_baseline_seed20261009_eval02",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/configs/baseline_02.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/cache/baseline/02",
+        "--device",
+        "cuda",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_baseline_matrix_20261009/models/baseline/seed20261009/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_full_baseline_seed20261009_eval02/metrics_official_02.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_full_baseline_seed20261009_train"
+      ]
+    }
+  ],
+  "cloud_note": "云端长任务须 nohup 后台；启动前/训练中/结束后检查 nvidia-smi",
+  "performance_conclusion": "需双序列官方 DET/SEG/TRA 与当前设置重复实验噪声地板"
+}

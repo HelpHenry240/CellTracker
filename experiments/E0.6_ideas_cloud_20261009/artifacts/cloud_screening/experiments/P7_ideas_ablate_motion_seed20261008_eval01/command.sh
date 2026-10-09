@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../.."
+# 复现命令（自动记录）
+/root/autodl-tmp/nnunet/venv/bin/python /root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py --h5 data/interim/Fluo-N3DH-CE_01_rebuild.h5 --gt-h5 data/interim/Fluo-N3DH-CE_01.h5 --seq 01 --exp-id P7_ideas_ablate_motion_seed20261008_eval01 --config /root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/motion_calibrated.yaml --cache-dir /root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/motion/01 --device cuda --set node.encoder_feat_path=data/interim/encoder_01_rebuild.npz --ckpt /root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/motion/seed20261008/best.pt --official --official-tools /root/EvaluationSoftware/Linux --official-gt-dir /root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/01_GT

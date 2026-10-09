@@ -1,0 +1,19 @@
+{
+  "out_dir": "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/fgw/seed20261009",
+  "best_f1": 0.8665129924559932,
+  "node_dim": 133,
+  "edge_dim": 10,
+  "split_mode": "block",
+  "n_train": 152,
+  "n_val": 38,
+  "checkpoints": {
+    "best.pt": {
+      "bytes": 1175006,
+      "sha256": "a3f1776bb5dcb20bedd591df07df610d4fa0da47c51d4beea70bcaf130458105"
+    },
+    "last.pt": {
+      "bytes": 1185406,
+      "sha256": "5a8e9f3bc161343f013d668b80b11900382c070d0c78f1ceefc344fb5a359409"
+    }
+  }
+}

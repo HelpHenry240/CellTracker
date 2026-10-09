@@ -1,0 +1,3 @@
+[14:10:58] experiment P7_ideas_ablate_ot_loss_seed20261008_eval01 start: ideas pipeline 重建链路
+[14:12:55] metrics -> /root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_ot_loss_seed20261008_eval01/metrics.json
+[14:14:09] experiment P7_ideas_ablate_ot_loss_seed20261008_eval01 finished: done

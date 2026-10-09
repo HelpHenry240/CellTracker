@@ -1,0 +1,19 @@
+{
+  "out_dir": "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/isolated/seed20261009",
+  "best_f1": 0.8695425653850162,
+  "node_dim": 133,
+  "edge_dim": 10,
+  "split_mode": "block",
+  "n_train": 152,
+  "n_val": 38,
+  "checkpoints": {
+    "best.pt": {
+      "bytes": 1175006,
+      "sha256": "c7539a6fa34f477b55dfe843dfead5b9fdc49d244f300137e14d353caa826ac9"
+    },
+    "last.pt": {
+      "bytes": 1185406,
+      "sha256": "634b422c2af89bffe5b20fa18b2c02ff1779aacbc7d15576d4a7ac1e0538daa7"
+    }
+  }
+}

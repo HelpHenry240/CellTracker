@@ -1,0 +1,3 @@
+[12:47:41] experiment P7_ideas_ablate_isolated_seed20261008_train start: ideas GNN 独立训练
+[12:48:22] metrics -> /root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_isolated_seed20261008_train/metrics.json
+[12:48:22] experiment P7_ideas_ablate_isolated_seed20261008_train finished: done

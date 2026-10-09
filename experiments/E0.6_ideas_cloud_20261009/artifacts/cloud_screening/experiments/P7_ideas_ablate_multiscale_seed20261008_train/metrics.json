@@ -1,0 +1,19 @@
+{
+  "out_dir": "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/multiscale/seed20261008",
+  "best_f1": 0.8640184951660361,
+  "node_dim": 133,
+  "edge_dim": 10,
+  "split_mode": "block",
+  "n_train": 152,
+  "n_val": 38,
+  "checkpoints": {
+    "best.pt": {
+      "bytes": 1176094,
+      "sha256": "8db70e2cf5475760301a487077c28986a626ac713f27aaaa11217553847a0659"
+    },
+    "last.pt": {
+      "bytes": 1185406,
+      "sha256": "297b8d781a75342b1c03dc821d7a0526148d1fa4ea68c8451729e21d83aee0d3"
+    }
+  }
+}

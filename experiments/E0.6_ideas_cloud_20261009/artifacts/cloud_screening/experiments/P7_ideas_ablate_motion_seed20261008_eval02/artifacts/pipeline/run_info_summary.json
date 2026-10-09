@@ -1,0 +1,267 @@
+{
+  "schema": "ideas-v2",
+  "n_frames": 190,
+  "frames": {
+    "item_count": 190,
+    "omitted_in_summary": true
+  },
+  "decision": "gnn",
+  "gnn_enabled": true,
+  "detection_source": "nnunet_pred",
+  "spacing_zyx": [
+    1.0,
+    0.09000000357627869,
+    0.09000000357627869
+  ],
+  "h5": "data/interim/Fluo-N3DH-CE_02_rebuild.h5",
+  "gt_h5": "data/interim/Fluo-N3DH-CE_02.h5",
+  "input_sha256": "014b8639187ff8a6e9ec36f144bbae7aa4ca3d771d37841a0aad8ae9038a63da",
+  "input_contract": {
+    "signature": "b704d42097222b079fb826fc9993fa38deb74a2d39f1c03c7e7834cc44bc7391",
+    "definition": {
+      "measure": {
+        "mass_mode": "volume",
+        "knn_k": 6,
+        "sigma_x": null,
+        "sigma_f": null,
+        "spacing_zyx": [
+          1.0,
+          0.09,
+          0.09
+        ],
+        "structure_mode": "full"
+      },
+      "coupling": {
+        "enabled": true,
+        "alpha": 1.0,
+        "alpha_pred": 0.0,
+        "beta": 1.0,
+        "sigma_s": null,
+        "r_max": 6.4,
+        "eta": 0.3,
+        "eps_rel": 1.0,
+        "eps": null,
+        "tau_a": 1.0,
+        "tau_b": 1.0,
+        "sinkhorn_iters": 1000,
+        "fgw_outer": 10
+      },
+      "motion": {
+        "enabled": false,
+        "alpha_pred": 1.0
+      },
+      "multiscale": {
+        "enabled": true,
+        "ks": [
+          2,
+          3,
+          5
+        ],
+        "lambda_temp": {
+          "2": 0.1,
+          "3": 0.05,
+          "5": 0.02
+        },
+        "n_rounds": 2,
+        "norm": "raw",
+        "line_search": true,
+        "jump_r_max_scale": 1.0
+      },
+      "graph": {
+        "theta_gamma_frac": null,
+        "theta_gamma": 1.72613774283156e-10,
+        "theta_c": 35.71575300320205,
+        "cand_topk": 0,
+        "ctx_window": 2,
+        "bridge": true,
+        "bridge_gap": 2,
+        "bridge_scope": "missing_only",
+        "intra_knn": 4,
+        "intra_enabled": true,
+        "context_enabled": true,
+        "use_ot_candidates": true,
+        "use_ot_features": true,
+        "use_intra_similarity": true
+      },
+      "node": {
+        "f_source": "encoder_npz"
+      },
+      "schema": "ideas-v2",
+      "detection_source": "nnunet_pred",
+      "label_mapping": "ctc_full_marker_majority_v2",
+      "encoder": {
+        "schema": "encoder_centroid_v1",
+        "model_sha256": "f5388fb1eb4159b26f6976882f2204072378e7c15938a6a68f00aa0d95defdfd",
+        "stage": 2,
+        "feature_dim": 128,
+        "aggregation": "mean_of_overlapping_tile_centroid_samples"
+      }
+    }
+  },
+  "mass_mode": "volume",
+  "f_source": "encoder_npz",
+  "encoder_metadata": {
+    "schema": "encoder_centroid_v1",
+    "model_sha256": "f5388fb1eb4159b26f6976882f2204072378e7c15938a6a68f00aa0d95defdfd",
+    "detection_sha256": "014b8639187ff8a6e9ec36f144bbae7aa4ca3d771d37841a0aad8ae9038a63da",
+    "stage": 2,
+    "seq": "02",
+    "aggregation": "mean_of_overlapping_tile_centroid_samples",
+    "feature_dim": 128
+  },
+  "motion": {
+    "enabled": false
+  },
+  "n_couplings": 189,
+  "coupling_eps": {
+    "item_count": 189,
+    "omitted_in_summary": true
+  },
+  "multiscale": {
+    "enabled": true,
+    "norm": "raw",
+    "ks": [
+      2,
+      3,
+      5
+    ],
+    "lambda_temp": {
+      "2": 0.1,
+      "3": 0.05,
+      "5": 0.02
+    },
+    "n_rounds": 2,
+    "line_search": true,
+    "history": [
+      {
+        "round": 0,
+        "objective": -265932.76266759145,
+        "reg": 2285.3750491459764,
+        "accepted_updates": 0
+      },
+      {
+        "round": 1,
+        "objective": -267082.97711774794,
+        "reg": 2345.029689062723,
+        "accepted_updates": 188
+      },
+      {
+        "round": 2,
+        "objective": -268206.6725828254,
+        "reg": 2282.2122393270115,
+        "accepted_updates": 188
+      }
+    ],
+    "original_cost_preserved": true,
+    "objective_kind": "eq17_fixed_complete"
+  },
+  "n_jump_couplings": 188,
+  "checkpoint_sha256": "f78ee891ede03161adcaf55b78947a541a785374c1795d3b28003111aed15f28",
+  "tracks_after_decision": 2175,
+  "tracklet": {
+    "enabled": true,
+    "n_pieces": 3690,
+    "window": 5,
+    "local_confidence": 0.8,
+    "summary": "mean_velocity_size_and_size_rate",
+    "n_candidates": 4530,
+    "eps": 22.64241227634314,
+    "n_components": 1118,
+    "largest_matrix_entries": 600,
+    "n_links": 1962,
+    "hole_policy": "fill",
+    "ghost_dropped": 0,
+    "parent_fixed": 0,
+    "extra_children_removed": 0,
+    "hole_tracks": 2,
+    "holes_total": 2,
+    "holes": {
+      "4": [
+        15
+      ],
+      "5": [
+        66
+      ]
+    }
+  },
+  "tracks_final": 1728,
+  "holes": {
+    "n_tracks_with_holes": 2,
+    "n_hole_frames": 2,
+    "hole_policy": "fill"
+  },
+  "reconstruct": {
+    "decision": "gnn_edge",
+    "n_division": 568,
+    "n_division_rejected_volume": 41,
+    "n_bridge_used": 2,
+    "n_bridge_dropped": 0,
+    "n_edges_accepted": 20007,
+    "n_death": 580,
+    "n_birth": 625,
+    "n_mass_veto": 116,
+    "uncertain_nodes": {
+      "item_count": 491,
+      "omitted_in_summary": true
+    },
+    "n_uncertain_nodes": 491,
+    "n_isolated_suppressed": 3491,
+    "isolated_suppression_diagnostic": {
+      "mapped_gt": 645,
+      "unmatched": 2846
+    },
+    "hole_policy": "fill",
+    "ghost_dropped": 0,
+    "parent_fixed": 0,
+    "extra_children_removed": 0,
+    "hole_tracks": 2,
+    "holes_total": 2,
+    "holes": {
+      "4": [
+        15
+      ],
+      "49": [
+        66
+      ]
+    },
+    "accepted_edges": {
+      "item_count": 20007,
+      "omitted_in_summary": true
+    },
+    "tracklet": {
+      "enabled": true,
+      "n_pieces": 3690,
+      "window": 5,
+      "local_confidence": 0.8,
+      "summary": "mean_velocity_size_and_size_rate",
+      "n_candidates": 4530,
+      "eps": 22.64241227634314,
+      "n_components": 1118,
+      "largest_matrix_entries": 600,
+      "n_links": 1962,
+      "hole_policy": "fill",
+      "ghost_dropped": 0,
+      "parent_fixed": 0,
+      "extra_children_removed": 0,
+      "hole_tracks": 2,
+      "holes_total": 2,
+      "holes": {
+        "4": [
+          15
+        ],
+        "5": [
+          66
+        ]
+      }
+    }
+  },
+  "stage_seconds": {
+    "load": 0.365,
+    "motion": 0.0,
+    "couplings": 14.508,
+    "multiscale": 33.292,
+    "decision": 7.504,
+    "tracklet": 1.637
+  },
+  "total_seconds": 57.319
+}

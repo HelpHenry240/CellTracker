@@ -68,3 +68,5 @@
 | **E0.6-rebuild-cloud** | 2026-10-09 | 重建 | 备用3完整 encoder pipeline / seq01训练 / seq02留出 / 多种子官方评测 | 见目录 | 运行中；新标定可定义真实候选 99.8%、分裂边 98.7% | — | 等待双序列官方指标；未重训 nnU-Net | `experiments/E0.6_ideas_cloud_20261009/` |
 | E0.7 | 2026-10-09 | 同来源前端再切分对照 + 背景编号回归 | `E0.7_ideas_frontend_20261009/` | 云端准备中；不重训 nnU-Net，结论待双序列官方评测 |
 | E0.8 | 2026-10-09 | 修复背景估速后的 v3 全链路终验 | `E0.8_ideas_final_v3_20261009/` | 三档配置 × 双种子 × 双序列，准备中 |
+| E0.6-final | 2026-10-09 | v2云端筛查收尾 | 28次官方评测原始指标/日志齐；旧版运动缺陷使扩展消融不能作结论；对照CPU产物保留、7项未启动任务取消 | — | 正式证据转E0.8修复版 | `experiments/E0.6_ideas_cloud_20261009/metrics_final.json` |
+| E0.7-prepared | 2026-10-09 | 双序列流式再切分及冻结特征准备完成 | 385帧；encoder 128维；模型前后散列一致；合并身份2199/1506→1265/759 | — | 诊断量仅归因，官方性能见E0.8 | `experiments/E0.7_ideas_frontend_20261009/metrics_preparation_finished.json` |

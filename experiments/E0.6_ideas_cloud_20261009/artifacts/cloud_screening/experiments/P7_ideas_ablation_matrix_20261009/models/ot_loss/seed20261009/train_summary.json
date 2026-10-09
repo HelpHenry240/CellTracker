@@ -1,0 +1,19 @@
+{
+  "out_dir": "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/ot_loss/seed20261009",
+  "best_f1": 0.9177120162735506,
+  "node_dim": 133,
+  "edge_dim": 10,
+  "split_mode": "block",
+  "n_train": 152,
+  "n_val": 38,
+  "checkpoints": {
+    "best.pt": {
+      "bytes": 1173022,
+      "sha256": "3135469ca8fb9bbb5601af64a71fabfe6752feb963d60bbb6f1550eb42e72ba7"
+    },
+    "last.pt": {
+      "bytes": 1185470,
+      "sha256": "afa8005c35ce7eec2f6e9eac0dc13d7c7a2a5f420ff8a8e886e2ebe7fdc5b900"
+    }
+  }
+}

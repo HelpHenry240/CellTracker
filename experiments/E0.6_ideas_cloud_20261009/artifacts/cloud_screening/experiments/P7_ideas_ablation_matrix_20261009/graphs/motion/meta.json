@@ -1,0 +1,7 @@
+{
+  "n_graphs": 194,
+  "n_nodes": 117804,
+  "n_positive_candidates": 22360,
+  "n_candidates": 128847,
+  "out_dir": "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/motion"
+}

@@ -1,0 +1,243 @@
+{
+  "counts": {
+    "true_detection_pairs": 22406,
+    "within_physical_gate": 22384,
+    "after_candidates": 22085,
+    "all_candidate_pairs": 69290,
+    "division_pairs": 674,
+    "division_candidates": 606,
+    "candidate_true_recall": 0.985673480317772,
+    "division_pair_recall": 0.8991097922848664
+  },
+  "distributions": {
+    "true_gamma": {
+      "n": 22406,
+      "min": 0.0,
+      "max": 0.7837170485325525,
+      "p0.1": 1.1077402637741964e-16,
+      "p1": 0.0010163856300886532,
+      "p5": 0.041302734126105245,
+      "p50": 0.5122947497409749,
+      "p95": 0.6891912610540613,
+      "p99": 0.7305740545850857,
+      "p99.9": 0.7617249280817712
+    },
+    "true_cost": {
+      "n": 22384,
+      "min": 0.0031598995324359806,
+      "max": 1445.322170088166,
+      "p0.1": 0.04009837845169565,
+      "p1": 0.10483686122055152,
+      "p5": 0.22979120446422077,
+      "p50": 1.3361644005826157,
+      "p95": 18.953516430491046,
+      "p99": 47.886390155632114,
+      "p99.9": 725.1141667060132
+    },
+    "true_displacement_um": {
+      "n": 22406,
+      "min": 0.015784675803128527,
+      "max": 9.47782203583886,
+      "p0.1": 0.06577079530878246,
+      "p1": 0.1244180930969185,
+      "p5": 0.21705775289676457,
+      "p50": 0.6629748228049455,
+      "p95": 2.744037867370399,
+      "p99": 4.178483026580397,
+      "p99.9": 6.331932917218136
+    },
+    "live_out_mass": {
+      "n": 21169,
+      "min": 8.349420246490325e-36,
+      "max": 1.8333613923894978,
+      "p0.1": 3.337729342274541e-06,
+      "p1": 0.01703500808826654,
+      "p5": 0.09071164884451628,
+      "p50": 0.556181382943072,
+      "p95": 0.8030216162590131,
+      "p99": 1.075392619255093,
+      "p99.9": 1.3060621708079374
+    },
+    "no_successor_out_mass": {
+      "n": 57,
+      "min": 4.050623025548178e-09,
+      "max": 1.7214397769199021,
+      "p0.1": 1.1990421116319947e-05,
+      "p1": 0.00011986775555596955,
+      "p5": 0.0013772438015780195,
+      "p50": 0.9362963622784604,
+      "p95": 1.3629107221109678,
+      "p99": 1.6337061728322029,
+      "p99.9": 1.7126664165111327
+    },
+    "live_in_mass": {
+      "n": 21447,
+      "min": 1.5755651063439677e-07,
+      "max": 1.6435255852335,
+      "p0.1": 0.0008393690155437612,
+      "p1": 0.01840185258378078,
+      "p5": 0.08506739305504019,
+      "p50": 0.5522833991255831,
+      "p95": 0.782683037237428,
+      "p99": 1.061871602689622,
+      "p99.9": 1.2379071563625725
+    },
+    "no_predecessor_in_mass": {
+      "n": 2520,
+      "min": 0.0,
+      "max": 1.4478628190995075,
+      "p0.1": 0.0,
+      "p1": 0.0014706196639609212,
+      "p5": 0.02530469085223335,
+      "p50": 0.37574079849522124,
+      "p95": 0.688710066299993,
+      "p99": 1.0007469694637423,
+      "p99.9": 1.1963748496401203
+    }
+  },
+  "suggestions": {
+    "theta_gamma": 1.1077402637741964e-16,
+    "theta_c": 725.1141667060132,
+    "eta_death": 0.01703500808826654,
+    "eta_birth": 0.01840185258378078,
+    "r_max_required_p999_um": 6.331932917218136
+  },
+  "after_calibration": {
+    "true_detection_pairs": 22406,
+    "within_physical_gate": 22384,
+    "after_candidates": 22361,
+    "all_candidate_pairs": 185758,
+    "division_pairs": 674,
+    "division_candidates": 665,
+    "candidate_true_recall": 0.9979916093903419,
+    "division_pair_recall": 0.9866468842729971
+  },
+  "protocol": "真实边 p0.1 传输质量、p99.9 完整特征代价、生死 p1；部署值需双序列官方验证",
+  "physical_volume_um3": {
+    "n": 23972,
+    "min": 2.486700197625164,
+    "max": 446.2857354676015,
+    "p0.1": 2.890525729718332,
+    "p1": 5.475600435161599,
+    "p5": 12.328200979757328,
+    "p50": 43.270203438806604,
+    "p95": 111.92499889499922,
+    "p99": 170.58730955706054,
+    "p99.9": 293.9275502592814
+  },
+  "cost_C": {
+    "n": 187224,
+    "min": 0.0031598995324359806,
+    "max": 2055.2699863609187,
+    "p0.1": 0.09617736164312274,
+    "p1": 0.30121448482572716,
+    "p5": 1.0147557320442835,
+    "p50": 50.484086523553415,
+    "p95": 81.7765550176686,
+    "p99": 258.2693993782567,
+    "p99.9": 1236.0641556795877
+  },
+  "source_sha256": "d06edcf5ef83203f261fbc84887f0902943c9935f7ac68f7fd109c14979d85b6",
+  "input_contract": {
+    "signature": "cfe56be5e423146ffa3f005196c394fab1bf6d6d8ac5dcf83f48420cf64804fd",
+    "definition": {
+      "measure": {
+        "mass_mode": "volume",
+        "knn_k": 6,
+        "sigma_x": null,
+        "sigma_f": null,
+        "spacing_zyx": [
+          1.0,
+          0.09,
+          0.09
+        ],
+        "structure_mode": "full"
+      },
+      "coupling": {
+        "enabled": true,
+        "alpha": 1.0,
+        "alpha_pred": 0.0,
+        "beta": 1.0,
+        "sigma_s": null,
+        "r_max": 6.4,
+        "eta": 0.3,
+        "eps_rel": 1.0,
+        "eps": null,
+        "tau_a": 1.0,
+        "tau_b": 1.0,
+        "sinkhorn_iters": 1000,
+        "fgw_outer": 10
+      },
+      "motion": {
+        "enabled": true,
+        "alpha_pred": 1.0
+      },
+      "multiscale": {
+        "enabled": true,
+        "ks": [
+          2,
+          3,
+          5
+        ],
+        "lambda_temp": {
+          "2": 0.1,
+          "3": 0.05,
+          "5": 0.02
+        },
+        "n_rounds": 2,
+        "norm": "raw",
+        "line_search": true,
+        "jump_r_max_scale": 1.0
+      },
+      "graph": {
+        "theta_gamma_frac": null,
+        "theta_gamma": 0.0,
+        "theta_c": null,
+        "cand_topk": 0,
+        "ctx_window": 2,
+        "bridge": true,
+        "bridge_gap": 2,
+        "bridge_scope": "missing_only",
+        "intra_knn": 4,
+        "intra_enabled": true,
+        "context_enabled": true,
+        "use_ot_candidates": true,
+        "use_ot_features": true,
+        "use_intra_similarity": true
+      },
+      "node": {
+        "f_source": "encoder_npz"
+      },
+      "motion_initialization": {
+        "theta_gamma_frac": null,
+        "theta_gamma": 0.0,
+        "theta_c": null,
+        "eta_death": 0.0,
+        "eta_birth": 0.0,
+        "mass_threshold_mode": "absolute",
+        "birth_death_enabled": true,
+        "death_veto": true,
+        "birth_veto": true,
+        "division_enabled": true,
+        "volume_conservation": true,
+        "div_ratio": 0.05,
+        "vol_tol": 0.5,
+        "max_children": 2,
+        "tau_edge": 0.5,
+        "hole_policy": "fill",
+        "filter_isolated": true,
+        "mark_uncertainty": true
+      },
+      "schema": "ideas-v2",
+      "detection_source": "nnunet_pred",
+      "label_mapping": "ctc_full_marker_majority_v2",
+      "encoder": {
+        "schema": "encoder_centroid_v1",
+        "model_sha256": "f5388fb1eb4159b26f6976882f2204072378e7c15938a6a68f00aa0d95defdfd",
+        "stage": 2,
+        "feature_dim": 128,
+        "aggregation": "mean_of_overlapping_tile_centroid_samples"
+      }
+    }
+  }
+}

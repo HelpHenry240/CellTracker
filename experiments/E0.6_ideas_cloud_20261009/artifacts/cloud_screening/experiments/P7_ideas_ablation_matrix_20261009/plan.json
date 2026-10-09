@@ -1,0 +1,1654 @@
+{
+  "schema": "ideas-ablation-v1",
+  "dataset": "Fluo-N3DH-CE",
+  "protocol": "seq01 train / seq02 held out",
+  "seeds": [
+    20261008,
+    20261009
+  ],
+  "variants": [
+    {
+      "module": "isolated",
+      "direction": "off",
+      "changes": [
+        "reconstruct.filter_isolated=false"
+      ],
+      "independent_training": true,
+      "threshold_protocol": "recalibrated_on_seq01_only"
+    },
+    {
+      "module": "fgw",
+      "direction": "off",
+      "changes": [
+        "coupling.eta=0.0"
+      ],
+      "independent_training": true,
+      "threshold_protocol": "recalibrated_on_seq01_only"
+    },
+    {
+      "module": "multiscale",
+      "direction": "off",
+      "changes": [
+        "multiscale.enabled=false"
+      ],
+      "independent_training": true,
+      "threshold_protocol": "recalibrated_on_seq01_only"
+    },
+    {
+      "module": "motion",
+      "direction": "off",
+      "changes": [
+        "motion.enabled=false"
+      ],
+      "independent_training": true,
+      "threshold_protocol": "recalibrated_on_seq01_only"
+    },
+    {
+      "module": "tracklet",
+      "direction": "off",
+      "changes": [
+        "tracklet.enabled=false"
+      ],
+      "independent_training": true,
+      "threshold_protocol": "recalibrated_on_seq01_only"
+    },
+    {
+      "module": "ot_loss",
+      "direction": "off",
+      "changes": [
+        "gnn.lambda_ot=0.0"
+      ],
+      "independent_training": true,
+      "threshold_protocol": "recalibrated_on_seq01_only"
+    }
+  ],
+  "official": true,
+  "jobs": [
+    {
+      "id": "P7_ideas_ablate_isolated_calibration01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/calibrate_params.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/isolated_01.yaml",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/calibration/isolated.json",
+        "--apply-out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/isolated_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/calibration_cache/isolated"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/calibration/isolated.json",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/isolated_calibrated.yaml"
+      ],
+      "kind": "calibrate",
+      "depends": []
+    },
+    {
+      "id": "P7_ideas_ablate_isolated_build01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_ablate_isolated_build01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/isolated_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/isolated/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_rebuild.npz",
+        "--dump-graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/isolated",
+        "--build-only"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/isolated/manifest.json"
+      ],
+      "kind": "build",
+      "depends": [
+        "P7_ideas_ablate_isolated_calibration01"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_isolated_seed20261008_train",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/train_paper_gnn.py",
+        "--graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/isolated",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/isolated/seed20261008",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/isolated_calibrated.yaml",
+        "--epochs",
+        "60",
+        "--seed",
+        "20261008",
+        "--device",
+        "cuda",
+        "--exp-id",
+        "P7_ideas_ablate_isolated_seed20261008_train"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/isolated/seed20261008/best.pt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/isolated/seed20261008/train_summary.json"
+      ],
+      "kind": "train",
+      "depends": [
+        "P7_ideas_ablate_isolated_build01"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_isolated_seed20261008_eval01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_ablate_isolated_seed20261008_eval01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/isolated_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/isolated/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/isolated/seed20261008/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/01_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_isolated_seed20261008_eval01/metrics_official_01.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_isolated_seed20261008_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_isolated_seed20261008_eval02",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_02_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_02.h5",
+        "--seq",
+        "02",
+        "--exp-id",
+        "P7_ideas_ablate_isolated_seed20261008_eval02",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/isolated_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/isolated/02",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_02_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/isolated/seed20261008/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_isolated_seed20261008_eval02/metrics_official_02.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_isolated_seed20261008_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_isolated_seed20261009_train",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/train_paper_gnn.py",
+        "--graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/isolated",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/isolated/seed20261009",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/isolated_calibrated.yaml",
+        "--epochs",
+        "60",
+        "--seed",
+        "20261009",
+        "--device",
+        "cuda",
+        "--exp-id",
+        "P7_ideas_ablate_isolated_seed20261009_train"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/isolated/seed20261009/best.pt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/isolated/seed20261009/train_summary.json"
+      ],
+      "kind": "train",
+      "depends": [
+        "P7_ideas_ablate_isolated_build01"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_isolated_seed20261009_eval01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_ablate_isolated_seed20261009_eval01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/isolated_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/isolated/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/isolated/seed20261009/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/01_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_isolated_seed20261009_eval01/metrics_official_01.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_isolated_seed20261009_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_isolated_seed20261009_eval02",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_02_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_02.h5",
+        "--seq",
+        "02",
+        "--exp-id",
+        "P7_ideas_ablate_isolated_seed20261009_eval02",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/isolated_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/isolated/02",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_02_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/isolated/seed20261009/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_isolated_seed20261009_eval02/metrics_official_02.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_isolated_seed20261009_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_fgw_calibration01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/calibrate_params.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/fgw_01.yaml",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/calibration/fgw.json",
+        "--apply-out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/fgw_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/calibration_cache/fgw"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/calibration/fgw.json",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/fgw_calibrated.yaml"
+      ],
+      "kind": "calibrate",
+      "depends": []
+    },
+    {
+      "id": "P7_ideas_ablate_fgw_build01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_ablate_fgw_build01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/fgw_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/fgw/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_rebuild.npz",
+        "--dump-graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/fgw",
+        "--build-only"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/fgw/manifest.json"
+      ],
+      "kind": "build",
+      "depends": [
+        "P7_ideas_ablate_fgw_calibration01"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_fgw_seed20261008_train",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/train_paper_gnn.py",
+        "--graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/fgw",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/fgw/seed20261008",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/fgw_calibrated.yaml",
+        "--epochs",
+        "60",
+        "--seed",
+        "20261008",
+        "--device",
+        "cuda",
+        "--exp-id",
+        "P7_ideas_ablate_fgw_seed20261008_train"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/fgw/seed20261008/best.pt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/fgw/seed20261008/train_summary.json"
+      ],
+      "kind": "train",
+      "depends": [
+        "P7_ideas_ablate_fgw_build01"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_fgw_seed20261008_eval01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_ablate_fgw_seed20261008_eval01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/fgw_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/fgw/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/fgw/seed20261008/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/01_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_fgw_seed20261008_eval01/metrics_official_01.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_fgw_seed20261008_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_fgw_seed20261008_eval02",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_02_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_02.h5",
+        "--seq",
+        "02",
+        "--exp-id",
+        "P7_ideas_ablate_fgw_seed20261008_eval02",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/fgw_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/fgw/02",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_02_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/fgw/seed20261008/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_fgw_seed20261008_eval02/metrics_official_02.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_fgw_seed20261008_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_fgw_seed20261009_train",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/train_paper_gnn.py",
+        "--graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/fgw",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/fgw/seed20261009",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/fgw_calibrated.yaml",
+        "--epochs",
+        "60",
+        "--seed",
+        "20261009",
+        "--device",
+        "cuda",
+        "--exp-id",
+        "P7_ideas_ablate_fgw_seed20261009_train"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/fgw/seed20261009/best.pt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/fgw/seed20261009/train_summary.json"
+      ],
+      "kind": "train",
+      "depends": [
+        "P7_ideas_ablate_fgw_build01"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_fgw_seed20261009_eval01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_ablate_fgw_seed20261009_eval01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/fgw_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/fgw/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/fgw/seed20261009/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/01_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_fgw_seed20261009_eval01/metrics_official_01.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_fgw_seed20261009_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_fgw_seed20261009_eval02",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_02_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_02.h5",
+        "--seq",
+        "02",
+        "--exp-id",
+        "P7_ideas_ablate_fgw_seed20261009_eval02",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/fgw_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/fgw/02",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_02_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/fgw/seed20261009/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_fgw_seed20261009_eval02/metrics_official_02.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_fgw_seed20261009_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_multiscale_calibration01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/calibrate_params.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/multiscale_01.yaml",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/calibration/multiscale.json",
+        "--apply-out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/multiscale_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/calibration_cache/multiscale"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/calibration/multiscale.json",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/multiscale_calibrated.yaml"
+      ],
+      "kind": "calibrate",
+      "depends": []
+    },
+    {
+      "id": "P7_ideas_ablate_multiscale_build01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_ablate_multiscale_build01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/multiscale_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/multiscale/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_rebuild.npz",
+        "--dump-graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/multiscale",
+        "--build-only"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/multiscale/manifest.json"
+      ],
+      "kind": "build",
+      "depends": [
+        "P7_ideas_ablate_multiscale_calibration01"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_multiscale_seed20261008_train",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/train_paper_gnn.py",
+        "--graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/multiscale",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/multiscale/seed20261008",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/multiscale_calibrated.yaml",
+        "--epochs",
+        "60",
+        "--seed",
+        "20261008",
+        "--device",
+        "cuda",
+        "--exp-id",
+        "P7_ideas_ablate_multiscale_seed20261008_train"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/multiscale/seed20261008/best.pt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/multiscale/seed20261008/train_summary.json"
+      ],
+      "kind": "train",
+      "depends": [
+        "P7_ideas_ablate_multiscale_build01"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_multiscale_seed20261008_eval01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_ablate_multiscale_seed20261008_eval01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/multiscale_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/multiscale/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/multiscale/seed20261008/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/01_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_multiscale_seed20261008_eval01/metrics_official_01.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_multiscale_seed20261008_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_multiscale_seed20261008_eval02",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_02_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_02.h5",
+        "--seq",
+        "02",
+        "--exp-id",
+        "P7_ideas_ablate_multiscale_seed20261008_eval02",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/multiscale_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/multiscale/02",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_02_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/multiscale/seed20261008/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_multiscale_seed20261008_eval02/metrics_official_02.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_multiscale_seed20261008_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_multiscale_seed20261009_train",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/train_paper_gnn.py",
+        "--graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/multiscale",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/multiscale/seed20261009",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/multiscale_calibrated.yaml",
+        "--epochs",
+        "60",
+        "--seed",
+        "20261009",
+        "--device",
+        "cuda",
+        "--exp-id",
+        "P7_ideas_ablate_multiscale_seed20261009_train"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/multiscale/seed20261009/best.pt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/multiscale/seed20261009/train_summary.json"
+      ],
+      "kind": "train",
+      "depends": [
+        "P7_ideas_ablate_multiscale_build01"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_multiscale_seed20261009_eval01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_ablate_multiscale_seed20261009_eval01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/multiscale_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/multiscale/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/multiscale/seed20261009/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/01_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_multiscale_seed20261009_eval01/metrics_official_01.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_multiscale_seed20261009_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_multiscale_seed20261009_eval02",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_02_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_02.h5",
+        "--seq",
+        "02",
+        "--exp-id",
+        "P7_ideas_ablate_multiscale_seed20261009_eval02",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/multiscale_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/multiscale/02",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_02_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/multiscale/seed20261009/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_multiscale_seed20261009_eval02/metrics_official_02.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_multiscale_seed20261009_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_motion_calibration01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/calibrate_params.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/motion_01.yaml",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/calibration/motion.json",
+        "--apply-out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/motion_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/calibration_cache/motion"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/calibration/motion.json",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/motion_calibrated.yaml"
+      ],
+      "kind": "calibrate",
+      "depends": []
+    },
+    {
+      "id": "P7_ideas_ablate_motion_build01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_ablate_motion_build01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/motion_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/motion/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_rebuild.npz",
+        "--dump-graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/motion",
+        "--build-only"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/motion/manifest.json"
+      ],
+      "kind": "build",
+      "depends": [
+        "P7_ideas_ablate_motion_calibration01"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_motion_seed20261008_train",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/train_paper_gnn.py",
+        "--graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/motion",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/motion/seed20261008",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/motion_calibrated.yaml",
+        "--epochs",
+        "60",
+        "--seed",
+        "20261008",
+        "--device",
+        "cuda",
+        "--exp-id",
+        "P7_ideas_ablate_motion_seed20261008_train"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/motion/seed20261008/best.pt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/motion/seed20261008/train_summary.json"
+      ],
+      "kind": "train",
+      "depends": [
+        "P7_ideas_ablate_motion_build01"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_motion_seed20261008_eval01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_ablate_motion_seed20261008_eval01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/motion_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/motion/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/motion/seed20261008/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/01_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_motion_seed20261008_eval01/metrics_official_01.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_motion_seed20261008_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_motion_seed20261008_eval02",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_02_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_02.h5",
+        "--seq",
+        "02",
+        "--exp-id",
+        "P7_ideas_ablate_motion_seed20261008_eval02",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/motion_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/motion/02",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_02_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/motion/seed20261008/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_motion_seed20261008_eval02/metrics_official_02.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_motion_seed20261008_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_motion_seed20261009_train",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/train_paper_gnn.py",
+        "--graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/motion",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/motion/seed20261009",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/motion_calibrated.yaml",
+        "--epochs",
+        "60",
+        "--seed",
+        "20261009",
+        "--device",
+        "cuda",
+        "--exp-id",
+        "P7_ideas_ablate_motion_seed20261009_train"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/motion/seed20261009/best.pt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/motion/seed20261009/train_summary.json"
+      ],
+      "kind": "train",
+      "depends": [
+        "P7_ideas_ablate_motion_build01"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_motion_seed20261009_eval01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_ablate_motion_seed20261009_eval01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/motion_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/motion/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/motion/seed20261009/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/01_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_motion_seed20261009_eval01/metrics_official_01.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_motion_seed20261009_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_motion_seed20261009_eval02",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_02_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_02.h5",
+        "--seq",
+        "02",
+        "--exp-id",
+        "P7_ideas_ablate_motion_seed20261009_eval02",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/motion_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/motion/02",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_02_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/motion/seed20261009/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_motion_seed20261009_eval02/metrics_official_02.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_motion_seed20261009_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_tracklet_calibration01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/calibrate_params.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/tracklet_01.yaml",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/calibration/tracklet.json",
+        "--apply-out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/tracklet_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/calibration_cache/tracklet"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/calibration/tracklet.json",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/tracklet_calibrated.yaml"
+      ],
+      "kind": "calibrate",
+      "depends": []
+    },
+    {
+      "id": "P7_ideas_ablate_tracklet_build01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_ablate_tracklet_build01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/tracklet_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/tracklet/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_rebuild.npz",
+        "--dump-graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/tracklet",
+        "--build-only"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/tracklet/manifest.json"
+      ],
+      "kind": "build",
+      "depends": [
+        "P7_ideas_ablate_tracklet_calibration01"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_tracklet_seed20261008_train",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/train_paper_gnn.py",
+        "--graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/tracklet",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/tracklet/seed20261008",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/tracklet_calibrated.yaml",
+        "--epochs",
+        "60",
+        "--seed",
+        "20261008",
+        "--device",
+        "cuda",
+        "--exp-id",
+        "P7_ideas_ablate_tracklet_seed20261008_train"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/tracklet/seed20261008/best.pt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/tracklet/seed20261008/train_summary.json"
+      ],
+      "kind": "train",
+      "depends": [
+        "P7_ideas_ablate_tracklet_build01"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_tracklet_seed20261008_eval01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_ablate_tracklet_seed20261008_eval01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/tracklet_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/tracklet/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/tracklet/seed20261008/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/01_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_tracklet_seed20261008_eval01/metrics_official_01.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_tracklet_seed20261008_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_tracklet_seed20261008_eval02",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_02_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_02.h5",
+        "--seq",
+        "02",
+        "--exp-id",
+        "P7_ideas_ablate_tracklet_seed20261008_eval02",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/tracklet_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/tracklet/02",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_02_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/tracklet/seed20261008/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_tracklet_seed20261008_eval02/metrics_official_02.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_tracklet_seed20261008_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_tracklet_seed20261009_train",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/train_paper_gnn.py",
+        "--graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/tracklet",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/tracklet/seed20261009",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/tracklet_calibrated.yaml",
+        "--epochs",
+        "60",
+        "--seed",
+        "20261009",
+        "--device",
+        "cuda",
+        "--exp-id",
+        "P7_ideas_ablate_tracklet_seed20261009_train"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/tracklet/seed20261009/best.pt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/tracklet/seed20261009/train_summary.json"
+      ],
+      "kind": "train",
+      "depends": [
+        "P7_ideas_ablate_tracklet_build01"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_tracklet_seed20261009_eval01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_ablate_tracklet_seed20261009_eval01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/tracklet_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/tracklet/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/tracklet/seed20261009/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/01_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_tracklet_seed20261009_eval01/metrics_official_01.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_tracklet_seed20261009_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_tracklet_seed20261009_eval02",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_02_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_02.h5",
+        "--seq",
+        "02",
+        "--exp-id",
+        "P7_ideas_ablate_tracklet_seed20261009_eval02",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/tracklet_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/tracklet/02",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_02_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/tracklet/seed20261009/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_tracklet_seed20261009_eval02/metrics_official_02.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_tracklet_seed20261009_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_ot_loss_calibration01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/calibrate_params.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/ot_loss_01.yaml",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/calibration/ot_loss.json",
+        "--apply-out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/ot_loss_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/calibration_cache/ot_loss"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/calibration/ot_loss.json",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/ot_loss_calibrated.yaml"
+      ],
+      "kind": "calibrate",
+      "depends": []
+    },
+    {
+      "id": "P7_ideas_ablate_ot_loss_build01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_ablate_ot_loss_build01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/ot_loss_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/ot_loss/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_rebuild.npz",
+        "--dump-graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/ot_loss",
+        "--build-only"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/ot_loss/manifest.json"
+      ],
+      "kind": "build",
+      "depends": [
+        "P7_ideas_ablate_ot_loss_calibration01"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_ot_loss_seed20261008_train",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/train_paper_gnn.py",
+        "--graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/ot_loss",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/ot_loss/seed20261008",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/ot_loss_calibrated.yaml",
+        "--epochs",
+        "60",
+        "--seed",
+        "20261008",
+        "--device",
+        "cuda",
+        "--exp-id",
+        "P7_ideas_ablate_ot_loss_seed20261008_train"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/ot_loss/seed20261008/best.pt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/ot_loss/seed20261008/train_summary.json"
+      ],
+      "kind": "train",
+      "depends": [
+        "P7_ideas_ablate_ot_loss_build01"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_ot_loss_seed20261008_eval01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_ablate_ot_loss_seed20261008_eval01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/ot_loss_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/ot_loss/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/ot_loss/seed20261008/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/01_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_ot_loss_seed20261008_eval01/metrics_official_01.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_ot_loss_seed20261008_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_ot_loss_seed20261008_eval02",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_02_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_02.h5",
+        "--seq",
+        "02",
+        "--exp-id",
+        "P7_ideas_ablate_ot_loss_seed20261008_eval02",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/ot_loss_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/ot_loss/02",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_02_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/ot_loss/seed20261008/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_ot_loss_seed20261008_eval02/metrics_official_02.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_ot_loss_seed20261008_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_ot_loss_seed20261009_train",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/train_paper_gnn.py",
+        "--graphs",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/graphs/ot_loss",
+        "--out",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/ot_loss/seed20261009",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/ot_loss_calibrated.yaml",
+        "--epochs",
+        "60",
+        "--seed",
+        "20261009",
+        "--device",
+        "cuda",
+        "--exp-id",
+        "P7_ideas_ablate_ot_loss_seed20261009_train"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/ot_loss/seed20261009/best.pt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/ot_loss/seed20261009/train_summary.json"
+      ],
+      "kind": "train",
+      "depends": [
+        "P7_ideas_ablate_ot_loss_build01"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_ot_loss_seed20261009_eval01",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_01_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_01.h5",
+        "--seq",
+        "01",
+        "--exp-id",
+        "P7_ideas_ablate_ot_loss_seed20261009_eval01",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/ot_loss_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/ot_loss/01",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_01_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/ot_loss/seed20261009/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/01_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_ot_loss_seed20261009_eval01/metrics_official_01.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_ot_loss_seed20261009_train"
+      ]
+    },
+    {
+      "id": "P7_ideas_ablate_ot_loss_seed20261009_eval02",
+      "command": [
+        "/root/autodl-tmp/nnunet/venv/bin/python",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/paperpipe/scripts/run_paper_pipeline.py",
+        "--h5",
+        "data/interim/Fluo-N3DH-CE_02_rebuild.h5",
+        "--gt-h5",
+        "data/interim/Fluo-N3DH-CE_02.h5",
+        "--seq",
+        "02",
+        "--exp-id",
+        "P7_ideas_ablate_ot_loss_seed20261009_eval02",
+        "--config",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/configs/ot_loss_calibrated.yaml",
+        "--cache-dir",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/cache/ot_loss/02",
+        "--device",
+        "cuda",
+        "--set",
+        "node.encoder_feat_path=data/interim/encoder_02_rebuild.npz",
+        "--ckpt",
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablation_matrix_20261009/models/ot_loss/seed20261009/best.pt",
+        "--official",
+        "--official-tools",
+        "/root/EvaluationSoftware/Linux",
+        "--official-gt-dir",
+        "/root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT"
+      ],
+      "outputs": [
+        "/root/autodl-tmp/CellTracker_rebuild_20261008/experiments/P7_ideas_ablate_ot_loss_seed20261009_eval02/metrics_official_02.json"
+      ],
+      "kind": "evaluate",
+      "depends": [
+        "P7_ideas_ablate_ot_loss_seed20261009_train"
+      ]
+    }
+  ],
+  "cloud_note": "云端长任务须 nohup 后台；启动前/训练中/结束后检查 nvidia-smi",
+  "performance_conclusion": "需双序列官方 DET/SEG/TRA 与当前设置重复实验噪声地板"
+}
