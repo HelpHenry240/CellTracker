@@ -28,6 +28,26 @@ from celltracker.ot.fgw import regularized_objective
 from celltracker.ot.sinkhorn import sinkhorn_log
 
 
+def test_knn_excludes_self_when_centroids_coincide():
+    xy = np.array([[0., 0., 0.], [0., 0., 0.], [2., 0., 0.]])
+    _, weights, adjacency = knn_structure(xy, np.ones(3), MeasureConfig(knn_k=1))
+    assert not np.diag(adjacency).any()
+    assert adjacency[0, 1] and adjacency[1, 0]
+    assert weights[0, 1] == 1 and np.isfinite(weights).all()
+
+
+def test_legacy_knn_empty_singleton_and_coincident_nodes():
+    from celltracker.cost.features import gaussian_knn_graph
+    for count in (0, 1, 2):
+        for neighbors in (0, 1, 6):
+            distance, weights = gaussian_knn_graph(np.zeros((count, 3)), k=neighbors)
+            assert distance.shape == weights.shape == (count, count)
+            assert np.isfinite(distance).all() and np.isfinite(weights).all()
+            assert not np.diag(weights).any()
+            if count == 2 and neighbors > 0:
+                assert weights[0, 1] == weights[1, 0] == 1
+
+
 def detections(n_frames=8):
     return Detections({t:{'centroid':np.array([[3.,3+t*.1,3],[3,8+t*.1,8]]),
         'volume':np.array([8.,8.]),'label':np.array([1,2]),'gt_label':np.array([1,2]),

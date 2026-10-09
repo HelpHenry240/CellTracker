@@ -1,0 +1,22 @@
+{
+  "01_rebuild": {
+    "duplicate_centroids": 0,
+    "frame_neighbor_comparisons": 390,
+    "different_neighbor_sets_or_orders": 0
+  },
+  "01_resplit_v2": {
+    "duplicate_centroids": 0,
+    "frame_neighbor_comparisons": 390,
+    "different_neighbor_sets_or_orders": 0
+  },
+  "02_rebuild": {
+    "duplicate_centroids": 0,
+    "frame_neighbor_comparisons": 380,
+    "different_neighbor_sets_or_orders": 0
+  },
+  "02_resplit_v2": {
+    "duplicate_centroids": 0,
+    "frame_neighbor_comparisons": 380,
+    "different_neighbor_sets_or_orders": 0
+  }
+}

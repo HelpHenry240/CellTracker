@@ -1,3 +1,8 @@
 Full local suite: 145 passed.
 Regression: excluded detection ID 0 cannot create a motion predecessor; v2 archival reproduction is explicit.
 Current v2 screening results must not support final motion/FGW/multiscale conclusions.
+Cloud release 88bf5ca: 144 passed, 1 skipped, exit code 0.
+Optional POT comparison skipped because the pre-existing cloud environment has no ot package; no dependency was added.
+Final v3 worker PID: 338805.
+Cloud log: /root/autodl-tmp/CellTracker_rebuild_20261008/logs/ideas_final_v3_20261009.log
+Cloud source SHA256: e0d336343b8a662caa8bab5e3db06fd519e52613351eec429f3e5f825bffc04d

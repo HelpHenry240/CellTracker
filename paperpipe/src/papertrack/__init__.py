@@ -17,8 +17,11 @@
   - CTC 结果写出 / 读回 → `celltracker.eval.ctc_io`
   - 本地诊断指标 → `celltracker.eval.local_metrics`
   - 图批处理（与图 npz 格式无关的通用拼接）→ `celltracker.gnn.data.{PairDataset, collate}`
-  - 实例拆分前端（nnU-Net 掩码 → 实例）→ `celltracker.detect.instances`
   - 实验八件套留痕 → `celltracker.experiment.Experiment`
+
+实例拆分属于仓库前端，由根目录 `scripts/predict_to_h5.py` 和
+`scripts/resplit_detections.py` 调用外层 `celltracker.detect.instances`；
+本包接收前端生成的检测 H5，不内置 nnU-Net 或实例拆分器。
 
 * **与原文不符的部分 → 本包重新实现**，每处都在模块 docstring 里注明
   "原实现差在哪、原文怎么写"。清单见 `FORMULA_MAP.md`。
@@ -35,7 +38,7 @@
     runtime/         编排（run_pipeline）与提交格式校验
     config.py        全参数（论文符号 + PAPER/CALIB/ENG 标记）
 
-本包**只依赖 numpy/scipy/torch/tifffile/h5py**，不新增第三方依赖。
+本包依赖仓库已有的 numpy/scipy/torch/tifffile/h5py/PyYAML，不新增第三方依赖。
 """
 
 from ._paths import ensure_vendor_on_path  # noqa: F401  (import 时即注入 vendor 路径)

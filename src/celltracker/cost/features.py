@@ -92,17 +92,20 @@ def gaussian_knn_graph(xy: np.ndarray, k: int = 6, sigma_x: float | None = None,
     D_full = pairwise_distance(xy, xy)
     if n == 0:
         return D_full, D_full
-    k_eff = min(k, max(n - 1, 1))
+    k_eff = min(max(int(k), 0), max(n - 1, 0))
 
     order = np.argsort(D_full, axis=1)
+    # ideas.pdf 式(5)：按节点身份排除自身，保留位置重合的其他实例。
+    order = order[order != np.arange(n)[:, None]].reshape(n, n - 1)
     mask = np.zeros((n, n), dtype=bool)
     rows = np.repeat(np.arange(n), k_eff)
-    cols = order[:, 1:k_eff + 1].reshape(-1)
+    cols = order[:, :k_eff].reshape(-1)
     mask[rows, cols] = True
     mask = mask | mask.T  # 对称化
 
     D = np.where(mask, D_full, 0.0)
-    sx = sigma_x if sigma_x is not None else float(np.median(D_full[D_full > 0]) + 1e-9)
+    positive = D_full[D_full > 0]
+    sx = sigma_x if sigma_x is not None else (float(np.median(positive) + 1e-9) if positive.size else 1.0)
     W = np.exp(-D_full ** 2 / (2 * sx ** 2))
     if feat is not None and sigma_f is not None:
         Df = pairwise_distance(feat, feat)

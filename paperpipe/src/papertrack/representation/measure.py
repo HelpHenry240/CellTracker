@@ -123,9 +123,11 @@ def knn_structure(xy: np.ndarray, vol: np.ndarray | None, cfg: MeasureConfig,
     D_full = pairwise_distance(xy, xy, spacing)                 # 式(7) 全对距离
     k_eff = min(max(int(cfg.knn_k), 0), max(n - 1, 0))
     order = np.argsort(D_full, axis=1)
+    # 式(5) 的邻居不包含节点自身。重合质心有多个零距离，不能假设首项是自身。
+    order = order[order != np.arange(n)[:, None]].reshape(n, n - 1)
     adj = np.zeros((n, n), dtype=bool)
     rows = np.repeat(np.arange(n), k_eff)
-    cols = order[:, 1:k_eff + 1].reshape(-1)
+    cols = order[:, :k_eff].reshape(-1)
     adj[rows, cols] = True
     adj |= adj.T                                                # 对称化
 
