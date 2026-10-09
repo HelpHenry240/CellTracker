@@ -1,0 +1,12 @@
+{
+  "definition": "postprocessing only; model/pipeline source frozen at500322cc",
+  "files": {
+    "summarize_oracle.py": "4c94bb074e6dad9b8c48e90028940bbe72e98f4ee1c8407eebe7b2b002403d40",
+    "collect_oracle.py": "0c91bc148ee04d8a160664f5ec829520be9d731416577df5506b8419348983d7",
+    "export_inference_weights.py": "8dcfb2f7e218a0487f39b8c5d1bd91f8b29a3aa482409d452d8c7e23e2f20a0a",
+    "postprocess_oracle.py": "4a5f1b5c5c5c4fe73998a5c41b2bd38ea3da4ffc086d4dc4ee0e869a314ce2d5",
+    "archive_evidence.py": "2ca8ed0aa64a728acc29b9e4f985ae9a267411b41a848f13960b2be8c0e66d90",
+    "plot_oracle.py": "7e0a3ad10b693ef721a5ef202c3de50baf52d165319d85012f55e68be80fbd53",
+    "finalize_report.py": "12c2ce8923cb980f9ea74abddb1649099a7f9eaeb04eccde15a311df290b770c"
+  }
+}

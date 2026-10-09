@@ -1,0 +1,14 @@
+[
+  {
+    "seed": 20261008,
+    "parameters": 101185,
+    "local_cpu_load_ok": true,
+    "sha256": "1462a15ba04da0c190e978f1681518b630c42dae457be3d31b341765fae2af6b"
+  },
+  {
+    "seed": 20261009,
+    "parameters": 101185,
+    "local_cpu_load_ok": true,
+    "sha256": "eb22c4f16594f0db36ccb286c0612369b20569fce68d760681c3f809ae6a832a"
+  }
+]

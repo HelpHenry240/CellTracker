@@ -1,0 +1,82 @@
+[17:44:01] experiment P8_gt_marker_encoder_baseline_seed20261008_train start: ideas GNN 独立训练
+[epoch   1] P=0.8019 R=0.9945 F1=0.8878
+[epoch   2] P=0.9745 R=0.9791 F1=0.9768
+[epoch   3] P=0.9755 R=0.9856 F1=0.9805
+[epoch   4] P=0.9839 R=0.9811 F1=0.9825
+[epoch   5] P=0.9816 R=0.9837 F1=0.9827
+[epoch   6] P=0.9816 R=0.9898 F1=0.9857
+[epoch   7] P=0.9862 R=0.9871 F1=0.9866
+[epoch   8] P=0.9887 R=0.9782 F1=0.9834
+[epoch   9] P=0.9860 R=0.9833 F1=0.9846
+[epoch  10] P=0.9744 R=0.9950 F1=0.9846
+[epoch  11] P=0.9823 R=0.9940 F1=0.9881
+[epoch  12] P=0.9844 R=0.9916 F1=0.9880
+[epoch  13] P=0.9783 R=0.9938 F1=0.9860
+[epoch  14] P=0.9865 R=0.9919 F1=0.9892
+[epoch  15] P=0.9930 R=0.9890 F1=0.9910
+[epoch  16] P=0.9854 R=0.9930 F1=0.9892
+[epoch  17] P=0.9892 R=0.9929 F1=0.9910
+[epoch  18] P=0.9874 R=0.9934 F1=0.9904
+[epoch  19] P=0.9885 R=0.9937 F1=0.9911
+[epoch  20] P=0.9885 R=0.9927 F1=0.9906
+[epoch  21] P=0.9883 R=0.9938 F1=0.9910
+[epoch  22] P=0.9838 R=0.9944 F1=0.9891
+[epoch  23] P=0.9901 R=0.9924 F1=0.9912
+[epoch  24] P=0.9822 R=0.9963 F1=0.9892
+[epoch  25] P=0.9839 R=0.9946 F1=0.9892
+[epoch  26] P=0.9915 R=0.9911 F1=0.9913
+[epoch  27] P=0.9909 R=0.9895 F1=0.9902
+[epoch  28] P=0.9929 R=0.9908 F1=0.9919
+[epoch  29] P=0.9811 R=0.9957 F1=0.9884
+[epoch  30] P=0.9829 R=0.9951 F1=0.9889
+[epoch  31] P=0.9835 R=0.9923 F1=0.9879
+[epoch  32] P=0.9837 R=0.9960 F1=0.9898
+[epoch  33] P=0.9876 R=0.9930 F1=0.9903
+[epoch  34] P=0.9904 R=0.9902 F1=0.9903
+[epoch  35] P=0.9812 R=0.9958 F1=0.9884
+[epoch  36] P=0.9828 R=0.9946 F1=0.9887
+[epoch  37] P=0.9760 R=0.9955 F1=0.9857
+[epoch  38] P=0.9848 R=0.9954 F1=0.9900
+[epoch  39] P=0.9901 R=0.9925 F1=0.9913
+[epoch  40] P=0.9871 R=0.9939 F1=0.9905
+[epoch  41] P=0.9895 R=0.9910 F1=0.9903
+[epoch  42] P=0.9864 R=0.9935 F1=0.9899
+[epoch  43] P=0.9908 R=0.9936 F1=0.9922
+[epoch  44] P=0.9864 R=0.9947 F1=0.9905
+[epoch  45] P=0.9809 R=0.9955 F1=0.9881
+[epoch  46] P=0.9879 R=0.9929 F1=0.9904
+[epoch  47] P=0.9762 R=0.9954 F1=0.9857
+[epoch  48] P=0.9871 R=0.9926 F1=0.9898
+[epoch  49] P=0.9838 R=0.9947 F1=0.9892
+[epoch  50] P=0.9843 R=0.9942 F1=0.9892
+[epoch  51] P=0.9443 R=0.9968 F1=0.9699
+[epoch  52] P=0.9902 R=0.9909 F1=0.9906
+[epoch  53] P=0.9845 R=0.9951 F1=0.9898
+[epoch  54] P=0.9810 R=0.9939 F1=0.9874
+[epoch  55] P=0.9841 R=0.9949 F1=0.9895
+[epoch  56] P=0.9844 R=0.9948 F1=0.9896
+[epoch  57] P=0.9869 R=0.9930 F1=0.9900
+[epoch  58] P=0.9878 R=0.9931 F1=0.9904
+[epoch  59] P=0.9900 R=0.9912 F1=0.9906
+[epoch  60] P=0.9853 R=0.9950 F1=0.9901
+[17:44:32] metrics -> /root/CellTracker_oracle_encoder_20261009/experiments/P8_gt_marker_encoder_baseline_seed20261008_train/metrics.json
+[17:44:32] experiment P8_gt_marker_encoder_baseline_seed20261008_train finished: done
+{
+  "out_dir": "/root/CellTracker_oracle_encoder_20261009/experiments/P8_gt_marker_encoder_matrix_20261009/models/baseline/seed20261008",
+  "best_f1": 0.9921915222241291,
+  "node_dim": 133,
+  "edge_dim": 10,
+  "split_mode": "block",
+  "n_train": 152,
+  "n_val": 38,
+  "checkpoints": {
+    "best.pt": {
+      "bytes": 1173662,
+      "sha256": "cf0c4ea7707c69e4d377469fb4703997d70397ea892066f88325596b45f034a9"
+    },
+    "last.pt": {
+      "bytes": 1185214,
+      "sha256": "ae8aaebf5d86f9a69d429daacb43748a1a2558e22805a4c1bc2f3a625fb7f5be"
+    }
+  }
+}

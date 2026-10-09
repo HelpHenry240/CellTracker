@@ -1,0 +1,285 @@
+{
+  "status": "graphs_built",
+  "pipeline": {
+    "schema": "ideas-v3",
+    "n_frames": 195,
+    "frames": {
+      "diagnostic_list_omitted": true,
+      "items": 195,
+      "full_record": "immutable cloud evidence archive; see archive_manifest.json"
+    },
+    "decision": "ot_rule",
+    "gnn_enabled": true,
+    "detection_source": "gt_tra",
+    "spacing_zyx": [
+      1.0,
+      0.09,
+      0.09
+    ],
+    "h5": "data/interim/Fluo-N3DH-CE_01.h5",
+    "gt_h5": "data/interim/Fluo-N3DH-CE_01.h5",
+    "input_sha256": "f57ed35684b8b6b6a6eb27597df2ba5b248bdd5238191b5a584af0dddd138fc9",
+    "input_contract": {
+      "signature": "de69d03522c15304e4c18cf6c7552040c56ced04c7e86781f0bb9518469702fa",
+      "definition": {
+        "measure": {
+          "mass_mode": "uniform",
+          "knn_k": 6,
+          "sigma_x": null,
+          "sigma_f": null,
+          "spacing_zyx": [
+            1.0,
+            0.09,
+            0.09
+          ],
+          "structure_mode": "full"
+        },
+        "coupling": {
+          "enabled": true,
+          "alpha": 1.0,
+          "alpha_pred": 0.0,
+          "beta": 1.0,
+          "sigma_s": null,
+          "r_max": 6.4,
+          "eta": 0.3,
+          "eps_rel": 1.0,
+          "eps": null,
+          "tau_a": 1.0,
+          "tau_b": 1.0,
+          "sinkhorn_iters": 1000,
+          "fgw_outer": 10
+        },
+        "motion": {
+          "enabled": true,
+          "alpha_pred": 1.0
+        },
+        "multiscale": {
+          "enabled": true,
+          "ks": [
+            2,
+            3,
+            5
+          ],
+          "lambda_temp": {
+            "2": 0.1,
+            "3": 0.05,
+            "5": 0.02
+          },
+          "n_rounds": 2,
+          "norm": "raw",
+          "line_search": true,
+          "jump_r_max_scale": 1.0
+        },
+        "graph": {
+          "theta_gamma_frac": null,
+          "theta_gamma": 0.0007732214602622906,
+          "theta_c": 38.27490530000012,
+          "cand_topk": 0,
+          "ctx_window": 2,
+          "bridge": true,
+          "bridge_gap": 2,
+          "bridge_scope": "missing_only",
+          "intra_knn": 4,
+          "intra_enabled": true,
+          "context_enabled": true,
+          "use_ot_candidates": true,
+          "use_ot_features": true,
+          "use_intra_similarity": true
+        },
+        "node": {
+          "f_source": "encoder_npz"
+        },
+        "motion_initialization": {
+          "theta_gamma_frac": null,
+          "theta_gamma": 0.0007732214602622906,
+          "theta_c": 38.27490530000012,
+          "eta_death": 0.05747371257213345,
+          "eta_birth": 0.03530156498247215,
+          "mass_threshold_mode": "absolute",
+          "birth_death_enabled": true,
+          "death_veto": true,
+          "birth_veto": true,
+          "division_enabled": true,
+          "volume_conservation": false,
+          "div_ratio": 0.05,
+          "vol_tol": 0.5,
+          "max_children": 2,
+          "tau_edge": 0.5,
+          "hole_policy": "split",
+          "filter_isolated": false,
+          "mark_uncertainty": true
+        },
+        "schema": "ideas-v3",
+        "detection_source": "gt_tra",
+        "label_mapping": "unspecified",
+        "encoder": {
+          "schema": "encoder_centroid_v1",
+          "model_sha256": "f5388fb1eb4159b26f6976882f2204072378e7c15938a6a68f00aa0d95defdfd",
+          "stage": 2,
+          "feature_dim": 128,
+          "aggregation": "mean_of_overlapping_tile_centroid_samples"
+        }
+      }
+    },
+    "mass_mode": "uniform",
+    "f_source": "encoder_npz",
+    "encoder_metadata": {
+      "schema": "encoder_centroid_v1",
+      "model_sha256": "f5388fb1eb4159b26f6976882f2204072378e7c15938a6a68f00aa0d95defdfd",
+      "detection_sha256": "f57ed35684b8b6b6a6eb27597df2ba5b248bdd5238191b5a584af0dddd138fc9",
+      "stage": 2,
+      "seq": "01",
+      "aggregation": "mean_of_overlapping_tile_centroid_samples",
+      "feature_dim": 128
+    },
+    "motion": {
+      "enabled": true,
+      "alpha_pred": 1.0,
+      "legacy_background_matching": false,
+      "pass1_tracks": 1320,
+      "velocity": {
+        "live": true,
+        "n": 23802,
+        "n_nonzero": 22103,
+        "p50_um": 0.5762811813689563,
+        "p99_um": 2.018102554625935
+      }
+    },
+    "n_couplings": 194,
+    "coupling_eps": {
+      "diagnostic_list_omitted": true,
+      "items": 194,
+      "full_record": "immutable cloud evidence archive; see archive_manifest.json"
+    },
+    "multiscale": {
+      "enabled": true,
+      "norm": "raw",
+      "ks": [
+        2,
+        3,
+        5
+      ],
+      "lambda_temp": {
+        "2": 0.1,
+        "3": 0.05,
+        "5": 0.02
+      },
+      "n_rounds": 2,
+      "line_search": true,
+      "history": [
+        {
+          "round": 0,
+          "objective": -712516.6386052299,
+          "reg": 9400.198272241476,
+          "accepted_updates": 0
+        },
+        {
+          "round": 1,
+          "objective": -717978.9006183626,
+          "reg": 9577.381489100595,
+          "accepted_updates": 194
+        },
+        {
+          "round": 2,
+          "objective": -721311.4733784889,
+          "reg": 9359.943313020482,
+          "accepted_updates": 194
+        }
+      ],
+      "original_cost_preserved": true,
+      "objective_kind": "eq17_fixed_complete"
+    },
+    "n_jump_couplings": 193,
+    "tracks_after_decision": 822,
+    "tracklet": {
+      "enabled": true,
+      "n_pieces": 1550,
+      "window": 5,
+      "local_confidence": 0.8,
+      "summary": "mean_velocity_size_and_size_rate",
+      "n_candidates": 1859,
+      "eps": 8.842399999999998,
+      "n_components": 611,
+      "largest_matrix_entries": 132,
+      "n_links": 950,
+      "ghost_dropped": 0,
+      "segments_split": 0,
+      "parent_fixed": 0,
+      "extra_children_removed": 0,
+      "hole_policy": "split",
+      "holes_total": 0
+    },
+    "tracks_final": 600,
+    "holes": {
+      "n_tracks_with_holes": 0,
+      "n_hole_frames": 0,
+      "hole_policy": "split"
+    },
+    "reconstruct": {
+      "decision": "ot_rule",
+      "n_division": 232,
+      "n_division_rejected_volume": 0,
+      "n_bridge_used": 0,
+      "n_bridge_dropped": 0,
+      "n_edges_accepted": 23444,
+      "n_death": 224,
+      "n_birth": 233,
+      "n_mass_veto": 294,
+      "uncertain_nodes": {
+        "diagnostic_list_omitted": true,
+        "items": 3330,
+        "full_record": "immutable cloud evidence archive; see archive_manifest.json"
+      },
+      "n_uncertain_nodes": 3330,
+      "n_isolated_suppressed": 0,
+      "ghost_dropped": 0,
+      "segments_split": 0,
+      "parent_fixed": 0,
+      "extra_children_removed": 0,
+      "hole_policy": "split",
+      "holes_total": 0,
+      "accepted_edges": {
+        "diagnostic_list_omitted": true,
+        "items": 23444,
+        "full_record": "immutable cloud evidence archive; see archive_manifest.json"
+      },
+      "n_link_accept": 23444,
+      "n_bridge_accept": 0,
+      "tracklet": {
+        "enabled": true,
+        "n_pieces": 1550,
+        "window": 5,
+        "local_confidence": 0.8,
+        "summary": "mean_velocity_size_and_size_rate",
+        "n_candidates": 1859,
+        "eps": 8.842399999999998,
+        "n_components": 611,
+        "largest_matrix_entries": 132,
+        "n_links": 950,
+        "ghost_dropped": 0,
+        "segments_split": 0,
+        "parent_fixed": 0,
+        "extra_children_removed": 0,
+        "hole_policy": "split",
+        "holes_total": 0
+      }
+    },
+    "graph_dataset": {
+      "n_graphs": 194,
+      "n_nodes": 116826,
+      "n_positive_candidates": 23757,
+      "n_candidates": 46121,
+      "out_dir": "/root/CellTracker_oracle_encoder_20261009/experiments/P8_gt_marker_encoder_matrix_20261009/graphs/baseline"
+    },
+    "stage_seconds": {
+      "load": 0.314,
+      "motion": 17.045,
+      "couplings": 14.07,
+      "multiscale": 43.849,
+      "decision": 2.414,
+      "tracklet": 0.756,
+      "dump_graphs": 7.444
+    },
+    "total_seconds": 85.893
+  }
+}

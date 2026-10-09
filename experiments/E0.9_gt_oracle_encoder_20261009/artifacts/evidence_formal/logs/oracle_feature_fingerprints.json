@@ -1,0 +1,32 @@
+{
+  "01": {
+    "file": "/root/CellTracker_oracle_encoder_conservative_20261009/data/interim/encoder_01_gt_marker_20261009.npz",
+    "resolved_file": "/root/CellTracker_oracle_encoder_20261009/data/interim/encoder_01_gt_marker_20261009.npz",
+    "bytes": 11628042,
+    "sha256": "a253d6ec392f826cdd910580edeffca63d77be47454cf389b1e55018e884d3ff",
+    "metadata": {
+      "schema": "encoder_centroid_v1",
+      "model_sha256": "f5388fb1eb4159b26f6976882f2204072378e7c15938a6a68f00aa0d95defdfd",
+      "detection_sha256": "f57ed35684b8b6b6a6eb27597df2ba5b248bdd5238191b5a584af0dddd138fc9",
+      "stage": 2,
+      "seq": "01",
+      "aggregation": "mean_of_overlapping_tile_centroid_samples",
+      "feature_dim": 128
+    }
+  },
+  "02": {
+    "file": "/root/CellTracker_oracle_encoder_conservative_20261009/data/interim/encoder_02_gt_marker_20261009.npz",
+    "resolved_file": "/root/CellTracker_oracle_encoder_20261009/data/interim/encoder_02_gt_marker_20261009.npz",
+    "bytes": 10870347,
+    "sha256": "6606fb5e362b8c4b38f2c04727416bbabdebc55b59700220c4fe9d4722224a35",
+    "metadata": {
+      "schema": "encoder_centroid_v1",
+      "model_sha256": "f5388fb1eb4159b26f6976882f2204072378e7c15938a6a68f00aa0d95defdfd",
+      "detection_sha256": "d5e454b4ac7accb1dfdb68f640224ed48ee5ede65c015a51a172efa47c229513",
+      "stage": 2,
+      "seq": "02",
+      "aggregation": "mean_of_overlapping_tile_centroid_samples",
+      "feature_dim": 128
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "out_dir": "/root/CellTracker_oracle_encoder_20261009/experiments/P8_gt_marker_encoder_matrix_20261009/models/baseline/seed20261009",
+  "best_f1": 0.9924128766770972,
+  "node_dim": 133,
+  "edge_dim": 10,
+  "split_mode": "block",
+  "n_train": 152,
+  "n_val": 38,
+  "checkpoints": {
+    "best.pt": {
+      "bytes": 1175518,
+      "sha256": "88875a1c9f09c0a6d64e927e5c5c1d7b44622be0e0f398727a68596efc1d6c8d"
+    },
+    "last.pt": {
+      "bytes": 1185214,
+      "sha256": "b7c41b368544490c1439ac21d1a0844afe190bde912204841a735b0fe7a53a7a"
+    }
+  }
+}

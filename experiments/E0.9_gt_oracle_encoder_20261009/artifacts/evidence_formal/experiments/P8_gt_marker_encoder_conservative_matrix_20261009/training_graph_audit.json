@@ -1,0 +1,21 @@
+{
+  "graphs": 194,
+  "positive_edges": 23797,
+  "division_positive": 716,
+  "bridge_candidates": 0,
+  "true_edges_total": 23798,
+  "division_edges_total": 716,
+  "true_recall": 0.9999579796621565,
+  "division_recall": 1.0,
+  "positive_C_percentiles": {
+    "p50": 1.5022000074386597,
+    "p95": 6.709099769592285,
+    "p99": 15.771727790832553,
+    "p99.9": 34.809250289920065,
+    "max": 75.2322998046875
+  },
+  "lambda_OT": 0.001,
+  "input_source": "gt_tra",
+  "features": "encoder_npz",
+  "train_GT_role": "edge labels; node vectors have no track identity column"
+}

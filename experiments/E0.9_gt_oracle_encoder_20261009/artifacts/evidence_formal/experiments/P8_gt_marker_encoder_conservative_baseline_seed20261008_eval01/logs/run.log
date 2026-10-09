@@ -1,0 +1,3 @@
+[18:04:49] experiment P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01 start: ideas pipeline 重建链路
+[18:06:57] metrics -> /root/CellTracker_oracle_encoder_conservative_20261009/experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/metrics.json
+[18:08:10] experiment P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01 finished: done

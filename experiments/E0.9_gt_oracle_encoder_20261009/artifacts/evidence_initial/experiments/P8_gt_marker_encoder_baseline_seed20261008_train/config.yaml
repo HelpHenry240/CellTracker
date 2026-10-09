@@ -1,0 +1,39 @@
+experiment_id: P8_gt_marker_encoder_baseline_seed20261008_train
+date: '2026-10-09'
+purpose: ideas GNN 独立训练
+params:
+  graphs: /root/CellTracker_oracle_encoder_20261009/experiments/P8_gt_marker_encoder_matrix_20261009/graphs/baseline
+  out: /root/CellTracker_oracle_encoder_20261009/experiments/P8_gt_marker_encoder_matrix_20261009/models/baseline/seed20261008
+  config: /root/CellTracker_oracle_encoder_20261009/experiments/P8_gt_marker_encoder_matrix_20261009/configs/baseline_calibrated.yaml
+  epochs: 60
+  batch_pairs: 8
+  hidden: null
+  layers: null
+  lr: 0.001
+  lambda_ot: null
+  residual: null
+  class_weighted: null
+  seed: 20261008
+  device: cuda
+  val_fraction: 0.2
+  resume: false
+  exp_id: P8_gt_marker_encoder_baseline_seed20261008_train
+argv:
+- /root/CellTracker_oracle_encoder_20261009/paperpipe/scripts/train_paper_gnn.py
+- --graphs
+- /root/CellTracker_oracle_encoder_20261009/experiments/P8_gt_marker_encoder_matrix_20261009/graphs/baseline
+- --out
+- /root/CellTracker_oracle_encoder_20261009/experiments/P8_gt_marker_encoder_matrix_20261009/models/baseline/seed20261008
+- --config
+- /root/CellTracker_oracle_encoder_20261009/experiments/P8_gt_marker_encoder_matrix_20261009/configs/baseline_calibrated.yaml
+- --epochs
+- '60'
+- --seed
+- '20261008'
+- --device
+- cuda
+- --exp-id
+- P8_gt_marker_encoder_baseline_seed20261008_train
+seed: 20261008
+status: done
+summary: best_f1=0.99219

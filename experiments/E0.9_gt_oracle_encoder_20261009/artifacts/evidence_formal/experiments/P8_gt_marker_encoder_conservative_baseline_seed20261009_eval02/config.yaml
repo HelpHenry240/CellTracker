@@ -1,0 +1,57 @@
+experiment_id: P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02
+date: '2026-10-09'
+purpose: ideas pipeline 重建链路
+params:
+  h5: data/interim/Fluo-N3DH-CE_02.h5
+  gt_h5: data/interim/Fluo-N3DH-CE_02.h5
+  seq: '02'
+  dataset: Fluo-N3DH-CE
+  exp_id: P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02
+  config: /root/CellTracker_oracle_encoder_conservative_20261009/experiments/P8_gt_marker_encoder_conservative_matrix_20261009/configs/baseline_calibrated.yaml
+  set:
+  - node.encoder_feat_path=data/interim/encoder_02_gt_marker_20261009.npz
+  ablate: []
+  list_modules: false
+  ckpt: /root/CellTracker_oracle_encoder_conservative_20261009/experiments/P8_gt_marker_encoder_conservative_matrix_20261009/models/baseline/seed20261009/best.pt
+  frames: null
+  dump_graphs: null
+  build_only: false
+  resume_graphs: false
+  cache_dir: /root/CellTracker_oracle_encoder_conservative_20261009/experiments/P8_gt_marker_encoder_conservative_matrix_20261009/cache/baseline/02
+  device: cuda
+  official: true
+  official_tools: /root/EvaluationSoftware/Linux
+  official_gt_dir: /root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT
+  cloud_gt_root: null
+  gt_seg_dir: null
+  no_validate: false
+  seed: 20261008
+  ablations: []
+argv:
+- /root/CellTracker_oracle_encoder_conservative_20261009/paperpipe/scripts/run_paper_pipeline.py
+- --h5
+- data/interim/Fluo-N3DH-CE_02.h5
+- --gt-h5
+- data/interim/Fluo-N3DH-CE_02.h5
+- --seq
+- '02'
+- --exp-id
+- P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02
+- --config
+- /root/CellTracker_oracle_encoder_conservative_20261009/experiments/P8_gt_marker_encoder_conservative_matrix_20261009/configs/baseline_calibrated.yaml
+- --cache-dir
+- /root/CellTracker_oracle_encoder_conservative_20261009/experiments/P8_gt_marker_encoder_conservative_matrix_20261009/cache/baseline/02
+- --device
+- cuda
+- --set
+- node.encoder_feat_path=data/interim/encoder_02_gt_marker_20261009.npz
+- --ckpt
+- /root/CellTracker_oracle_encoder_conservative_20261009/experiments/P8_gt_marker_encoder_conservative_matrix_20261009/models/baseline/seed20261009/best.pt
+- --official
+- --official-tools
+- /root/EvaluationSoftware/Linux
+- --official-gt-dir
+- /root/autodl-tmp/ctc/raw/Fluo-N3DH-CE/02_GT
+seed: 20261008
+status: done
+summary: tracks=590 decision=gnn

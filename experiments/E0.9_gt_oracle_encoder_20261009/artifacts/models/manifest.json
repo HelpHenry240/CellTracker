@@ -1,0 +1,28 @@
+[
+  {
+    "profile": "gt_marker_encoder_conservative",
+    "seed": 20261008,
+    "path": "/root/CellTracker_oracle_encoder_conservative_20261009/oracle_inference/gt_marker_encoder_conservative/seed20261008_inference.pt",
+    "bytes": 447738,
+    "md5": "6a7957b77d94539611833134f028dbc2",
+    "sha256": "1462a15ba04da0c190e978f1681518b630c42dae457be3d31b341765fae2af6b",
+    "source_checkpoint_sha256": "81bd144416a2265d9eb20e932fdf2eda172bbd3c697eba8fe30f4f6a1566d608",
+    "epoch": 47,
+    "input_contract_signature": "0f3b9ab8a5738ff627db9b215aa673a54acaaee6b88477444dc0aeab4d9be09c",
+    "git_commit": "500322cc01433477cea866654faa035d1d617398",
+    "tensor_identity_verified": true
+  },
+  {
+    "profile": "gt_marker_encoder_conservative",
+    "seed": 20261009,
+    "path": "/root/CellTracker_oracle_encoder_conservative_20261009/oracle_inference/gt_marker_encoder_conservative/seed20261009_inference.pt",
+    "bytes": 447738,
+    "md5": "5b7052fc73ebc8a486ff19e94be979d3",
+    "sha256": "eb22c4f16594f0db36ccb286c0612369b20569fce68d760681c3f809ae6a832a",
+    "source_checkpoint_sha256": "59145ea34d0a3eea073888d4e8a56395361e47928112cca6d052dd82201e6ca6",
+    "epoch": 42,
+    "input_contract_signature": "0f3b9ab8a5738ff627db9b215aa673a54acaaee6b88477444dc0aeab4d9be09c",
+    "git_commit": "500322cc01433477cea866654faa035d1d617398",
+    "tensor_identity_verified": true
+  }
+]

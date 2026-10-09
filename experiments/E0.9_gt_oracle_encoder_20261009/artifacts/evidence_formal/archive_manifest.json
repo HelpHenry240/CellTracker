@@ -1,0 +1,1256 @@
+{
+  "files": {
+    "SOURCE_VERSION.json": {
+      "source_sha256": "5441c87903563c11a7957f234880c8535192488ee9510c62b4cf87e17f75a286",
+      "source_bytes": 21981,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5441c87903563c11a7957f234880c8535192488ee9510c62b4cf87e17f75a286"
+    },
+    "data/interim/encoder_01_gt_marker_20261009.json": {
+      "source_sha256": "a868ddd7814497099f92b1f13110be0ed984dc77278da063095b5e7fef84686c",
+      "source_bytes": 326,
+      "compacted_diagnostics": false,
+      "repository_sha256": "a868ddd7814497099f92b1f13110be0ed984dc77278da063095b5e7fef84686c"
+    },
+    "data/interim/encoder_02_gt_marker_20261009.json": {
+      "source_sha256": "c3789cddc530329bd60439b51ca6fe32b3821d361f28ecd48a88ee52144b77ca",
+      "source_bytes": 326,
+      "compacted_diagnostics": false,
+      "repository_sha256": "c3789cddc530329bd60439b51ca6fe32b3821d361f28ecd48a88ee52144b77ca"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_build01/artifacts/pipeline/run_info.json": {
+      "source_sha256": "c219026834949f35398d42c2b331cac2c171407205a2e66c1e1f15c34058943a",
+      "source_bytes": 2633510,
+      "compacted_diagnostics": true,
+      "repository_sha256": "8ea698fd457a1eecc245d9975b4c50ebd277be54d6ebbc0b965346bed077d89b"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_build01/command.sh": {
+      "source_sha256": "449dad0ffa8dcf489cf7c617eecba83b2293d5ec8bbb6915b78672beee61355b",
+      "source_bytes": 935,
+      "compacted_diagnostics": false,
+      "repository_sha256": "449dad0ffa8dcf489cf7c617eecba83b2293d5ec8bbb6915b78672beee61355b"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_build01/config.yaml": {
+      "source_sha256": "8a32e4ce257f2c55008605a028044d4f15757d06af593b5a430173d7800c1243",
+      "source_bytes": 2033,
+      "compacted_diagnostics": false,
+      "repository_sha256": "8a32e4ce257f2c55008605a028044d4f15757d06af593b5a430173d7800c1243"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_build01/env.txt": {
+      "source_sha256": "5ef5832aa0341a1478add5ec592a14fe17cb09c88e8d10725cecac4395387c54",
+      "source_bytes": 5847,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5ef5832aa0341a1478add5ec592a14fe17cb09c88e8d10725cecac4395387c54"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_build01/figures/pipeline_stages.svg": {
+      "source_sha256": "9830fa8b9688c5438f9a44bedba126b3447d06480fba21c61d59ef4228193168",
+      "source_bytes": 699,
+      "compacted_diagnostics": false,
+      "repository_sha256": "9830fa8b9688c5438f9a44bedba126b3447d06480fba21c61d59ef4228193168"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_build01/git_commit.txt": {
+      "source_sha256": "5514cf43fe2a866eca48a06072519acc5cd02bb95d5ab7f1be38b0bb68bb3e50",
+      "source_bytes": 129,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5514cf43fe2a866eca48a06072519acc5cd02bb95d5ab7f1be38b0bb68bb3e50"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_build01/logs/run.log": {
+      "source_sha256": "f8209eaca8e0d704379e3add5b8e6c765aa55cb6e88a80310a182e0074a83ddd",
+      "source_bytes": 349,
+      "compacted_diagnostics": false,
+      "repository_sha256": "f8209eaca8e0d704379e3add5b8e6c765aa55cb6e88a80310a182e0074a83ddd"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_build01/metrics.json": {
+      "source_sha256": "9b0bff5b4eda9d69822da534b6a1bf71a2fe6af8388e4e530d2307a14988a2dc",
+      "source_bytes": 3003048,
+      "compacted_diagnostics": true,
+      "repository_sha256": "1909241fb18ad864893d803a42a244dce7278f0c86dbfe997303cb72ac7ad3a2"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_build01/notes.md": {
+      "source_sha256": "e4736655caba96d51a98f29d2b1fb1d051f3e5648d9d2bfde92b41a078a35521",
+      "source_bytes": 212,
+      "compacted_diagnostics": false,
+      "repository_sha256": "e4736655caba96d51a98f29d2b1fb1d051f3e5648d9d2bfde92b41a078a35521"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_build01/pipeline_config.yaml": {
+      "source_sha256": "98b6a80696bef94f9f504e6201c1c361b71d2d45045ce051a05b30a5021f8209",
+      "source_bytes": 1829,
+      "compacted_diagnostics": false,
+      "repository_sha256": "98b6a80696bef94f9f504e6201c1c361b71d2d45045ce051a05b30a5021f8209"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/artifacts/pipeline/run_info.json": {
+      "source_sha256": "d56e9ce63334b8e0d113cc2c2b4b1fa2b1eb9394ec96030fd5df98a6d0ca4a39",
+      "source_bytes": 2225683,
+      "compacted_diagnostics": true,
+      "repository_sha256": "baf34208fd88e204132909b976d401c7b2ee3acfd96ea13f66192392f1de9c24"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/artifacts/submission/01_RES/DET_log.txt": {
+      "source_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b",
+      "source_bytes": 245,
+      "compacted_diagnostics": false,
+      "repository_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/artifacts/submission/01_RES/SEG_log.txt": {
+      "source_sha256": "1ef808b5f2240d6bdf63ec8c6f6b2405a72437b5be35532af9d8db8cb357f839",
+      "source_bytes": 1828,
+      "compacted_diagnostics": false,
+      "repository_sha256": "1ef808b5f2240d6bdf63ec8c6f6b2405a72437b5be35532af9d8db8cb357f839"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/artifacts/submission/01_RES/TRA_log.txt": {
+      "source_sha256": "9ef799a5c26a25257414a12a1c2f5dc97809e75d063fb671815baed01df5531f",
+      "source_bytes": 19278,
+      "compacted_diagnostics": false,
+      "repository_sha256": "9ef799a5c26a25257414a12a1c2f5dc97809e75d063fb671815baed01df5531f"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/artifacts/submission/01_RES/local_metrics.json": {
+      "source_sha256": "a1f0d852612fc16920d4491a127e57396c2a925a2c00811acc0de865ea599fac",
+      "source_bytes": 564,
+      "compacted_diagnostics": false,
+      "repository_sha256": "a1f0d852612fc16920d4491a127e57396c2a925a2c00811acc0de865ea599fac"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/artifacts/submission/01_RES/res_track.txt": {
+      "source_sha256": "db6abe898c6a1694e78d175379c3b960a58852e25b143d718f1c82929ff0c878",
+      "source_bytes": 9552,
+      "compacted_diagnostics": false,
+      "repository_sha256": "db6abe898c6a1694e78d175379c3b960a58852e25b143d718f1c82929ff0c878"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/command.sh": {
+      "source_sha256": "fec1c5a020ce623339b2021daeabd57c7b0fac264b7b402134a4ed6adadc6c24",
+      "source_bytes": 1069,
+      "compacted_diagnostics": false,
+      "repository_sha256": "fec1c5a020ce623339b2021daeabd57c7b0fac264b7b402134a4ed6adadc6c24"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/config.yaml": {
+      "source_sha256": "e82b982c7a0fa0b6e807c1c52b79e4e6e6397dfc56f3acc46af3c5b48d6e490c",
+      "source_bytes": 2281,
+      "compacted_diagnostics": false,
+      "repository_sha256": "e82b982c7a0fa0b6e807c1c52b79e4e6e6397dfc56f3acc46af3c5b48d6e490c"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/env.txt": {
+      "source_sha256": "bc805fe0339640cad453513ad6b1e7263264a78c041378fd36a63355b71998f1",
+      "source_bytes": 5847,
+      "compacted_diagnostics": false,
+      "repository_sha256": "bc805fe0339640cad453513ad6b1e7263264a78c041378fd36a63355b71998f1"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/figures/pipeline_stages.svg": {
+      "source_sha256": "2163e632fb0236e3c4b6ec715875ccba7a4853c54f2dff2ee59ddd8e1dca8094",
+      "source_bytes": 611,
+      "compacted_diagnostics": false,
+      "repository_sha256": "2163e632fb0236e3c4b6ec715875ccba7a4853c54f2dff2ee59ddd8e1dca8094"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/git_commit.txt": {
+      "source_sha256": "5514cf43fe2a866eca48a06072519acc5cd02bb95d5ab7f1be38b0bb68bb3e50",
+      "source_bytes": 129,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5514cf43fe2a866eca48a06072519acc5cd02bb95d5ab7f1be38b0bb68bb3e50"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/logs/run.log": {
+      "source_sha256": "fe775c628e98ab79f5088e809331a2dba3a601692fa19867d20ce5759a8b8c08",
+      "source_bytes": 385,
+      "compacted_diagnostics": false,
+      "repository_sha256": "fe775c628e98ab79f5088e809331a2dba3a601692fa19867d20ce5759a8b8c08"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/metrics.json": {
+      "source_sha256": "0c9c8eb65393a83b7344f0ea0629099f9bfbd1a5a307640148c4c712e4e0bbe8",
+      "source_bytes": 743,
+      "compacted_diagnostics": false,
+      "repository_sha256": "0c9c8eb65393a83b7344f0ea0629099f9bfbd1a5a307640148c4c712e4e0bbe8"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/metrics_official_01.json": {
+      "source_sha256": "3a120ccd6d1dfe779bd5e6aa9ad835bd0a98abafc65d3d7b939407c7adf0a26c",
+      "source_bytes": 555,
+      "compacted_diagnostics": false,
+      "repository_sha256": "3a120ccd6d1dfe779bd5e6aa9ad835bd0a98abafc65d3d7b939407c7adf0a26c"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/notes.md": {
+      "source_sha256": "349473b46587534c24db4b3c4e0f2c5e4de279538cd0106dba8f61cd4e21d060",
+      "source_bytes": 208,
+      "compacted_diagnostics": false,
+      "repository_sha256": "349473b46587534c24db4b3c4e0f2c5e4de279538cd0106dba8f61cd4e21d060"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/official_logs/DET_log.txt": {
+      "source_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b",
+      "source_bytes": 245,
+      "compacted_diagnostics": false,
+      "repository_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/official_logs/DET_stdout.txt": {
+      "source_sha256": "dc4905309b31323fb5776c04edee171ae7121e2914cf2db8f27404bfc4983a93",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "dc4905309b31323fb5776c04edee171ae7121e2914cf2db8f27404bfc4983a93"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/official_logs/SEG_log.txt": {
+      "source_sha256": "1ef808b5f2240d6bdf63ec8c6f6b2405a72437b5be35532af9d8db8cb357f839",
+      "source_bytes": 1828,
+      "compacted_diagnostics": false,
+      "repository_sha256": "1ef808b5f2240d6bdf63ec8c6f6b2405a72437b5be35532af9d8db8cb357f839"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/official_logs/SEG_stdout.txt": {
+      "source_sha256": "72f0c1f1ca962ef78c7c35dd16f5c586e958ad4cf531a4c8eb7b85171b3e9928",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "72f0c1f1ca962ef78c7c35dd16f5c586e958ad4cf531a4c8eb7b85171b3e9928"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/official_logs/TRA_log.txt": {
+      "source_sha256": "9ef799a5c26a25257414a12a1c2f5dc97809e75d063fb671815baed01df5531f",
+      "source_bytes": 19278,
+      "compacted_diagnostics": false,
+      "repository_sha256": "9ef799a5c26a25257414a12a1c2f5dc97809e75d063fb671815baed01df5531f"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/official_logs/TRA_stdout.txt": {
+      "source_sha256": "9e10d27ae23d4adf83363d09981742f89603cd862665ceed5478551dee3ceb3f",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "9e10d27ae23d4adf83363d09981742f89603cd862665ceed5478551dee3ceb3f"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01/pipeline_config.yaml": {
+      "source_sha256": "98b6a80696bef94f9f504e6201c1c361b71d2d45045ce051a05b30a5021f8209",
+      "source_bytes": 1829,
+      "compacted_diagnostics": false,
+      "repository_sha256": "98b6a80696bef94f9f504e6201c1c361b71d2d45045ce051a05b30a5021f8209"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/artifacts/pipeline/run_info.json": {
+      "source_sha256": "29627d3240ecf8d3590ed91d232364edbcd1ed96072601ab396041e58416db67",
+      "source_bytes": 2091062,
+      "compacted_diagnostics": true,
+      "repository_sha256": "8cc05e5eef333264c98735c628ede42cbc5821fe741f7a34a76d7f16fbc8608d"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/artifacts/submission/02_RES/DET_log.txt": {
+      "source_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b",
+      "source_bytes": 245,
+      "compacted_diagnostics": false,
+      "repository_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/artifacts/submission/02_RES/SEG_log.txt": {
+      "source_sha256": "a9bd20477f12e65abcb8aa73e3ebaa4b353ec8743250474725f79bf728aed995",
+      "source_bytes": 1830,
+      "compacted_diagnostics": false,
+      "repository_sha256": "a9bd20477f12e65abcb8aa73e3ebaa4b353ec8743250474725f79bf728aed995"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/artifacts/submission/02_RES/TRA_log.txt": {
+      "source_sha256": "57d74dae051a3b7d87addb5b2adf97f0cdc1f1118d0e2dd531723909054b3369",
+      "source_bytes": 20972,
+      "compacted_diagnostics": false,
+      "repository_sha256": "57d74dae051a3b7d87addb5b2adf97f0cdc1f1118d0e2dd531723909054b3369"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/artifacts/submission/02_RES/local_metrics.json": {
+      "source_sha256": "5d797b1122c93393920402369a2a9bd89bba0d6b22980b72d0ecd397277f3284",
+      "source_bytes": 578,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5d797b1122c93393920402369a2a9bd89bba0d6b22980b72d0ecd397277f3284"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/artifacts/submission/02_RES/res_track.txt": {
+      "source_sha256": "25f20c566015a34ea29df69cb94fc0651842645e42bdf9557dbd1289b5ea9c4f",
+      "source_bytes": 8740,
+      "compacted_diagnostics": false,
+      "repository_sha256": "25f20c566015a34ea29df69cb94fc0651842645e42bdf9557dbd1289b5ea9c4f"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/command.sh": {
+      "source_sha256": "29c32d7bcb2dc08f4fce02a7acd25c404400bf5f2b740d7c5c0e140368cc151c",
+      "source_bytes": 1069,
+      "compacted_diagnostics": false,
+      "repository_sha256": "29c32d7bcb2dc08f4fce02a7acd25c404400bf5f2b740d7c5c0e140368cc151c"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/config.yaml": {
+      "source_sha256": "c219e77f25fa40d59d50ed486901ba41462555bb8ec506aaa3655be2006e5f71",
+      "source_bytes": 2281,
+      "compacted_diagnostics": false,
+      "repository_sha256": "c219e77f25fa40d59d50ed486901ba41462555bb8ec506aaa3655be2006e5f71"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/env.txt": {
+      "source_sha256": "847911c108374dfb08a348528a5fdaf87c26ff7f03492ed28e5409a320ef8f40",
+      "source_bytes": 5847,
+      "compacted_diagnostics": false,
+      "repository_sha256": "847911c108374dfb08a348528a5fdaf87c26ff7f03492ed28e5409a320ef8f40"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/figures/pipeline_stages.svg": {
+      "source_sha256": "3194a2b8a94a46b7153d064795e539c419eed7efc501d9bd05973b245eaadda5",
+      "source_bytes": 613,
+      "compacted_diagnostics": false,
+      "repository_sha256": "3194a2b8a94a46b7153d064795e539c419eed7efc501d9bd05973b245eaadda5"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/git_commit.txt": {
+      "source_sha256": "5514cf43fe2a866eca48a06072519acc5cd02bb95d5ab7f1be38b0bb68bb3e50",
+      "source_bytes": 129,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5514cf43fe2a866eca48a06072519acc5cd02bb95d5ab7f1be38b0bb68bb3e50"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/logs/run.log": {
+      "source_sha256": "2bdd35377e8f5921d3c1e633d31ee9b56c071796091192b93214953091b8873c",
+      "source_bytes": 385,
+      "compacted_diagnostics": false,
+      "repository_sha256": "2bdd35377e8f5921d3c1e633d31ee9b56c071796091192b93214953091b8873c"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/metrics.json": {
+      "source_sha256": "ac5d2f86a796e77a583ad773389a8ee1d0100d6ef53ae1f3c5195bb65c1d4fe6",
+      "source_bytes": 757,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ac5d2f86a796e77a583ad773389a8ee1d0100d6ef53ae1f3c5195bb65c1d4fe6"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/metrics_official_02.json": {
+      "source_sha256": "0a6c7ab542c0d698837c957f194392ae41edf40ae32f7748f3b0b9dc85fe3320",
+      "source_bytes": 555,
+      "compacted_diagnostics": false,
+      "repository_sha256": "0a6c7ab542c0d698837c957f194392ae41edf40ae32f7748f3b0b9dc85fe3320"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/notes.md": {
+      "source_sha256": "349473b46587534c24db4b3c4e0f2c5e4de279538cd0106dba8f61cd4e21d060",
+      "source_bytes": 208,
+      "compacted_diagnostics": false,
+      "repository_sha256": "349473b46587534c24db4b3c4e0f2c5e4de279538cd0106dba8f61cd4e21d060"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/official_logs/DET_log.txt": {
+      "source_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b",
+      "source_bytes": 245,
+      "compacted_diagnostics": false,
+      "repository_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/official_logs/DET_stdout.txt": {
+      "source_sha256": "dc4905309b31323fb5776c04edee171ae7121e2914cf2db8f27404bfc4983a93",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "dc4905309b31323fb5776c04edee171ae7121e2914cf2db8f27404bfc4983a93"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/official_logs/SEG_log.txt": {
+      "source_sha256": "a9bd20477f12e65abcb8aa73e3ebaa4b353ec8743250474725f79bf728aed995",
+      "source_bytes": 1830,
+      "compacted_diagnostics": false,
+      "repository_sha256": "a9bd20477f12e65abcb8aa73e3ebaa4b353ec8743250474725f79bf728aed995"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/official_logs/SEG_stdout.txt": {
+      "source_sha256": "72f0c1f1ca962ef78c7c35dd16f5c586e958ad4cf531a4c8eb7b85171b3e9928",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "72f0c1f1ca962ef78c7c35dd16f5c586e958ad4cf531a4c8eb7b85171b3e9928"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/official_logs/TRA_log.txt": {
+      "source_sha256": "57d74dae051a3b7d87addb5b2adf97f0cdc1f1118d0e2dd531723909054b3369",
+      "source_bytes": 20972,
+      "compacted_diagnostics": false,
+      "repository_sha256": "57d74dae051a3b7d87addb5b2adf97f0cdc1f1118d0e2dd531723909054b3369"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/official_logs/TRA_stdout.txt": {
+      "source_sha256": "437c746cd2dff306deb67a48116733e57c94a3505f4992985e2084760a90f53a",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "437c746cd2dff306deb67a48116733e57c94a3505f4992985e2084760a90f53a"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02/pipeline_config.yaml": {
+      "source_sha256": "0d5a60a26289f67fba6ef20a45c4f248b970f2adb299fe76adf66812257ed42c",
+      "source_bytes": 1829,
+      "compacted_diagnostics": false,
+      "repository_sha256": "0d5a60a26289f67fba6ef20a45c4f248b970f2adb299fe76adf66812257ed42c"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/artifacts/pipeline/run_info.json": {
+      "source_sha256": "82422946bd87e442f3e0ff9e3782f5d41f4fa2c98500110f419f6689edb8b99c",
+      "source_bytes": 2091059,
+      "compacted_diagnostics": true,
+      "repository_sha256": "d3d3629d03eaa23a93f7fcd052f27d407e05a8b8fea73409ae6ba69cd0c00aa7"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/artifacts/submission/02_RES/DET_log.txt": {
+      "source_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b",
+      "source_bytes": 245,
+      "compacted_diagnostics": false,
+      "repository_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/artifacts/submission/02_RES/SEG_log.txt": {
+      "source_sha256": "a9bd20477f12e65abcb8aa73e3ebaa4b353ec8743250474725f79bf728aed995",
+      "source_bytes": 1830,
+      "compacted_diagnostics": false,
+      "repository_sha256": "a9bd20477f12e65abcb8aa73e3ebaa4b353ec8743250474725f79bf728aed995"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/artifacts/submission/02_RES/TRA_log.txt": {
+      "source_sha256": "57d74dae051a3b7d87addb5b2adf97f0cdc1f1118d0e2dd531723909054b3369",
+      "source_bytes": 20972,
+      "compacted_diagnostics": false,
+      "repository_sha256": "57d74dae051a3b7d87addb5b2adf97f0cdc1f1118d0e2dd531723909054b3369"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/artifacts/submission/02_RES/local_metrics.json": {
+      "source_sha256": "5d797b1122c93393920402369a2a9bd89bba0d6b22980b72d0ecd397277f3284",
+      "source_bytes": 578,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5d797b1122c93393920402369a2a9bd89bba0d6b22980b72d0ecd397277f3284"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/artifacts/submission/02_RES/res_track.txt": {
+      "source_sha256": "25f20c566015a34ea29df69cb94fc0651842645e42bdf9557dbd1289b5ea9c4f",
+      "source_bytes": 8740,
+      "compacted_diagnostics": false,
+      "repository_sha256": "25f20c566015a34ea29df69cb94fc0651842645e42bdf9557dbd1289b5ea9c4f"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/command.sh": {
+      "source_sha256": "f0404e751a7dc533ed20a4629b0f89d62a3ca00c6b2ac86a70b19ad23ccd9a48",
+      "source_bytes": 1076,
+      "compacted_diagnostics": false,
+      "repository_sha256": "f0404e751a7dc533ed20a4629b0f89d62a3ca00c6b2ac86a70b19ad23ccd9a48"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/config.yaml": {
+      "source_sha256": "1d9eada22420d3cb9f7a993efae31d1755dd9039a4cb060369e052419b8e77ad",
+      "source_bytes": 2302,
+      "compacted_diagnostics": false,
+      "repository_sha256": "1d9eada22420d3cb9f7a993efae31d1755dd9039a4cb060369e052419b8e77ad"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/env.txt": {
+      "source_sha256": "e6c287adaac80da7b630ca29578316a86d8fe64d6eaaf75e87f9d0892d52b2eb",
+      "source_bytes": 5847,
+      "compacted_diagnostics": false,
+      "repository_sha256": "e6c287adaac80da7b630ca29578316a86d8fe64d6eaaf75e87f9d0892d52b2eb"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/figures/pipeline_stages.svg": {
+      "source_sha256": "4ba634611c543b2cfeb3614b9d8d72ea395dd70703d2498e071c8161195d7839",
+      "source_bytes": 611,
+      "compacted_diagnostics": false,
+      "repository_sha256": "4ba634611c543b2cfeb3614b9d8d72ea395dd70703d2498e071c8161195d7839"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/git_commit.txt": {
+      "source_sha256": "5514cf43fe2a866eca48a06072519acc5cd02bb95d5ab7f1be38b0bb68bb3e50",
+      "source_bytes": 129,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5514cf43fe2a866eca48a06072519acc5cd02bb95d5ab7f1be38b0bb68bb3e50"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/logs/run.log": {
+      "source_sha256": "bb8b32a0535d69d921138bef41c75fdf384d75c679eb798081f8e96663b22533",
+      "source_bytes": 406,
+      "compacted_diagnostics": false,
+      "repository_sha256": "bb8b32a0535d69d921138bef41c75fdf384d75c679eb798081f8e96663b22533"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/metrics.json": {
+      "source_sha256": "ac5d2f86a796e77a583ad773389a8ee1d0100d6ef53ae1f3c5195bb65c1d4fe6",
+      "source_bytes": 757,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ac5d2f86a796e77a583ad773389a8ee1d0100d6ef53ae1f3c5195bb65c1d4fe6"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/metrics_official_02.json": {
+      "source_sha256": "0a6c7ab542c0d698837c957f194392ae41edf40ae32f7748f3b0b9dc85fe3320",
+      "source_bytes": 555,
+      "compacted_diagnostics": false,
+      "repository_sha256": "0a6c7ab542c0d698837c957f194392ae41edf40ae32f7748f3b0b9dc85fe3320"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/notes.md": {
+      "source_sha256": "349473b46587534c24db4b3c4e0f2c5e4de279538cd0106dba8f61cd4e21d060",
+      "source_bytes": 208,
+      "compacted_diagnostics": false,
+      "repository_sha256": "349473b46587534c24db4b3c4e0f2c5e4de279538cd0106dba8f61cd4e21d060"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/official_logs/DET_log.txt": {
+      "source_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b",
+      "source_bytes": 245,
+      "compacted_diagnostics": false,
+      "repository_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/official_logs/DET_stdout.txt": {
+      "source_sha256": "dc4905309b31323fb5776c04edee171ae7121e2914cf2db8f27404bfc4983a93",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "dc4905309b31323fb5776c04edee171ae7121e2914cf2db8f27404bfc4983a93"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/official_logs/SEG_log.txt": {
+      "source_sha256": "a9bd20477f12e65abcb8aa73e3ebaa4b353ec8743250474725f79bf728aed995",
+      "source_bytes": 1830,
+      "compacted_diagnostics": false,
+      "repository_sha256": "a9bd20477f12e65abcb8aa73e3ebaa4b353ec8743250474725f79bf728aed995"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/official_logs/SEG_stdout.txt": {
+      "source_sha256": "72f0c1f1ca962ef78c7c35dd16f5c586e958ad4cf531a4c8eb7b85171b3e9928",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "72f0c1f1ca962ef78c7c35dd16f5c586e958ad4cf531a4c8eb7b85171b3e9928"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/official_logs/TRA_log.txt": {
+      "source_sha256": "57d74dae051a3b7d87addb5b2adf97f0cdc1f1118d0e2dd531723909054b3369",
+      "source_bytes": 20972,
+      "compacted_diagnostics": false,
+      "repository_sha256": "57d74dae051a3b7d87addb5b2adf97f0cdc1f1118d0e2dd531723909054b3369"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/official_logs/TRA_stdout.txt": {
+      "source_sha256": "437c746cd2dff306deb67a48116733e57c94a3505f4992985e2084760a90f53a",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "437c746cd2dff306deb67a48116733e57c94a3505f4992985e2084760a90f53a"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat/pipeline_config.yaml": {
+      "source_sha256": "0d5a60a26289f67fba6ef20a45c4f248b970f2adb299fe76adf66812257ed42c",
+      "source_bytes": 1829,
+      "compacted_diagnostics": false,
+      "repository_sha256": "0d5a60a26289f67fba6ef20a45c4f248b970f2adb299fe76adf66812257ed42c"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_train/command.sh": {
+      "source_sha256": "90a5ad1c61f10c1c3ce211597a4bb9d8b985f07466d595df30f9576920b559ee",
+      "source_bytes": 796,
+      "compacted_diagnostics": false,
+      "repository_sha256": "90a5ad1c61f10c1c3ce211597a4bb9d8b985f07466d595df30f9576920b559ee"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_train/config.yaml": {
+      "source_sha256": "8c0db565f2d60df87ee9ef94ab056ff08c48b4738bfe4e8ccfa72404e5decfe6",
+      "source_bytes": 1613,
+      "compacted_diagnostics": false,
+      "repository_sha256": "8c0db565f2d60df87ee9ef94ab056ff08c48b4738bfe4e8ccfa72404e5decfe6"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_train/env.txt": {
+      "source_sha256": "ef44926103f12c3f2d33120730ad9f49ce38444f7a9235438f7e1d3f077317d0",
+      "source_bytes": 5847,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ef44926103f12c3f2d33120730ad9f49ce38444f7a9235438f7e1d3f077317d0"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_train/figures/validation_f1.svg": {
+      "source_sha256": "03ae58622a506506c3940a91abcd4fb4166f9d414afba9d39c97b203344608c7",
+      "source_bytes": 935,
+      "compacted_diagnostics": false,
+      "repository_sha256": "03ae58622a506506c3940a91abcd4fb4166f9d414afba9d39c97b203344608c7"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_train/git_commit.txt": {
+      "source_sha256": "5514cf43fe2a866eca48a06072519acc5cd02bb95d5ab7f1be38b0bb68bb3e50",
+      "source_bytes": 129,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5514cf43fe2a866eca48a06072519acc5cd02bb95d5ab7f1be38b0bb68bb3e50"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_train/logs/run.log": {
+      "source_sha256": "9dabe647beaaf830f4b2f6175e6cc0ff8dacd7aaa4ba4d612eba43a0149656c7",
+      "source_bytes": 377,
+      "compacted_diagnostics": false,
+      "repository_sha256": "9dabe647beaaf830f4b2f6175e6cc0ff8dacd7aaa4ba4d612eba43a0149656c7"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_train/metrics.json": {
+      "source_sha256": "11a3326016ddd69e4dfbbb0c3e5cae389eac285f83f55079f24eda93a63b9244",
+      "source_bytes": 577,
+      "compacted_diagnostics": false,
+      "repository_sha256": "11a3326016ddd69e4dfbbb0c3e5cae389eac285f83f55079f24eda93a63b9244"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261008_train/notes.md": {
+      "source_sha256": "f03f619c5dd64cd653f78deb72bebc082c8745d01d3300e63c233bebb991b432",
+      "source_bytes": 475,
+      "compacted_diagnostics": false,
+      "repository_sha256": "f03f619c5dd64cd653f78deb72bebc082c8745d01d3300e63c233bebb991b432"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/artifacts/pipeline/run_info.json": {
+      "source_sha256": "279ac4f98c32ad03edd08564dddc59b51a61c25f769002bfad75e4c4ff19344d",
+      "source_bytes": 2226108,
+      "compacted_diagnostics": true,
+      "repository_sha256": "0c78729c666752b0b4a7bb2a388ff0fb20dbb486b33e8e398bdee94a07de22d3"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/artifacts/submission/01_RES/DET_log.txt": {
+      "source_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b",
+      "source_bytes": 245,
+      "compacted_diagnostics": false,
+      "repository_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/artifacts/submission/01_RES/SEG_log.txt": {
+      "source_sha256": "1ef808b5f2240d6bdf63ec8c6f6b2405a72437b5be35532af9d8db8cb357f839",
+      "source_bytes": 1828,
+      "compacted_diagnostics": false,
+      "repository_sha256": "1ef808b5f2240d6bdf63ec8c6f6b2405a72437b5be35532af9d8db8cb357f839"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/artifacts/submission/01_RES/TRA_log.txt": {
+      "source_sha256": "e321f13c3829244b4e56997a5f229da7d3a8b94a3da8d4f48c8fbc4917c29658",
+      "source_bytes": 18671,
+      "compacted_diagnostics": false,
+      "repository_sha256": "e321f13c3829244b4e56997a5f229da7d3a8b94a3da8d4f48c8fbc4917c29658"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/artifacts/submission/01_RES/local_metrics.json": {
+      "source_sha256": "75bac8dc58583abdfdd5535a5ff6ba9e88d21f34bf6e636a1d76470c5e49fe93",
+      "source_bytes": 577,
+      "compacted_diagnostics": false,
+      "repository_sha256": "75bac8dc58583abdfdd5535a5ff6ba9e88d21f34bf6e636a1d76470c5e49fe93"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/artifacts/submission/01_RES/res_track.txt": {
+      "source_sha256": "aaceaf98c631273a5991532ceaae63ba573efcb76ecac78ccdf5605aec131d5a",
+      "source_bytes": 9502,
+      "compacted_diagnostics": false,
+      "repository_sha256": "aaceaf98c631273a5991532ceaae63ba573efcb76ecac78ccdf5605aec131d5a"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/command.sh": {
+      "source_sha256": "e434e461ba6a4fa4611eab8c108319907d44a92bf243cfb868daac0b677a22a6",
+      "source_bytes": 1069,
+      "compacted_diagnostics": false,
+      "repository_sha256": "e434e461ba6a4fa4611eab8c108319907d44a92bf243cfb868daac0b677a22a6"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/config.yaml": {
+      "source_sha256": "77ef500078030290edd0581b0ce59851e9a27fd27f6152e265c23b1b94632115",
+      "source_bytes": 2281,
+      "compacted_diagnostics": false,
+      "repository_sha256": "77ef500078030290edd0581b0ce59851e9a27fd27f6152e265c23b1b94632115"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/env.txt": {
+      "source_sha256": "4fd1fc980dd5e47bf8f2589943676db87b858727ac4658b8247713e76ddc7420",
+      "source_bytes": 5847,
+      "compacted_diagnostics": false,
+      "repository_sha256": "4fd1fc980dd5e47bf8f2589943676db87b858727ac4658b8247713e76ddc7420"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/figures/pipeline_stages.svg": {
+      "source_sha256": "bcd3980c36754cbce775f56065e5941575259c904400e653468f6a9ee171a750",
+      "source_bytes": 611,
+      "compacted_diagnostics": false,
+      "repository_sha256": "bcd3980c36754cbce775f56065e5941575259c904400e653468f6a9ee171a750"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/git_commit.txt": {
+      "source_sha256": "5514cf43fe2a866eca48a06072519acc5cd02bb95d5ab7f1be38b0bb68bb3e50",
+      "source_bytes": 129,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5514cf43fe2a866eca48a06072519acc5cd02bb95d5ab7f1be38b0bb68bb3e50"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/logs/run.log": {
+      "source_sha256": "e65bfef927c1e6b92557fbe1e2ec5cb7fea8922dc888447d3158ed04ec3fa595",
+      "source_bytes": 385,
+      "compacted_diagnostics": false,
+      "repository_sha256": "e65bfef927c1e6b92557fbe1e2ec5cb7fea8922dc888447d3158ed04ec3fa595"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/metrics.json": {
+      "source_sha256": "067de70b3e604eb5953504db06c719b8c52d8fc7b372b0a6b7428fd64db40034",
+      "source_bytes": 756,
+      "compacted_diagnostics": false,
+      "repository_sha256": "067de70b3e604eb5953504db06c719b8c52d8fc7b372b0a6b7428fd64db40034"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/metrics_official_01.json": {
+      "source_sha256": "ccacbc1bc24fdcd133c7c0f7283fda373c40d12355d227c2d1aa1ed013e433a3",
+      "source_bytes": 555,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ccacbc1bc24fdcd133c7c0f7283fda373c40d12355d227c2d1aa1ed013e433a3"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/notes.md": {
+      "source_sha256": "349473b46587534c24db4b3c4e0f2c5e4de279538cd0106dba8f61cd4e21d060",
+      "source_bytes": 208,
+      "compacted_diagnostics": false,
+      "repository_sha256": "349473b46587534c24db4b3c4e0f2c5e4de279538cd0106dba8f61cd4e21d060"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/official_logs/DET_log.txt": {
+      "source_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b",
+      "source_bytes": 245,
+      "compacted_diagnostics": false,
+      "repository_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/official_logs/DET_stdout.txt": {
+      "source_sha256": "dc4905309b31323fb5776c04edee171ae7121e2914cf2db8f27404bfc4983a93",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "dc4905309b31323fb5776c04edee171ae7121e2914cf2db8f27404bfc4983a93"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/official_logs/SEG_log.txt": {
+      "source_sha256": "1ef808b5f2240d6bdf63ec8c6f6b2405a72437b5be35532af9d8db8cb357f839",
+      "source_bytes": 1828,
+      "compacted_diagnostics": false,
+      "repository_sha256": "1ef808b5f2240d6bdf63ec8c6f6b2405a72437b5be35532af9d8db8cb357f839"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/official_logs/SEG_stdout.txt": {
+      "source_sha256": "72f0c1f1ca962ef78c7c35dd16f5c586e958ad4cf531a4c8eb7b85171b3e9928",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "72f0c1f1ca962ef78c7c35dd16f5c586e958ad4cf531a4c8eb7b85171b3e9928"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/official_logs/TRA_log.txt": {
+      "source_sha256": "e321f13c3829244b4e56997a5f229da7d3a8b94a3da8d4f48c8fbc4917c29658",
+      "source_bytes": 18671,
+      "compacted_diagnostics": false,
+      "repository_sha256": "e321f13c3829244b4e56997a5f229da7d3a8b94a3da8d4f48c8fbc4917c29658"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/official_logs/TRA_stdout.txt": {
+      "source_sha256": "b1d0705c518a64e9797e042b10be25d25f2f4d587b6f0da4af31dde8b4b0a2ca",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "b1d0705c518a64e9797e042b10be25d25f2f4d587b6f0da4af31dde8b4b0a2ca"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01/pipeline_config.yaml": {
+      "source_sha256": "98b6a80696bef94f9f504e6201c1c361b71d2d45045ce051a05b30a5021f8209",
+      "source_bytes": 1829,
+      "compacted_diagnostics": false,
+      "repository_sha256": "98b6a80696bef94f9f504e6201c1c361b71d2d45045ce051a05b30a5021f8209"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/artifacts/pipeline/run_info.json": {
+      "source_sha256": "c02ab6b8fb494adc192bcfaa14d2ee8d8addf83323eea39490ea6b7dc8f9baf2",
+      "source_bytes": 2091513,
+      "compacted_diagnostics": true,
+      "repository_sha256": "2e61c05c32b02296b79d22ce7d3ca3c65d126a5058ddd745f67abb3e2f2a8ec7"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/artifacts/submission/02_RES/DET_log.txt": {
+      "source_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b",
+      "source_bytes": 245,
+      "compacted_diagnostics": false,
+      "repository_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/artifacts/submission/02_RES/SEG_log.txt": {
+      "source_sha256": "a9bd20477f12e65abcb8aa73e3ebaa4b353ec8743250474725f79bf728aed995",
+      "source_bytes": 1830,
+      "compacted_diagnostics": false,
+      "repository_sha256": "a9bd20477f12e65abcb8aa73e3ebaa4b353ec8743250474725f79bf728aed995"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/artifacts/submission/02_RES/TRA_log.txt": {
+      "source_sha256": "845af2903cb3ae9bd7386677b3048cbb33a5e3161d025ff4bea38316caa0ffa1",
+      "source_bytes": 20894,
+      "compacted_diagnostics": false,
+      "repository_sha256": "845af2903cb3ae9bd7386677b3048cbb33a5e3161d025ff4bea38316caa0ffa1"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/artifacts/submission/02_RES/local_metrics.json": {
+      "source_sha256": "62f8147e6e87f085e19762d525562851b16f40357e8b0041f4666b3e76ac8714",
+      "source_bytes": 578,
+      "compacted_diagnostics": false,
+      "repository_sha256": "62f8147e6e87f085e19762d525562851b16f40357e8b0041f4666b3e76ac8714"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/artifacts/submission/02_RES/res_track.txt": {
+      "source_sha256": "a8d5616bb4370d3c782d8f0825669a2f9dcb62b7acbaf949a0b23de5c54caa3c",
+      "source_bytes": 8660,
+      "compacted_diagnostics": false,
+      "repository_sha256": "a8d5616bb4370d3c782d8f0825669a2f9dcb62b7acbaf949a0b23de5c54caa3c"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/command.sh": {
+      "source_sha256": "219a9b80aa099d455dd5164507ec5a20b33ec7d198eb2f8e6322783e91784748",
+      "source_bytes": 1069,
+      "compacted_diagnostics": false,
+      "repository_sha256": "219a9b80aa099d455dd5164507ec5a20b33ec7d198eb2f8e6322783e91784748"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/config.yaml": {
+      "source_sha256": "8e34c8db38f75bbcd6a4589332c936d5c13ea77702c25189b4b24f2b48af893d",
+      "source_bytes": 2281,
+      "compacted_diagnostics": false,
+      "repository_sha256": "8e34c8db38f75bbcd6a4589332c936d5c13ea77702c25189b4b24f2b48af893d"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/env.txt": {
+      "source_sha256": "223b55461884161b26be88270c25c5875cc3252dcf142c2595a8b6c376259518",
+      "source_bytes": 5847,
+      "compacted_diagnostics": false,
+      "repository_sha256": "223b55461884161b26be88270c25c5875cc3252dcf142c2595a8b6c376259518"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/figures/pipeline_stages.svg": {
+      "source_sha256": "786a6ae5f7a8d90593652932940b49d245f4c7a59405514049cb54b430dc7015",
+      "source_bytes": 611,
+      "compacted_diagnostics": false,
+      "repository_sha256": "786a6ae5f7a8d90593652932940b49d245f4c7a59405514049cb54b430dc7015"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/git_commit.txt": {
+      "source_sha256": "5514cf43fe2a866eca48a06072519acc5cd02bb95d5ab7f1be38b0bb68bb3e50",
+      "source_bytes": 129,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5514cf43fe2a866eca48a06072519acc5cd02bb95d5ab7f1be38b0bb68bb3e50"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/logs/run.log": {
+      "source_sha256": "83d4bdb5e0eb4d59e6b1754b0e5b85a95094eff9de6dd394dae5dac247916241",
+      "source_bytes": 385,
+      "compacted_diagnostics": false,
+      "repository_sha256": "83d4bdb5e0eb4d59e6b1754b0e5b85a95094eff9de6dd394dae5dac247916241"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/metrics.json": {
+      "source_sha256": "92b578d83f0b2818f54fa22be98549eac863f56da02c645eba45f5ff35c1ef78",
+      "source_bytes": 757,
+      "compacted_diagnostics": false,
+      "repository_sha256": "92b578d83f0b2818f54fa22be98549eac863f56da02c645eba45f5ff35c1ef78"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/metrics_official_02.json": {
+      "source_sha256": "151e038b40068ac0b54be6a2a14e05ab028ac96a30d06797122843e90513f9e1",
+      "source_bytes": 555,
+      "compacted_diagnostics": false,
+      "repository_sha256": "151e038b40068ac0b54be6a2a14e05ab028ac96a30d06797122843e90513f9e1"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/notes.md": {
+      "source_sha256": "349473b46587534c24db4b3c4e0f2c5e4de279538cd0106dba8f61cd4e21d060",
+      "source_bytes": 208,
+      "compacted_diagnostics": false,
+      "repository_sha256": "349473b46587534c24db4b3c4e0f2c5e4de279538cd0106dba8f61cd4e21d060"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/official_logs/DET_log.txt": {
+      "source_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b",
+      "source_bytes": 245,
+      "compacted_diagnostics": false,
+      "repository_sha256": "27d0797b4ab7502c3a8e48c39cf98c706e43b484cf90cc19c109219f9ea96a3b"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/official_logs/DET_stdout.txt": {
+      "source_sha256": "dc4905309b31323fb5776c04edee171ae7121e2914cf2db8f27404bfc4983a93",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "dc4905309b31323fb5776c04edee171ae7121e2914cf2db8f27404bfc4983a93"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/official_logs/SEG_log.txt": {
+      "source_sha256": "a9bd20477f12e65abcb8aa73e3ebaa4b353ec8743250474725f79bf728aed995",
+      "source_bytes": 1830,
+      "compacted_diagnostics": false,
+      "repository_sha256": "a9bd20477f12e65abcb8aa73e3ebaa4b353ec8743250474725f79bf728aed995"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/official_logs/SEG_stdout.txt": {
+      "source_sha256": "72f0c1f1ca962ef78c7c35dd16f5c586e958ad4cf531a4c8eb7b85171b3e9928",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "72f0c1f1ca962ef78c7c35dd16f5c586e958ad4cf531a4c8eb7b85171b3e9928"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/official_logs/TRA_log.txt": {
+      "source_sha256": "845af2903cb3ae9bd7386677b3048cbb33a5e3161d025ff4bea38316caa0ffa1",
+      "source_bytes": 20894,
+      "compacted_diagnostics": false,
+      "repository_sha256": "845af2903cb3ae9bd7386677b3048cbb33a5e3161d025ff4bea38316caa0ffa1"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/official_logs/TRA_stdout.txt": {
+      "source_sha256": "af9a2265c6583bc88774986c6c3a6dd999f9328e456bd60f9e021f5c0b4d24fa",
+      "source_bytes": 23,
+      "compacted_diagnostics": false,
+      "repository_sha256": "af9a2265c6583bc88774986c6c3a6dd999f9328e456bd60f9e021f5c0b4d24fa"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02/pipeline_config.yaml": {
+      "source_sha256": "0d5a60a26289f67fba6ef20a45c4f248b970f2adb299fe76adf66812257ed42c",
+      "source_bytes": 1829,
+      "compacted_diagnostics": false,
+      "repository_sha256": "0d5a60a26289f67fba6ef20a45c4f248b970f2adb299fe76adf66812257ed42c"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_train/command.sh": {
+      "source_sha256": "93d149548608b61dd2eda3b26f482c00543b7f0e69756a87ab9e7ad5d9bb5ba0",
+      "source_bytes": 796,
+      "compacted_diagnostics": false,
+      "repository_sha256": "93d149548608b61dd2eda3b26f482c00543b7f0e69756a87ab9e7ad5d9bb5ba0"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_train/config.yaml": {
+      "source_sha256": "0adcff89f88c64891b406a16b5a45b4eb65ba3381a518e40caa0f21a99e9545b",
+      "source_bytes": 1613,
+      "compacted_diagnostics": false,
+      "repository_sha256": "0adcff89f88c64891b406a16b5a45b4eb65ba3381a518e40caa0f21a99e9545b"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_train/env.txt": {
+      "source_sha256": "0498ea993dc134db071051535706f6ddc386e03c74cf35b683f7bba7d90fa4ba",
+      "source_bytes": 5847,
+      "compacted_diagnostics": false,
+      "repository_sha256": "0498ea993dc134db071051535706f6ddc386e03c74cf35b683f7bba7d90fa4ba"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_train/figures/validation_f1.svg": {
+      "source_sha256": "32cfcf8150bfb1a3f67a63ad47bdc081d09fbda87c24d286d8f53faf98499c25",
+      "source_bytes": 935,
+      "compacted_diagnostics": false,
+      "repository_sha256": "32cfcf8150bfb1a3f67a63ad47bdc081d09fbda87c24d286d8f53faf98499c25"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_train/git_commit.txt": {
+      "source_sha256": "5514cf43fe2a866eca48a06072519acc5cd02bb95d5ab7f1be38b0bb68bb3e50",
+      "source_bytes": 129,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5514cf43fe2a866eca48a06072519acc5cd02bb95d5ab7f1be38b0bb68bb3e50"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_train/logs/run.log": {
+      "source_sha256": "7179b7ea9040d63860ebdaea8e1c2f6ee625f3d6b4cc5e5991fdad6207bf28b9",
+      "source_bytes": 377,
+      "compacted_diagnostics": false,
+      "repository_sha256": "7179b7ea9040d63860ebdaea8e1c2f6ee625f3d6b4cc5e5991fdad6207bf28b9"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_train/metrics.json": {
+      "source_sha256": "114d015066b7bc79e7e5bd585bad365a01238282b484f4041459a61d4e6e286b",
+      "source_bytes": 577,
+      "compacted_diagnostics": false,
+      "repository_sha256": "114d015066b7bc79e7e5bd585bad365a01238282b484f4041459a61d4e6e286b"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_baseline_seed20261009_train/notes.md": {
+      "source_sha256": "97fb88593fa7bfabfc056c63b76d3eb3ff7cef323973e7ee31cd4d4bb11c8f71",
+      "source_bytes": 475,
+      "compacted_diagnostics": false,
+      "repository_sha256": "97fb88593fa7bfabfc056c63b76d3eb3ff7cef323973e7ee31cd4d4bb11c8f71"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/calibration/baseline.json": {
+      "source_sha256": "a3b61d3e2bb3395ad1a098a855c2a0d1ea5a08ff682148d41ff8898b1bfbc640",
+      "source_bytes": 5935,
+      "compacted_diagnostics": false,
+      "repository_sha256": "a3b61d3e2bb3395ad1a098a855c2a0d1ea5a08ff682148d41ff8898b1bfbc640"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/configs/baseline_01.yaml": {
+      "source_sha256": "2e6da79482a01678fd5c6215354de1ca15c1e83790940e8e32fc51b6198d606f",
+      "source_bytes": 1735,
+      "compacted_diagnostics": false,
+      "repository_sha256": "2e6da79482a01678fd5c6215354de1ca15c1e83790940e8e32fc51b6198d606f"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/configs/baseline_02.yaml": {
+      "source_sha256": "bf774b7622724190079c53efff56342a31cf270517b5681fd227e171c104e12e",
+      "source_bytes": 1735,
+      "compacted_diagnostics": false,
+      "repository_sha256": "bf774b7622724190079c53efff56342a31cf270517b5681fd227e171c104e12e"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/configs/baseline_calibrated.yaml": {
+      "source_sha256": "98b6a80696bef94f9f504e6201c1c361b71d2d45045ce051a05b30a5021f8209",
+      "source_bytes": 1829,
+      "compacted_diagnostics": false,
+      "repository_sha256": "98b6a80696bef94f9f504e6201c1c361b71d2d45045ce051a05b30a5021f8209"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_build01.log": {
+      "source_sha256": "d455478956e35a869ccc873a8f4e4db4608d1077f8d40b754cf830742e278ed7",
+      "source_bytes": 677,
+      "compacted_diagnostics": false,
+      "repository_sha256": "d455478956e35a869ccc873a8f4e4db4608d1077f8d40b754cf830742e278ed7"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_calibration01.log": {
+      "source_sha256": "3cce72a583eeda7250323b499aedbf7591c0908975630e27d8ff6f79788c7a7a",
+      "source_bytes": 6226,
+      "compacted_diagnostics": false,
+      "repository_sha256": "3cce72a583eeda7250323b499aedbf7591c0908975630e27d8ff6f79788c7a7a"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01.log": {
+      "source_sha256": "2cf26324f391e68f4ff739a5464016c35b7ff6cd43987d7502abad804b3e2c8e",
+      "source_bytes": 673,
+      "compacted_diagnostics": false,
+      "repository_sha256": "2cf26324f391e68f4ff739a5464016c35b7ff6cd43987d7502abad804b3e2c8e"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01_gpu_active.txt": {
+      "source_sha256": "515acd75672983f47cd6848d9705ce3c9015e95df9d7cb308aa078262505d40a",
+      "source_bytes": 16,
+      "compacted_diagnostics": false,
+      "repository_sha256": "515acd75672983f47cd6848d9705ce3c9015e95df9d7cb308aa078262505d40a"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01_gpu_after.txt": {
+      "source_sha256": "3c8b538e2f4d16b15357caf641998b29553ac1b3a737b14876eda21f85bc8183",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "3c8b538e2f4d16b15357caf641998b29553ac1b3a737b14876eda21f85bc8183"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval01_gpu_before.txt": {
+      "source_sha256": "1b74af39bdefe4e7458458cc37764a16847b09957ec5b35763bc68a34b0ff556",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "1b74af39bdefe4e7458458cc37764a16847b09957ec5b35763bc68a34b0ff556"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02.log": {
+      "source_sha256": "22cd311103d14df5a7a8ca44a2f11d6135a5189563339fabc481ade8433bd7a1",
+      "source_bytes": 675,
+      "compacted_diagnostics": false,
+      "repository_sha256": "22cd311103d14df5a7a8ca44a2f11d6135a5189563339fabc481ade8433bd7a1"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_gpu_active.txt": {
+      "source_sha256": "7754e4b1d3e7149132fa0b29b899b81a4f472c77a02c6912a5559caac443dfb2",
+      "source_bytes": 16,
+      "compacted_diagnostics": false,
+      "repository_sha256": "7754e4b1d3e7149132fa0b29b899b81a4f472c77a02c6912a5559caac443dfb2"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_gpu_after.txt": {
+      "source_sha256": "36f4b036530464967ee261fee54cab8529c7aa00f4caebc5b7bd30fbc6ad7e14",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "36f4b036530464967ee261fee54cab8529c7aa00f4caebc5b7bd30fbc6ad7e14"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_gpu_before.txt": {
+      "source_sha256": "3c8b538e2f4d16b15357caf641998b29553ac1b3a737b14876eda21f85bc8183",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "3c8b538e2f4d16b15357caf641998b29553ac1b3a737b14876eda21f85bc8183"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat.log": {
+      "source_sha256": "60f4c8f8b09964c43309d8c4bb4f4e78f3619a4aa5690d854c3d7e857a9165d5",
+      "source_bytes": 694,
+      "compacted_diagnostics": false,
+      "repository_sha256": "60f4c8f8b09964c43309d8c4bb4f4e78f3619a4aa5690d854c3d7e857a9165d5"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat_gpu_active.txt": {
+      "source_sha256": "aac3f0199905353dc5fe147c14edf42052f19ddfa9adc11c319062e17430e1ed",
+      "source_bytes": 16,
+      "compacted_diagnostics": false,
+      "repository_sha256": "aac3f0199905353dc5fe147c14edf42052f19ddfa9adc11c319062e17430e1ed"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat_gpu_after.txt": {
+      "source_sha256": "ebd89cab612d8a5c4acd33659d9c2bc4e352f65cac281886036dfe62b8c245b7",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ebd89cab612d8a5c4acd33659d9c2bc4e352f65cac281886036dfe62b8c245b7"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261008_eval02_repeat_gpu_before.txt": {
+      "source_sha256": "9aaa6b03f06cebb2563b48305f5900fc2c56ae94cefa5de77c586d3026773fcc",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "9aaa6b03f06cebb2563b48305f5900fc2c56ae94cefa5de77c586d3026773fcc"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261008_train.log": {
+      "source_sha256": "04e665cef8bc3d423447b447ca1fe1c47816b709ca4d0244028a744291c5475a",
+      "source_bytes": 3355,
+      "compacted_diagnostics": false,
+      "repository_sha256": "04e665cef8bc3d423447b447ca1fe1c47816b709ca4d0244028a744291c5475a"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261008_train_gpu_active.txt": {
+      "source_sha256": "a8471237cc6e9801e6bb3cec8275fb40e0fbde4d113f4e1edff66696085a880e",
+      "source_bytes": 17,
+      "compacted_diagnostics": false,
+      "repository_sha256": "a8471237cc6e9801e6bb3cec8275fb40e0fbde4d113f4e1edff66696085a880e"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261008_train_gpu_after.txt": {
+      "source_sha256": "67169004582c0a5aa15b76417acf32a45835bd3e6ce93fded28a48d358354b0b",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "67169004582c0a5aa15b76417acf32a45835bd3e6ce93fded28a48d358354b0b"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261008_train_gpu_before.txt": {
+      "source_sha256": "2adf20cf5d6f686a6d49aa54564da06115e058b6d4192ade5be7dc4b738b9c3c",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "2adf20cf5d6f686a6d49aa54564da06115e058b6d4192ade5be7dc4b738b9c3c"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01.log": {
+      "source_sha256": "265e6e4c2c9c3e8debdb216ec509ea59986164940513ec6d078d6135601abc95",
+      "source_bytes": 673,
+      "compacted_diagnostics": false,
+      "repository_sha256": "265e6e4c2c9c3e8debdb216ec509ea59986164940513ec6d078d6135601abc95"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01_gpu_active.txt": {
+      "source_sha256": "08886332b9bcbba3211c53e90d2e6897d28a96f9d4ca674133f110b24ff50b8a",
+      "source_bytes": 16,
+      "compacted_diagnostics": false,
+      "repository_sha256": "08886332b9bcbba3211c53e90d2e6897d28a96f9d4ca674133f110b24ff50b8a"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01_gpu_after.txt": {
+      "source_sha256": "4567b6dc5f1db9bd97e11c11ec6ced8df7b2d3870e14a03df6d2b14db6c548ea",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "4567b6dc5f1db9bd97e11c11ec6ced8df7b2d3870e14a03df6d2b14db6c548ea"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval01_gpu_before.txt": {
+      "source_sha256": "0bfa137d7f2b698655ccda1c8297274a2331a9b93068d4fae99a494296a49970",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "0bfa137d7f2b698655ccda1c8297274a2331a9b93068d4fae99a494296a49970"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02.log": {
+      "source_sha256": "5552cbd4764e0f817c726c71527caffe7fa3057acfb643a16e8b9638645bf7da",
+      "source_bytes": 673,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5552cbd4764e0f817c726c71527caffe7fa3057acfb643a16e8b9638645bf7da"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02_gpu_active.txt": {
+      "source_sha256": "96dd577f948bc83730c7003a6d5a3541c6aa40e4904ba9a3594e3608d6cf4e3b",
+      "source_bytes": 16,
+      "compacted_diagnostics": false,
+      "repository_sha256": "96dd577f948bc83730c7003a6d5a3541c6aa40e4904ba9a3594e3608d6cf4e3b"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02_gpu_after.txt": {
+      "source_sha256": "f67f0053a0d56f76842441e9f906113c62a707e1be8dce8c36c708a66648169a",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "f67f0053a0d56f76842441e9f906113c62a707e1be8dce8c36c708a66648169a"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261009_eval02_gpu_before.txt": {
+      "source_sha256": "4567b6dc5f1db9bd97e11c11ec6ced8df7b2d3870e14a03df6d2b14db6c548ea",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "4567b6dc5f1db9bd97e11c11ec6ced8df7b2d3870e14a03df6d2b14db6c548ea"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261009_train.log": {
+      "source_sha256": "ffabbb64e91794703d6b48ed7643f1508eaed86c393a28f090336d836e5641c5",
+      "source_bytes": 3355,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ffabbb64e91794703d6b48ed7643f1508eaed86c393a28f090336d836e5641c5"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261009_train_gpu_active.txt": {
+      "source_sha256": "240d45588dd61f5461d906594dee6e36af7e22ec799ea6aeb02b3949608a2edb",
+      "source_bytes": 17,
+      "compacted_diagnostics": false,
+      "repository_sha256": "240d45588dd61f5461d906594dee6e36af7e22ec799ea6aeb02b3949608a2edb"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261009_train_gpu_after.txt": {
+      "source_sha256": "067c7df473294718f7cb0cbda8d97686f2873dadda1b11d428b00cf6559dbdbf",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "067c7df473294718f7cb0cbda8d97686f2873dadda1b11d428b00cf6559dbdbf"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/logs/P8_gt_marker_encoder_conservative_baseline_seed20261009_train_gpu_before.txt": {
+      "source_sha256": "36f4b036530464967ee261fee54cab8529c7aa00f4caebc5b7bd30fbc6ad7e14",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "36f4b036530464967ee261fee54cab8529c7aa00f4caebc5b7bd30fbc6ad7e14"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/models/baseline/seed20261008/history.json": {
+      "source_sha256": "6b350e77e3bba51cc4e359d389f0c5e196350534949bac7d75d839a347025027",
+      "source_bytes": 19588,
+      "compacted_diagnostics": false,
+      "repository_sha256": "6b350e77e3bba51cc4e359d389f0c5e196350534949bac7d75d839a347025027"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/models/baseline/seed20261008/train_summary.json": {
+      "source_sha256": "11a3326016ddd69e4dfbbb0c3e5cae389eac285f83f55079f24eda93a63b9244",
+      "source_bytes": 577,
+      "compacted_diagnostics": false,
+      "repository_sha256": "11a3326016ddd69e4dfbbb0c3e5cae389eac285f83f55079f24eda93a63b9244"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/models/baseline/seed20261009/history.json": {
+      "source_sha256": "ddc75cebff268b1ee5b0fd3de66f5b3f938dcf0d9c3021784af20de0e2234305",
+      "source_bytes": 19582,
+      "compacted_diagnostics": false,
+      "repository_sha256": "ddc75cebff268b1ee5b0fd3de66f5b3f938dcf0d9c3021784af20de0e2234305"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/models/baseline/seed20261009/train_summary.json": {
+      "source_sha256": "114d015066b7bc79e7e5bd585bad365a01238282b484f4041459a61d4e6e286b",
+      "source_bytes": 577,
+      "compacted_diagnostics": false,
+      "repository_sha256": "114d015066b7bc79e7e5bd585bad365a01238282b484f4041459a61d4e6e286b"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/plan.json": {
+      "source_sha256": "225f27cb692f49d5f6e7768314aa49590255e033d4c2faca0768de114fd0cdd0",
+      "source_bytes": 15077,
+      "compacted_diagnostics": false,
+      "repository_sha256": "225f27cb692f49d5f6e7768314aa49590255e033d4c2faca0768de114fd0cdd0"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/source_release.json": {
+      "source_sha256": "5441c87903563c11a7957f234880c8535192488ee9510c62b4cf87e17f75a286",
+      "source_bytes": 21981,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5441c87903563c11a7957f234880c8535192488ee9510c62b4cf87e17f75a286"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/status.json": {
+      "source_sha256": "55fb5bdc8eca4b442809bbe97f9d42917f1e6e17aa022d191a655b3304daf608",
+      "source_bytes": 13159,
+      "compacted_diagnostics": false,
+      "repository_sha256": "55fb5bdc8eca4b442809bbe97f9d42917f1e6e17aa022d191a655b3304daf608"
+    },
+    "experiments/P8_gt_marker_encoder_conservative_matrix_20261009/training_graph_audit.json": {
+      "source_sha256": "c68f31fca016e4cc3683d57a6285491f36ec5c19f8f358b92f363c3926e7f85a",
+      "source_bytes": 568,
+      "compacted_diagnostics": false,
+      "repository_sha256": "c68f31fca016e4cc3683d57a6285491f36ec5c19f8f358b92f363c3926e7f85a"
+    },
+    "logs/frozen_encoder_reuse.json": {
+      "source_sha256": "f8bb63231db7dcd291c308048c951c4e69ac5894ef32b580ad377c7078e1f23b",
+      "source_bytes": 21758,
+      "compacted_diagnostics": false,
+      "repository_sha256": "f8bb63231db7dcd291c308048c951c4e69ac5894ef32b580ad377c7078e1f23b"
+    },
+    "logs/oracle_encoder_pipeline.complete": {
+      "source_sha256": "37a40f08d8548dba289b9b0bb35bcf63b359f6d37ee86044ebc6b6da080b9ec1",
+      "source_bytes": 9,
+      "compacted_diagnostics": false,
+      "repository_sha256": "37a40f08d8548dba289b9b0bb35bcf63b359f6d37ee86044ebc6b6da080b9ec1"
+    },
+    "logs/oracle_encoder_pipeline.log": {
+      "source_sha256": "c5f30409fffac8f900252524d309807ec84060a8d79faae42e9f2e2ca1c31e82",
+      "source_bytes": 1525,
+      "compacted_diagnostics": false,
+      "repository_sha256": "c5f30409fffac8f900252524d309807ec84060a8d79faae42e9f2e2ca1c31e82"
+    },
+    "logs/oracle_encoder_pipeline.pid": {
+      "source_sha256": "a91da4123a49790896378b5f7c412d7e81ac6cbd6a8f8a35fe5586191df5ac7c",
+      "source_bytes": 7,
+      "compacted_diagnostics": false,
+      "repository_sha256": "a91da4123a49790896378b5f7c412d7e81ac6cbd6a8f8a35fe5586191df5ac7c"
+    },
+    "logs/oracle_feature_fingerprints.json": {
+      "source_sha256": "b2dfad5820eca6016f0047f13d4a283895d4f77ae2e2d8015010830428797b32",
+      "source_bytes": 1452,
+      "compacted_diagnostics": false,
+      "repository_sha256": "b2dfad5820eca6016f0047f13d4a283895d4f77ae2e2d8015010830428797b32"
+    },
+    "logs/oracle_final_acceptance.json": {
+      "source_sha256": "1b927e37e4d263fa15dde5b3c8b485504f3cddc3d5e6402ffaf4ebb4be35a84e",
+      "source_bytes": 268,
+      "compacted_diagnostics": false,
+      "repository_sha256": "1b927e37e4d263fa15dde5b3c8b485504f3cddc3d5e6402ffaf4ebb4be35a84e"
+    },
+    "logs/oracle_frozen_model_identity.json": {
+      "source_sha256": "d9ae8ffb1a30535d2572abc88d693aec91ee67e571543f37e4124a76133d5100",
+      "source_bytes": 182,
+      "compacted_diagnostics": false,
+      "repository_sha256": "d9ae8ffb1a30535d2572abc88d693aec91ee67e571543f37e4124a76133d5100"
+    },
+    "logs/oracle_gpu_final_idle.txt": {
+      "source_sha256": "4edb1ecbcd5ba0adab035cd61b5988055b323b47b6a7ba1bd566c4162b61f973",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "4edb1ecbcd5ba0adab035cd61b5988055b323b47b6a7ba1bd566c4162b61f973"
+    },
+    "logs/oracle_gpu_idle.txt": {
+      "source_sha256": "0cb3a08d0e14313f530c84ea7f2667c86930dece1ebd4f4e1ffc94f2b0afa722",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "0cb3a08d0e14313f530c84ea7f2667c86930dece1ebd4f4e1ffc94f2b0afa722"
+    },
+    "logs/oracle_input_audit.json": {
+      "source_sha256": "e82ee664fa56822c5ef0160ba659acea2bfe34c8456aaffe7a28ef36b7c773de",
+      "source_bytes": 44404,
+      "compacted_diagnostics": false,
+      "repository_sha256": "e82ee664fa56822c5ef0160ba659acea2bfe34c8456aaffe7a28ef36b7c773de"
+    },
+    "logs/oracle_metrics_final.json": {
+      "source_sha256": "96fab299c716b83628d8dd506d74dd4c4f4a2b5f06e6a057fec80f4a81309b57",
+      "source_bytes": 28387,
+      "compacted_diagnostics": false,
+      "repository_sha256": "96fab299c716b83628d8dd506d74dd4c4f4a2b5f06e6a057fec80f4a81309b57"
+    },
+    "logs/oracle_postprocess.complete": {
+      "source_sha256": "37a40f08d8548dba289b9b0bb35bcf63b359f6d37ee86044ebc6b6da080b9ec1",
+      "source_bytes": 9,
+      "compacted_diagnostics": false,
+      "repository_sha256": "37a40f08d8548dba289b9b0bb35bcf63b359f6d37ee86044ebc6b6da080b9ec1"
+    },
+    "logs/oracle_postprocess.log": {
+      "source_sha256": "340cbd47eb972b13a9dbaf44b9e22b873b2abdbd57e4722a47ffb2cf5eb128fe",
+      "source_bytes": 92,
+      "compacted_diagnostics": false,
+      "repository_sha256": "340cbd47eb972b13a9dbaf44b9e22b873b2abdbd57e4722a47ffb2cf5eb128fe"
+    },
+    "logs/oracle_postprocess.pid": {
+      "source_sha256": "0a7da0bcbaa3492aceb81bb0e16579671a9ab370f98037d561dc68ad028fe07c",
+      "source_bytes": 7,
+      "compacted_diagnostics": false,
+      "repository_sha256": "0a7da0bcbaa3492aceb81bb0e16579671a9ab370f98037d561dc68ad028fe07c"
+    },
+    "logs/oracle_topk_safety.json": {
+      "source_sha256": "3907f2486c96797ff4923ae98f5bf49c93382f1b47b9d164bcdc928af8cbb67a",
+      "source_bytes": 1691,
+      "compacted_diagnostics": false,
+      "repository_sha256": "3907f2486c96797ff4923ae98f5bf49c93382f1b47b9d164bcdc928af8cbb67a"
+    },
+    "logs/original_oracle_encoder_01.log": {
+      "source_sha256": "f33e91a5e860eeed1806ef73f4318dd4b2f6910ef4cb442e1f4b4923c9384e2e",
+      "source_bytes": 20965,
+      "compacted_diagnostics": false,
+      "repository_sha256": "f33e91a5e860eeed1806ef73f4318dd4b2f6910ef4cb442e1f4b4923c9384e2e"
+    },
+    "logs/original_oracle_encoder_01_gpu_active.txt": {
+      "source_sha256": "3fee9595068c31d7a6bb2a427486cdf6636477cc1b4bad7bb2771714ee15985d",
+      "source_bytes": 17,
+      "compacted_diagnostics": false,
+      "repository_sha256": "3fee9595068c31d7a6bb2a427486cdf6636477cc1b4bad7bb2771714ee15985d"
+    },
+    "logs/original_oracle_encoder_01_gpu_after.txt": {
+      "source_sha256": "fa06c76428c6a0ed98ead7922aff5b06bc75d13251432186254a63604aa7493a",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "fa06c76428c6a0ed98ead7922aff5b06bc75d13251432186254a63604aa7493a"
+    },
+    "logs/original_oracle_encoder_01_gpu_before.txt": {
+      "source_sha256": "5452861258bac6a15e201f3ea69103410c2550ed9ae2dd3c66638c56553b955e",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5452861258bac6a15e201f3ea69103410c2550ed9ae2dd3c66638c56553b955e"
+    },
+    "logs/original_oracle_encoder_01_process.json": {
+      "source_sha256": "b3ac904fd8ff4911e043f43f801817200ffd7af7bce063039045fd897ecda934",
+      "source_bytes": 675,
+      "compacted_diagnostics": false,
+      "repository_sha256": "b3ac904fd8ff4911e043f43f801817200ffd7af7bce063039045fd897ecda934"
+    },
+    "logs/original_oracle_encoder_02.log": {
+      "source_sha256": "68e74a3e158f9a7390ecab775c9bb74bce7185f9daf9570eac8168fb972bc1f2",
+      "source_bytes": 20389,
+      "compacted_diagnostics": false,
+      "repository_sha256": "68e74a3e158f9a7390ecab775c9bb74bce7185f9daf9570eac8168fb972bc1f2"
+    },
+    "logs/original_oracle_encoder_02_gpu_active.txt": {
+      "source_sha256": "1626edd1ec1b624f3584402c065c274328526134a873140edd97dd9a0b7cdc34",
+      "source_bytes": 17,
+      "compacted_diagnostics": false,
+      "repository_sha256": "1626edd1ec1b624f3584402c065c274328526134a873140edd97dd9a0b7cdc34"
+    },
+    "logs/original_oracle_encoder_02_gpu_after.txt": {
+      "source_sha256": "b6f7e3b8660b6174b8c892dbc0c2913f473407accf8496accc1636918498de74",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "b6f7e3b8660b6174b8c892dbc0c2913f473407accf8496accc1636918498de74"
+    },
+    "logs/original_oracle_encoder_02_gpu_before.txt": {
+      "source_sha256": "c28157d9eeb40d1331c38f4ba5e01c56a8bde40efe628b59a4d42ff610d71db0",
+      "source_bytes": 1689,
+      "compacted_diagnostics": false,
+      "repository_sha256": "c28157d9eeb40d1331c38f4ba5e01c56a8bde40efe628b59a4d42ff610d71db0"
+    },
+    "logs/original_oracle_encoder_02_process.json": {
+      "source_sha256": "601954d211bda692165472fa0ddd6ecff486a8ca4c845ebacfeb2dd641b65a58",
+      "source_bytes": 675,
+      "compacted_diagnostics": false,
+      "repository_sha256": "601954d211bda692165472fa0ddd6ecff486a8ca4c845ebacfeb2dd641b65a58"
+    },
+    "logs/original_oracle_encoder_pipeline.log": {
+      "source_sha256": "12fb2065da3c4ddccb6dba64d7a04c2b27fbc37ed6f457a275ff3364700c8741",
+      "source_bytes": 1027,
+      "compacted_diagnostics": false,
+      "repository_sha256": "12fb2065da3c4ddccb6dba64d7a04c2b27fbc37ed6f457a275ff3364700c8741"
+    },
+    "logs/regression_clean_source.txt": {
+      "source_sha256": "5d3e0a51af87b7bff1ed3150649bf7ef082eac342648072024c79cac037d5313",
+      "source_bytes": 240,
+      "compacted_diagnostics": false,
+      "repository_sha256": "5d3e0a51af87b7bff1ed3150649bf7ef082eac342648072024c79cac037d5313"
+    }
+  },
+  "count": 208,
+  "full_cloud_archive": "/root/oracle_formal_evidence_final_20261009.tar.gz",
+  "archive_sha256": "2abd47943cd411fab08669cef2f0bb739f8d15e43e7ea8c44d9a157f27442e35",
+  "rule": "only diagnostic lists >64 in JSON files >1MB summarized; official results/logs unchanged"
+}

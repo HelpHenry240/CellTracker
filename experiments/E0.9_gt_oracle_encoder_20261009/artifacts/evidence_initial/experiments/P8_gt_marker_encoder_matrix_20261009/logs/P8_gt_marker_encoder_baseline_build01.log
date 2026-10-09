@@ -1,0 +1,10 @@
+[17:42:32] experiment P8_gt_marker_encoder_baseline_build01 start: ideas pipeline 重建链路
+[load] 195 帧；检测=gt_tra；外观=encoder_npz (0.3s)
+[motion] 运动先验初始化完成 (17.0s)
+[couplings] 194 对相邻帧耦合 (14.1s)
+[multiscale] 多尺度=True；桥接耦合=193 (43.8s)
+[decision] 822 条轨迹 (2.4s)
+[tracklet] 二层 OT=True；最终 600 条轨迹 (0.8s)
+[dump_graphs] 194 张监督图 (7.4s)
+[17:43:58] metrics -> /root/CellTracker_oracle_encoder_20261009/experiments/P8_gt_marker_encoder_baseline_build01/metrics.json
+[17:43:58] experiment P8_gt_marker_encoder_baseline_build01 finished: done

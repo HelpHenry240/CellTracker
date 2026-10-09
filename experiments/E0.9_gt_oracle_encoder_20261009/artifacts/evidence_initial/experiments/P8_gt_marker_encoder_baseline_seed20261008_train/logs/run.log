@@ -1,0 +1,3 @@
+[17:44:01] experiment P8_gt_marker_encoder_baseline_seed20261008_train start: ideas GNN 独立训练
+[17:44:32] metrics -> /root/CellTracker_oracle_encoder_20261009/experiments/P8_gt_marker_encoder_baseline_seed20261008_train/metrics.json
+[17:44:32] experiment P8_gt_marker_encoder_baseline_seed20261008_train finished: done

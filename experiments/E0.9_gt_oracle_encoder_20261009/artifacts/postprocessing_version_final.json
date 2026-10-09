@@ -1,0 +1,21 @@
+{
+  "definition": "experiment orchestration and postprocessing scripts; numerical pipeline source frozen500322cc",
+  "files": {
+    "archive_evidence.py": "2ca8ed0aa64a728acc29b9e4f985ae9a267411b41a848f13960b2be8c0e66d90",
+    "collect_oracle.py": "0c91bc148ee04d8a160664f5ec829520be9d731416577df5506b8419348983d7",
+    "export_inference_weights.py": "8dcfb2f7e218a0487f39b8c5d1bd91f8b29a3aa482409d452d8c7e23e2f20a0a",
+    "finalize_report.py": "12c2ce8923cb980f9ea74abddb1649099a7f9eaeb04eccde15a311df290b770c",
+    "fingerprint_encoder.py": "46bcff83841657bc932a1f2ed8b24e2ab2c2ee1cdea6e695b52aae02116c79ad",
+    "launch.sh": "25d5962f22b83be9934476ece4adde42cc7cf8bc6806d138475d545527c3ae4f",
+    "launch_conservative.sh": "fb96a8fa28eb75f8af629f98b03b540595ab6d7db9e95c092803c1cfaf1eb0fa",
+    "launch_postprocess.sh": "3947d98d0e67de623c9c07dfe17a24c1f68e763b87e9b947c517c59b845a239b",
+    "plot_oracle.py": "7e0a3ad10b693ef721a5ef202c3de50baf52d165319d85012f55e68be80fbd53",
+    "postprocess_oracle.py": "4a5f1b5c5c5c4fe73998a5c41b2bd38ea3da4ffc086d4dc4ee0e869a314ce2d5",
+    "prepare_conservative_inputs.py": "9315ebc669e2e06eaa7d672b8b691434a494cfabcc5bcd08665c1ea1f2faab13",
+    "run_oracle.py": "2f0c56d6ea5fb5bbc0769789132eeb574b8e6a2a6594d27e496b2551d3e2d10b",
+    "run_oracle_conservative.py": "b0fbd8a570e742ef19785a1484c7f41bed4834b577159908e14664ed306f44f7",
+    "scan_candidate_safety.py": "058d673df594fbf5bff0cc6f9db59fc6082ce897b2d35868c4b2ccf4672293ad",
+    "summarize_oracle.py": "4c94bb074e6dad9b8c48e90028940bbe72e98f4ee1c8407eebe7b2b002403d40",
+    "verify_final_cloud.py": "a43ebde66c5397b7e5aec30e068b682586af52399dff027591d7331e057c2f78"
+  }
+}
