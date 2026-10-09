@@ -1,0 +1,40 @@
+{
+  "problem": "unanchored data/ ignore hid source packages from Git",
+  "fix": "/data/ root-only ignore; existing six source files added unchanged",
+  "source_files": [
+    {
+      "path": "src/celltracker/data/__init__.py",
+      "sha256": "1b1208c10128fe218b83eacffd1449256414afe4f998b9eaf4edd1291eaadd83",
+      "matches_numerical_release": true
+    },
+    {
+      "path": "src/celltracker/data/ctc.py",
+      "sha256": "7531e966658ca1e391d705a2d11e9f25f9797ebc315ed03032cf894c8700522c",
+      "matches_numerical_release": true
+    },
+    {
+      "path": "src/celltracker/data/build_dataset.py",
+      "sha256": "2bbd07b2b4fdf898f3d7765e603ff99f9953d3a9c7dedca7cbc684b6f7c2aa81",
+      "matches_numerical_release": true
+    },
+    {
+      "path": "src/celltracker/data/summarize.py",
+      "sha256": "38aa4ff52ab19ee452867be86cae1190bd6c3af2f083b5d4a31e3bc5b46fa2a0",
+      "matches_numerical_release": true
+    },
+    {
+      "path": "paperpipe/src/vendor/celltracker/data/__init__.py",
+      "sha256": "1b1208c10128fe218b83eacffd1449256414afe4f998b9eaf4edd1291eaadd83",
+      "matches_numerical_release": true
+    },
+    {
+      "path": "paperpipe/src/vendor/celltracker/data/ctc.py",
+      "sha256": "7531e966658ca1e391d705a2d11e9f25f9797ebc315ed03032cf894c8700522c",
+      "matches_numerical_release": true
+    }
+  ],
+  "local_pytest": {
+    "passed": 150,
+    "exit_code": 0
+  }
+}

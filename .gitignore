@@ -8,7 +8,8 @@ agent.md
 .env
 
 # --- 数据与权重：体积大，走云/网盘，记录 checksum ---
-data/
+# 只忽略仓库根目录的原始/中间数据，源码包内的 data 模块必须入库。
+/data/
 *.h5
 *.hdf5
 *.tif
