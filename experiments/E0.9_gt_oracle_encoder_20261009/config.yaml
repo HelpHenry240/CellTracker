@@ -1,0 +1,23 @@
+experiment: GT marker Oracle + frozen nnU-Net encoder + independently retrained GNN
+date: '2026-10-09'
+seeds:
+- 20261008
+- 20261009
+epochs: 60
+training_and_calibration: seq01 only
+evaluation: seq01 and seq02, official CTC
+repeat: same seed20261008 checkpoint, full seq02 rerun
+feature: frozen nnU-Net encoder stage2, 128 dimensions
+unet_training: false
+handcrafted_control: false
+marker_adaptation:
+  mass_mode: uniform
+  volume_conservation: false
+  decision: docs/decisions/0001-mass-uniform-vs-size.md
+export: split holes, retain exact GT-marker foreground; do not synthesize detections
+r_max_um: 6.4
+expected_elapsed_minutes:
+- 45
+- 90
+minimum_conclusion_delta_TRA: 0.001
+status: preparing
